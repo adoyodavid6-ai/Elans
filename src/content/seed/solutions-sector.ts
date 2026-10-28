@@ -802,7 +802,7 @@ export const sectorSolutions = [
     industries: ["education"],
     related: ["mpesa-bank-reconciliation", "collections-receivables", "parent-helpdesk"],
     riskClass: "elevated",
-    keywords: ["school fees", "fee arrears", "bursar", "parents"],
+    keywords: ["school fees", "fee arrears", "fee balances", "fee payments", "bursar", "term fees"],
     functions: ["collections", "payments"],
     profile: { financialImpact: 4 },
   }),

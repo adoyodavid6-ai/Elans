@@ -122,8 +122,8 @@ export const peopleSolutions = [
     industries: ["manufacturing", "hospitality", "healthcare", "general-smes"],
     related: ["leave-workflows"],
     riskClass: "elevated",
-    keywords: ["hr questions", "policies", "staff questions"],
-    functions: ["hr", "service"],
+    keywords: ["hr questions", "hr policies", "staff questions", "leave questions"],
+    functions: ["hr"],
   }),
   solution({
     slug: "leave-workflows",
