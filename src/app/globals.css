@@ -94,6 +94,7 @@
   --shadow-lift: 0 2px 4px rgb(53 39 31 / 0.08), 0 24px 48px -24px rgb(53 39 31 / 0.35);
 }
 
+@layer base {
 html { -webkit-text-size-adjust: 100%; }
 body {
   background: var(--bg);
@@ -104,6 +105,8 @@ body {
   text-rendering: optimizeLegibility;
 }
 h1, h2, h3, h4 { color: var(--heading); text-wrap: balance; }
+/* Grid items may shrink below their content's min width (prevents mobile overflow). */
+.grid > * { min-width: 0; }
 p { text-wrap: pretty; }
 
 :focus-visible {
@@ -128,6 +131,8 @@ p { text-wrap: pretty; }
 .prose-elans li { margin: 0.35rem 0; }
 .prose-elans a { color: var(--copper-ink); text-decoration: underline; text-underline-offset: 3px; }
 .prose-elans strong { color: var(--heading); }
+
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
