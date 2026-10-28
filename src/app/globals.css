@@ -1,0 +1,148 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Elans design tokens. Contrast (WCAG 2.2) measured on --ivory:
+   espresso 13.6:1 · brown 8.0:1 · copper-ink 5.5:1 · graphite 14.6:1
+   copper 3.1:1 → large text (≥24px / 19px bold) and non-text UI only.
+   ------------------------------------------------------------------ */
+:root {
+  --espresso: #35271f;
+  --brown: #6b4936;
+  --brown-hover: #5a3c2c;
+  --copper: #b98258;
+  --copper-ink: #8a5a36;
+  --ivory: #faf8f5;
+  --sand: #eae1d7;
+  --sand-strong: #d9ccbd;
+  --graphite: #242424;
+  --white: #ffffff;
+
+  --success: #1f6f4a;
+  --success-bg: #e3f2ea;
+  --warning: #8a5a00;
+  --warning-bg: #fbf0d9;
+  --danger: #a1281f;
+  --danger-bg: #f9e3e0;
+  --info: #1d4f7a;
+  --info-bg: #e2edf7;
+
+  /* semantic surface tokens (portal/console flip these in dark mode) */
+  --bg: var(--ivory);
+  --surface: var(--white);
+  --surface-2: #f3eee8;
+  --text: var(--graphite);
+  --text-muted: #5c544d;
+  --heading: var(--espresso);
+  --border: #e2d8cc;
+  --ring: var(--copper);
+}
+
+[data-theme="dark"] {
+  --bg: #1b1512;
+  --surface: #241d19;
+  --surface-2: #2d2520;
+  --text: #ede6de;
+  --text-muted: #b5aaa0;
+  --heading: #f6efe7;
+  --border: #3b322c;
+  --brown: #b98258;
+  --brown-hover: #c99168;
+  --copper-ink: #d7a67f;
+  --success-bg: #173426;
+  --success: #7fd1a8;
+  --warning-bg: #3a2c10;
+  --warning: #f0c36b;
+  --danger-bg: #3d1a17;
+  --danger: #f2a199;
+  --info-bg: #15283a;
+  --info: #9cc6ec;
+}
+
+@theme inline {
+  --color-espresso: var(--espresso);
+  --color-brown: var(--brown);
+  --color-brown-hover: var(--brown-hover);
+  --color-copper: var(--copper);
+  --color-copper-ink: var(--copper-ink);
+  --color-ivory: var(--ivory);
+  --color-sand: var(--sand);
+  --color-sand-strong: var(--sand-strong);
+  --color-graphite: var(--graphite);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-text: var(--text);
+  --color-muted: var(--text-muted);
+  --color-heading: var(--heading);
+  --color-line: var(--border);
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg);
+  --color-danger: var(--danger);
+  --color-danger-bg: var(--danger-bg);
+  --color-info: var(--info);
+  --color-info-bg: var(--info-bg);
+
+  --font-display: "Fraunces Variable", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-alt-display: "Newsreader Variable", Georgia, serif;
+  --font-alt-sans: "Manrope Variable", system-ui, sans-serif;
+
+  --radius-card: 1.25rem;
+  --shadow-soft: 0 1px 2px rgb(53 39 31 / 0.06), 0 8px 24px -12px rgb(53 39 31 / 0.18);
+  --shadow-lift: 0 2px 4px rgb(53 39 31 / 0.08), 0 24px 48px -24px rgb(53 39 31 / 0.35);
+}
+
+html { -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+h1, h2, h3, h4 { color: var(--heading); text-wrap: balance; }
+p { text-wrap: pretty; }
+
+:focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.skip-link {
+  position: absolute; left: -999px; top: 0.5rem; z-index: 100;
+  background: var(--espresso); color: var(--ivory); padding: 0.75rem 1rem; border-radius: 0.5rem;
+}
+.skip-link:focus { left: 0.5rem; }
+
+/* Long-form copy (resources, legal) */
+.prose-elans { max-width: 70ch; line-height: 1.7; }
+.prose-elans h2 { font-family: var(--font-display); font-size: 1.6rem; margin: 2.25rem 0 0.75rem; }
+.prose-elans h3 { font-weight: 650; font-size: 1.15rem; margin: 1.75rem 0 0.5rem; }
+.prose-elans p, .prose-elans ul, .prose-elans ol { margin: 0 0 1rem; }
+.prose-elans ul { list-style: disc; padding-left: 1.25rem; }
+.prose-elans ol { list-style: decimal; padding-left: 1.25rem; }
+.prose-elans li { margin: 0.35rem 0; }
+.prose-elans a { color: var(--copper-ink); text-decoration: underline; text-underline-offset: 3px; }
+.prose-elans strong { color: var(--heading); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes flow-dash { to { stroke-dashoffset: -24; } }
+.flow-line { stroke-dasharray: 6 6; animation: flow-dash 1.6s linear infinite; }
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; }
+  .print-break { break-before: page; }
+}
