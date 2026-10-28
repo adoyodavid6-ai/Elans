@@ -9,6 +9,7 @@ const securityHeaders = [
 
 const config: NextConfig = {
   poweredByHeader: false,
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   serverExternalPackages: ["postgres"],
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];

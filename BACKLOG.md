@@ -10,3 +10,7 @@ Ideas outside the current scope lock. Nothing here is built until David schedule
 | B-004 | Python document service (layout-aware OCR) | D-011 | Trigger: Stage 10 eval gap |
 | B-005 | Swahili-language public site | §1.3 | Agents are bilingual from day one; site is English at launch |
 | B-006 | External search (Typesense/Meilisearch) | D-012 | Trigger: catalogue > ~2,000 records or relevance complaints |
+| B-007 | SSO (SAML/OIDC) for enterprise client portals | D-028 | Trigger: first enterprise request |
+| B-008 | Scheduled nightly reset of the shared demo workspace (and per-visitor demo tenants) | D-031 | Today it resets on every seed |
+| B-009 | Real object storage for documents (S3-compatible, in-region) | Portal | Dev stores files in Postgres `bytea` (5 MB limit) |
+| B-010 | Background worker for the outbox (email/WhatsApp/SMS providers) | Runtime | Today messages are logged (`EMAIL_PROVIDER=log`) |

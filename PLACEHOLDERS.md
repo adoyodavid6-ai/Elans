@@ -35,3 +35,8 @@ Ordered by the **earliest stage it blocks**. P0 = needed before or during Stage 
 | P4 | `{{ETIMS_ROUTE}}` | Stage 10 | Accredited integrator first; direct OSCU/VSCU only after confirming KRA third-party certification requirements | **Yes** | |
 | P4 | `{{VOICE_STACK}}` | Stage 11 voice | Evaluate Swahili STT/TTS quality before choosing | Kenyan number provisioning | |
 | P4 | Pilot client(s) for eTIMS proof + ≥ 50 consented sample invoices for the eval set | Stage 10 | — | **Yes** | |
+| P1 | Suggested prices shown as **Indicative** (D-029): Grow Essentials 75k / Momentum 180k / Market Leader 380k per month; Strategy Session 15k; Diagnostic 60k; Support session 7.5k | Pricing, Sessions | Edit in Console → Content → Prices and tick "confirmed" | | |
+| P1 | Admin account `admin@elans.local` (seed) | Console | Change the email and password, re-enrol MFA, before any deployment | | |
+| P2 | `{{DEMO_PAYBILL}}` | Demo WhatsApp agent copy | Shown as "123456 (demo)" in the illustrative tenant only | | |
+| P2 | Data retention periods (conversations 12 months; tax records 7 years) | Portal → Data & Privacy, DPA | Defaults stated as "per your agreement"; confirm with counsel | | |
+| P2 | Data-subject request deadlines (7 days access, 14 days other) | Portal DPA requests | Configurable policy; confirm against the Kenya DPA 2019 and 2021 Regulations | | |
