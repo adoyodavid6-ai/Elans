@@ -64,7 +64,7 @@ export function Header({ menus }: { menus: MegaMenu[] }) {
   ];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line/80 bg-ivory/92 backdrop-blur supports-[backdrop-filter]:bg-ivory/80">
+    <header className="no-print sticky top-0 z-40 border-b border-line/80 bg-ivory/92 backdrop-blur supports-[backdrop-filter]:bg-ivory/80">
       <div className="mx-auto flex h-16 max-w-[88rem] items-center gap-4 px-4 sm:px-6 lg:h-[4.5rem] lg:px-8">
         <Link href="/" aria-label="Elans home" className="shrink-0">
           <Wordmark />
