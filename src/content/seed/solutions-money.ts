@@ -556,7 +556,7 @@ export const moneySolutions = [
     related: ["mpesa-bank-reconciliation", "failed-payment-recovery", "loan-intake-kyc"],
     riskClass: "high",
     humanReviewRequired: "Settlements, credit decisions and disputes always require a person.",
-    keywords: ["collections", "arrears", "debtors", "overdue", "fee arrears", "rent arrears", "loan repayments", "reminders", "npl", "chasing balances", "unpaid invoices", "chasing debtors"],
+    keywords: ["collections", "arrears", "debtors", "overdue", "fee arrears", "rent arrears", "loan repayments", "reminders", "npl", "chasing balances", "unpaid invoices", "chasing debtors", "defaulters", "loan defaulters"],
     functions: ["collections", "finance"],
     profile: { financialImpact: 4.5, dataReadiness: 3.5, integrationFeasibility: 3.5, reusability: 5, strategicFit: 4.5 },
   }),

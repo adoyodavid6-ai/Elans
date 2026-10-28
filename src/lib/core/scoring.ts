@@ -76,11 +76,14 @@ function hoursScore(hoursPerMonth: number) {
 }
 
 const STOP = new Set(["and", "the", "for", "our", "with", "from", "into", "that", "this", "are", "you", "your", "all"]);
-const stem = (t: string) => t.replace(/(ings|ing|ies|es|s)$/, (m) => (m === "ies" ? "y" : ""));
+/** Deliberately cheap stemmer: strip common suffixes, then cap at 7 characters ("reconcile" ≈ "reconciliation"). */
+const stem = (t: string) =>
+  (t.length > 5 ? t.replace(/ed$/, "") : t).replace(/(ings|ing|ies|es|s)$/, (m) => (m === "ies" ? "y" : "")).slice(0, 7);
 export function tokens(s: string): Set<string> {
   return new Set(
     s
       .toLowerCase()
+      .replace(/m[\s-]?pesa/g, "mpesa")
       .replace(/[^a-z0-9 ]+/g, " ")
       .split(/\s+/)
       .filter((t) => t.length >= 3 && !STOP.has(t))
@@ -88,7 +91,7 @@ export function tokens(s: string): Set<string> {
   );
 }
 /** A keyword matches when all of its tokens (1–2 token keywords) or two-thirds of them (longer) appear in the text. */
-function keywordHit(keyword: string, text: Set<string>) {
+export function keywordHit(keyword: string, text: Set<string>) {
   const k = [...tokens(keyword)];
   if (!k.length) return false;
   const hits = k.filter((t) => text.has(t)).length;
