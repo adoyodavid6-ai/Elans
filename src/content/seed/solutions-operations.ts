@@ -40,7 +40,7 @@ export const operationsSolutions = [
     complexity: "medium",
     timeline: "2–4 weeks per document type",
     pricing: { approach: "Setup per document type plus usage per page.", package: "launch" },
-    demo: { kind: "interactive", href: "/portal/automations/etims", label: "See extraction with confidence scores (illustrative)" },
+    demo: { kind: "interactive", href: "/portal/demo?next=/portal/automations/etims", label: "See extraction with confidence scores (illustrative)" },
     faqs: [
       { q: "Do you train AI models on our documents?", a: "No. Client data is never used to train models. Improvements come from prompt and rule changes tested against your evaluation set." },
       { q: "What accuracy should we expect?", a: "We measure it on your own documents before go-live and report it monthly. We do not quote a generic figure." },

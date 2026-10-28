@@ -1,0 +1,67 @@
+{
+  "mode": "rules",
+  "version": "rules-1",
+  "cases": 62,
+  "score": 1,
+  "fieldAccuracy": 1,
+  "statusAccuracy": 0.9032258064516129,
+  "safeStatusAccuracy": 1,
+  "deferred": 6,
+  "unsafe": 0,
+  "perField": {
+    "supplierName": 1,
+    "supplierPin": 1,
+    "buyerPin": 1,
+    "invoiceNo": 1,
+    "cuInvoiceNo": 1,
+    "invoiceDate": 1,
+    "amountTotal": 1,
+    "vatAmount": 1
+  },
+  "failures": [
+    {
+      "id": "syn-020",
+      "scenario": "messy layout",
+      "status": "needs_review",
+      "expected": "valid",
+      "kind": "deferred_to_review"
+    },
+    {
+      "id": "syn-028",
+      "scenario": "messy layout",
+      "status": "needs_review",
+      "expected": "valid",
+      "kind": "deferred_to_review"
+    },
+    {
+      "id": "syn-038",
+      "scenario": "messy layout",
+      "status": "needs_review",
+      "expected": "valid",
+      "kind": "deferred_to_review"
+    },
+    {
+      "id": "syn-043",
+      "scenario": "messy layout",
+      "status": "needs_review",
+      "expected": "valid",
+      "kind": "deferred_to_review"
+    },
+    {
+      "id": "syn-052",
+      "scenario": "messy layout",
+      "status": "needs_review",
+      "expected": "valid",
+      "kind": "deferred_to_review"
+    },
+    {
+      "id": "syn-056",
+      "scenario": "messy layout",
+      "status": "needs_review",
+      "expected": "valid",
+      "kind": "deferred_to_review"
+    }
+  ],
+  "synthetic": true,
+  "at": "2026-10-28T10:50:48.646Z"
+}

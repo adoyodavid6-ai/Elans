@@ -96,6 +96,7 @@ async function main() {
 
   await seedDemoTenant(db, DEMO);
   await db.end();
+  await globalThis.__elansSql?.end();
   console.log("seed complete");
 }
 

@@ -275,7 +275,7 @@ export default async function SolutionPage({ params }: Props) {
               <div className="flex flex-wrap items-center gap-3">
                 <IllustrativeTag />
                 {s.demo ? (
-                  <ButtonLink href={s.demo.href} icon="arrow-right" className="h-auto! min-h-11 whitespace-normal! py-2 text-center">
+                  <ButtonLink href={s.demo.href} prefetch={s.demo.href.startsWith("/portal") ? false : undefined} icon="arrow-right" className="h-auto! min-h-11 whitespace-normal! py-2 text-center">
                     {s.demo.label}
                   </ButtonLink>
                 ) : (

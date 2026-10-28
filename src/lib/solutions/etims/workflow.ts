@@ -19,6 +19,7 @@ export interface EtimsConfig {
   buyerPin: string;
   period: string; // YYYY-MM
   threshold: number; // minimum per-field confidence for straight-through processing
+  businessName?: string; // used in supplier messages
 }
 
 export const PROMPT = { key: "etims.extract", version: "1.0.0" };
@@ -148,7 +149,7 @@ async function updateSupplier(tx: Tx, inst: EngineInstance, f: Extracted, ok: bo
 }
 
 async function proposeSupplierRequest(ctx: RunCtx, inst: EngineInstance, invoiceId: string, f: Extracted, reason: string) {
-  const message = `Hello ${f.supplierName ?? "supplier"}, this is Demo Hardware & Supplies Ltd. Your invoice ${f.invoiceNo ?? ""} dated ${f.invoiceDate ?? ""} for KES ${f.amountTotal?.toLocaleString("en-GB") ?? ""} could not be validated in eTIMS (${reason}). Please issue a valid eTIMS invoice to our PIN ${(inst.config as unknown as EtimsConfig).buyerPin}. Thank you.`;
+  const message = `Hello ${f.supplierName ?? "supplier"}, this is ${(inst.config as unknown as EtimsConfig).businessName ?? "your customer"}. Your invoice ${f.invoiceNo ?? ""} dated ${f.invoiceDate ?? ""} for KES ${f.amountTotal?.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? ""} could not be validated in eTIMS (${reason}). Please issue a valid eTIMS invoice to our PIN ${(inst.config as unknown as EtimsConfig).buyerPin}. Thank you.`;
   const decision = await gate(ctx, { actionType: "etims.supplier_request", title: `Ask ${f.supplierName ?? f.supplierPin ?? "supplier"} for a valid eTIMS invoice`, summary: reason, proposed: { invoiceId, supplierPin: f.supplierPin, supplierName: f.supplierName, channel: "whatsapp", message } });
   if (decision === "auto") await sendSupplierRequest(ctx.tx, inst.tenant_id, inst.id, { supplierPin: f.supplierPin, supplierName: f.supplierName, message });
 }

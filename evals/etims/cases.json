@@ -1,0 +1,994 @@
+[
+  {
+    "id": "syn-001",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "P051111111A",
+      "supplierName": "Mwangaza Cement Distributors",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01000",
+      "cuInvoiceNo": "KRAMW69672180810000",
+      "invoiceDate": "2026-10-02",
+      "amountTotal": 16738.8,
+      "vatAmount": 2308.8
+    },
+    "text": "Tax Invoice | Mwangaza Cement Distributors\nSupplier KRA PIN P051111111A\nInv # INV-01000   Dated 2026-10-02\nCustomer: DEMO HARDWARE & SUPPLIES LTD (PIN: P051234567Z)\nAmount excl. VAT  14,430.00\nVAT               2,308.80\nAmount incl. VAT  16,738.80\nControl Unit Invoice Number KRAMW69672180810000\n"
+  },
+  {
+    "id": "syn-002",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "P052222222B",
+      "supplierName": "Kiboko Steel & Wire Ltd",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01007",
+      "cuInvoiceNo": "KRAMW25031936960001",
+      "invoiceDate": "2026-10-27",
+      "amountTotal": 18560,
+      "vatAmount": 2560
+    },
+    "text": "KIBOKO STEEL & WIRE LTD\nPIN: P052222222B\nTAX INVOICE\nInvoice No: INV-01007\nDate: 27/10/2026\nBill to: Demo Hardware & Supplies Ltd  PIN P051234567Z\nPVC pipes 4in ........ 11,200.00\nDoor hinges ........ 4,800.00\nSubtotal: 16,000.00\nVAT 16%: 2,560.00\nTOTAL KES: 18,560.00\nCU Invoice No: KRAMW25031936960001\n"
+  },
+  {
+    "id": "syn-003",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "P058888888H",
+      "supplierName": "Mlima Hardware Wholesalers",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01014",
+      "cuInvoiceNo": "KRAMW33618977660002",
+      "invoiceDate": "2026-10-03",
+      "amountTotal": 95502.8,
+      "vatAmount": 13172.8
+    },
+    "text": "Mlima Hardware Wholesalers\nInvoice: INV-01014\nDate: 3 Oct 2026\nPIN No. P058888888H\nBuyer PIN: P051234567Z\nGoods: Roofing sheets 30g, Wall putty\nNet 82,330.00 | VAT 13,172.80 | Gross 95,502.80\nCUIN: KRAMW33618977660002\n"
+  },
+  {
+    "id": "syn-004",
+    "scenario": "amount differs from eTIMS record",
+    "expectedStatus": "mismatch",
+    "expected": {
+      "supplierPin": "P057777777G",
+      "supplierName": "Savannah Transporters",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01021",
+      "cuInvoiceNo": "KRAMW73589221020003",
+      "invoiceDate": "2026-10-11",
+      "amountTotal": 68335.6,
+      "vatAmount": 9425.6
+    },
+    "text": "Savannah Transporters\nInvoice: INV-01021\nDate: 11 Oct 2026\nPIN No. P057777777G\nBuyer PIN: P051234567Z\nGoods: Roofing sheets 30g, Nails 3in (kg)\nNet 58,910.00 | VAT 9,425.60 | Gross 68,335.60\nCUIN: KRAMW73589221020003\n"
+  },
+  {
+    "id": "syn-005",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "P058888888H",
+      "supplierName": "Mlima Hardware Wholesalers",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01028",
+      "cuInvoiceNo": "KRAMW12560909560004",
+      "invoiceDate": "2026-10-02",
+      "amountTotal": 38442.4,
+      "vatAmount": 5302.4
+    },
+    "text": "MLIMA HARDWARE WHOLESALERS\nPIN: P058888888H\nTAX INVOICE\nInvoice No: INV-01028\nDate: 02/10/2026\nBill to: Demo Hardware & Supplies Ltd  PIN P051234567Z\nGloss paint 4L ........ 23,198.00\nBinding wire ........ 9,942.00\nSubtotal: 33,140.00\nVAT 16%: 5,302.40\nTOTAL KES: 38,442.40\nCU Invoice No: KRAMW12560909560004\n"
+  },
+  {
+    "id": "syn-006",
+    "scenario": "issued to wrong buyer PIN",
+    "expectedStatus": "invalid",
+    "expected": {
+      "supplierPin": "P054444444D",
+      "supplierName": "Rift Valley Paints Co",
+      "buyerPin": "P059999999K",
+      "invoiceNo": "INV-01035",
+      "cuInvoiceNo": "KRAMW68371307740005",
+      "invoiceDate": "2026-10-09",
+      "amountTotal": 126300.8,
+      "vatAmount": 17420.8
+    },
+    "text": "Tax Invoice | Rift Valley Paints Co\nSupplier KRA PIN P054444444D\nInv # INV-01035   Dated 2026-10-09\nCustomer: DEMO HARDWARE & SUPPLIES LTD (PIN: P059999999K)\nAmount excl. VAT  108,880.00\nVAT               17,420.80\nAmount incl. VAT  126,300.80\nControl Unit Invoice Number KRAMW68371307740005\n"
+  },
+  {
+    "id": "syn-007",
+    "scenario": "not issued through eTIMS",
+    "expectedStatus": "not_found",
+    "expected": {
+      "supplierPin": "P058888888H",
+      "supplierName": "Mlima Hardware Wholesalers",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01042",
+      "cuInvoiceNo": "KRAMW18191840260006",
+      "invoiceDate": "2026-10-22",
+      "amountTotal": 53278.8,
+      "vatAmount": 7348.8
+    },
+    "text": "MLIMA HARDWARE WHOLESALERS\nPIN: P058888888H\nTAX INVOICE\nInvoice No: INV-01042\nDate: 22/10/2026\nBill to: Demo Hardware & Supplies Ltd  PIN P051234567Z\nPVC pipes 4in ........ 32,151.00\nDoor hinges ........ 13,779.00\nSubtotal: 45,930.00\nVAT 16%: 7,348.80\nTOTAL KES: 53,278.80\nCU Invoice No: KRAMW18191840260006\n"
+  },
+  {
+    "id": "syn-008",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "P052222222B",
+      "supplierName": "Kiboko Steel & Wire Ltd",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01049",
+      "cuInvoiceNo": "KRAMW98823368480007",
+      "invoiceDate": "2026-10-27",
+      "amountTotal": 165381.2,
+      "vatAmount": 22811.2
+    },
+    "text": "KIBOKO STEEL & WIRE LTD\nPIN: P052222222B\nTAX INVOICE\nInvoice No: INV-01049\nDate: 27/10/2026\nBill to: Demo Hardware & Supplies Ltd  PIN P051234567Z\nSteel bars Y12 ........ 99,799.00\nNails 3in (kg) ........ 42,771.00\nSubtotal: 142,570.00\nVAT 16%: 22,811.20\nTOTAL KES: 165,381.20\nCU Invoice No: KRAMW98823368480007\n"
+  },
+  {
+    "id": "syn-009",
+    "scenario": "amount differs from eTIMS record",
+    "expectedStatus": "mismatch",
+    "expected": {
+      "supplierPin": "P058888888H",
+      "supplierName": "Mlima Hardware Wholesalers",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01056",
+      "cuInvoiceNo": "KRAMW35944317230008",
+      "invoiceDate": "2026-10-16",
+      "amountTotal": 122229.2,
+      "vatAmount": 16859.2
+    },
+    "text": "Mlima Hardware Wholesalers\nInvoice: INV-01056\nDate: 16 Oct 2026\nPIN No. P058888888H\nBuyer PIN: P051234567Z\nGoods: Steel bars Y12, Binding wire\nNet 105,370.00 | VAT 16,859.20 | Gross 122,229.20\nCUIN: KRAMW35944317230008\n"
+  },
+  {
+    "id": "syn-010",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "A006666666F",
+      "supplierName": "Lake Basin Plumbing Supplies",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01063",
+      "cuInvoiceNo": "KRAMW95338060720009",
+      "invoiceDate": "2026-10-22",
+      "amountTotal": 157980.4,
+      "vatAmount": 21790.4
+    },
+    "text": "Tax Invoice | Lake Basin Plumbing Supplies\nSupplier KRA PIN A006666666F\nInv # INV-01063   Dated 2026-10-22\nCustomer: DEMO HARDWARE & SUPPLIES LTD (PIN: P051234567Z)\nAmount excl. VAT  136,190.00\nVAT               21,790.40\nAmount incl. VAT  157,980.40\nControl Unit Invoice Number KRAMW95338060720009\n"
+  },
+  {
+    "id": "syn-011",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "A003333333C",
+      "supplierName": "Pwani Timber Merchants",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01070",
+      "cuInvoiceNo": "KRAMW57119804430010",
+      "invoiceDate": "2026-10-19",
+      "amountTotal": 201178.8,
+      "vatAmount": 27748.8
+    },
+    "text": "PWANI TIMBER MERCHANTS\nPIN: A003333333C\nTAX INVOICE\nInvoice No: INV-01070\nDate: 19/10/2026\nBill to: Demo Hardware & Supplies Ltd  PIN P051234567Z\nRoofing sheets 30g ........ 121,401.00\nNails 3in (kg) ........ 52,029.00\nSubtotal: 173,430.00\nVAT 16%: 27,748.80\nTOTAL KES: 201,178.80\nCU Invoice No: KRAMW57119804430010\n"
+  },
+  {
+    "id": "syn-012",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "A003333333C",
+      "supplierName": "Pwani Timber Merchants",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01077",
+      "cuInvoiceNo": "KRAMW31275012840011",
+      "invoiceDate": "2026-10-04",
+      "amountTotal": 151971.6,
+      "vatAmount": 20961.6
+    },
+    "text": "Tax Invoice | Pwani Timber Merchants\nSupplier KRA PIN A003333333C\nInv # INV-01077   Dated 2026-10-04\nCustomer: DEMO HARDWARE & SUPPLIES LTD (PIN: P051234567Z)\nAmount excl. VAT  131,010.00\nVAT               20,961.60\nAmount incl. VAT  151,971.60\nControl Unit Invoice Number KRAMW31275012840011\n"
+  },
+  {
+    "id": "syn-013",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "P055555555E",
+      "supplierName": "Nyota Electricals",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01084",
+      "cuInvoiceNo": "KRAMW75199868970012",
+      "invoiceDate": "2026-10-15",
+      "amountTotal": 162736.4,
+      "vatAmount": 22446.4
+    },
+    "text": "Tax Invoice | Nyota Electricals\nSupplier KRA PIN P055555555E\nInv # INV-01084   Dated 2026-10-15\nCustomer: DEMO HARDWARE & SUPPLIES LTD (PIN: P051234567Z)\nAmount excl. VAT  140,290.00\nVAT               22,446.40\nAmount incl. VAT  162,736.40\nControl Unit Invoice Number KRAMW75199868970012\n"
+  },
+  {
+    "id": "syn-014",
+    "scenario": "issued to wrong buyer PIN",
+    "expectedStatus": "invalid",
+    "expected": {
+      "supplierPin": "P058888888H",
+      "supplierName": "Mlima Hardware Wholesalers",
+      "buyerPin": "P059999999K",
+      "invoiceNo": "INV-01091",
+      "cuInvoiceNo": "KRAMW69218412280013",
+      "invoiceDate": "2026-10-15",
+      "amountTotal": 182317.2,
+      "vatAmount": 25147.2
+    },
+    "text": "Tax Invoice | Mlima Hardware Wholesalers\nSupplier KRA PIN P058888888H\nInv # INV-01091   Dated 2026-10-15\nCustomer: DEMO HARDWARE & SUPPLIES LTD (PIN: P059999999K)\nAmount excl. VAT  157,170.00\nVAT               25,147.20\nAmount incl. VAT  182,317.20\nControl Unit Invoice Number KRAMW69218412280013\n"
+  },
+  {
+    "id": "syn-015",
+    "scenario": "issued to wrong buyer PIN",
+    "expectedStatus": "invalid",
+    "expected": {
+      "supplierPin": "P058888888H",
+      "supplierName": "Mlima Hardware Wholesalers",
+      "buyerPin": "P059999999K",
+      "invoiceNo": "INV-01098",
+      "cuInvoiceNo": "KRAMW80273944920014",
+      "invoiceDate": "2026-10-25",
+      "amountTotal": 262948.8,
+      "vatAmount": 36268.8
+    },
+    "text": "Tax Invoice | Mlima Hardware Wholesalers\nSupplier KRA PIN P058888888H\nInv # INV-01098   Dated 2026-10-25\nCustomer: DEMO HARDWARE & SUPPLIES LTD (PIN: P059999999K)\nAmount excl. VAT  226,680.00\nVAT               36,268.80\nAmount incl. VAT  262,948.80\nControl Unit Invoice Number KRAMW80273944920014\n"
+  },
+  {
+    "id": "syn-016",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "P054444444D",
+      "supplierName": "Rift Valley Paints Co",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01105",
+      "cuInvoiceNo": "KRAMW33745437990015",
+      "invoiceDate": "2026-10-27",
+      "amountTotal": 174487.2,
+      "vatAmount": 24067.2
+    },
+    "text": "Rift Valley Paints Co\nInvoice: INV-01105\nDate: 27 Oct 2026\nPIN No. P054444444D\nBuyer PIN: P051234567Z\nGoods: Roofing sheets 30g, Wall putty\nNet 150,420.00 | VAT 24,067.20 | Gross 174,487.20\nCUIN: KRAMW33745437990015\n"
+  },
+  {
+    "id": "syn-017",
+    "scenario": "issued to wrong buyer PIN",
+    "expectedStatus": "invalid",
+    "expected": {
+      "supplierPin": "A006666666F",
+      "supplierName": "Lake Basin Plumbing Supplies",
+      "buyerPin": "P059999999K",
+      "invoiceNo": "INV-01112",
+      "cuInvoiceNo": "KRAMW43388937780016",
+      "invoiceDate": "2026-10-04",
+      "amountTotal": 31088,
+      "vatAmount": 4288
+    },
+    "text": "Lake Basin Plumbing Supplies\nInvoice: INV-01112\nDate: 4 Oct 2026\nPIN No. A006666666F\nBuyer PIN: P059999999K\nGoods: Delivery charges, Binding wire\nNet 26,800.00 | VAT 4,288.00 | Gross 31,088.00\nCUIN: KRAMW43388937780016\n"
+  },
+  {
+    "id": "syn-018",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "P054444444D",
+      "supplierName": "Rift Valley Paints Co",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01119",
+      "cuInvoiceNo": "KRAMW49403972040017",
+      "invoiceDate": "2026-10-02",
+      "amountTotal": 225156,
+      "vatAmount": 31056
+    },
+    "text": "RIFT VALLEY PAINTS CO\nPIN: P054444444D\nTAX INVOICE\nInvoice No: INV-01119\nDate: 02/10/2026\nBill to: Demo Hardware & Supplies Ltd  PIN P051234567Z\nDelivery charges ........ 135,870.00\nDoor hinges ........ 58,230.00\nSubtotal: 194,100.00\nVAT 16%: 31,056.00\nTOTAL KES: 225,156.00\nCU Invoice No: KRAMW49403972040017\n"
+  },
+  {
+    "id": "syn-019",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "A003333333C",
+      "supplierName": "Pwani Timber Merchants",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01126",
+      "cuInvoiceNo": "KRAMW24624956210018",
+      "invoiceDate": "2026-10-17",
+      "amountTotal": 100166,
+      "vatAmount": 13816
+    },
+    "text": "Pwani Timber Merchants\nInvoice: INV-01126\nDate: 17 Oct 2026\nPIN No. A003333333C\nBuyer PIN: P051234567Z\nGoods: Cement 50kg bags, Wall putty\nNet 86,350.00 | VAT 13,816.00 | Gross 100,166.00\nCUIN: KRAMW24624956210018\n"
+  },
+  {
+    "id": "syn-020",
+    "scenario": "messy layout",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "A006666666F",
+      "supplierName": "Lake Basin Plumbing Supplies",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01133",
+      "cuInvoiceNo": "KRAMW28837599660019",
+      "invoiceDate": "2026-10-24",
+      "amountTotal": 193720,
+      "vatAmount": 26720
+    },
+    "text": "lake basin plumbing supplies ... invoice inv-01133 ... pin a006666666f\ndate 24.10.2026 customer pin p051234567z\ntotal kes 193720.00 (vat 26720.00 incl)\ncu no kramw28837599660019\n"
+  },
+  {
+    "id": "syn-021",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "P051111111A",
+      "supplierName": "Mwangaza Cement Distributors",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01140",
+      "cuInvoiceNo": "KRAMW21220311960020",
+      "invoiceDate": "2026-10-17",
+      "amountTotal": 93287.2,
+      "vatAmount": 12867.2
+    },
+    "text": "MWANGAZA CEMENT DISTRIBUTORS\nPIN: P051111111A\nTAX INVOICE\nInvoice No: INV-01140\nDate: 17/10/2026\nBill to: Demo Hardware & Supplies Ltd  PIN P051234567Z\nDelivery charges ........ 56,294.00\nNails 3in (kg) ........ 24,126.00\nSubtotal: 80,420.00\nVAT 16%: 12,867.20\nTOTAL KES: 93,287.20\nCU Invoice No: KRAMW21220311960020\n"
+  },
+  {
+    "id": "syn-022",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "P058888888H",
+      "supplierName": "Mlima Hardware Wholesalers",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01147",
+      "cuInvoiceNo": "KRAMW60910609150021",
+      "invoiceDate": "2026-10-25",
+      "amountTotal": 146357.2,
+      "vatAmount": 20187.2
+    },
+    "text": "Tax Invoice | Mlima Hardware Wholesalers\nSupplier KRA PIN P058888888H\nInv # INV-01147   Dated 2026-10-25\nCustomer: DEMO HARDWARE & SUPPLIES LTD (PIN: P051234567Z)\nAmount excl. VAT  126,170.00\nVAT               20,187.20\nAmount incl. VAT  146,357.20\nControl Unit Invoice Number KRAMW60910609150021\n"
+  },
+  {
+    "id": "syn-023",
+    "scenario": "issued to wrong buyer PIN",
+    "expectedStatus": "invalid",
+    "expected": {
+      "supplierPin": "P054444444D",
+      "supplierName": "Rift Valley Paints Co",
+      "buyerPin": "P059999999K",
+      "invoiceNo": "INV-01154",
+      "cuInvoiceNo": "KRAMW85696519940022",
+      "invoiceDate": "2026-10-08",
+      "amountTotal": 204392,
+      "vatAmount": 28192
+    },
+    "text": "RIFT VALLEY PAINTS CO\nPIN: P054444444D\nTAX INVOICE\nInvoice No: INV-01154\nDate: 08/10/2026\nBill to: Demo Hardware & Supplies Ltd  PIN P059999999K\nGloss paint 4L ........ 123,340.00\nBinding wire ........ 52,860.00\nSubtotal: 176,200.00\nVAT 16%: 28,192.00\nTOTAL KES: 204,392.00\nCU Invoice No: KRAMW85696519940022\n"
+  },
+  {
+    "id": "syn-024",
+    "scenario": "missing CU invoice number",
+    "expectedStatus": "needs_review",
+    "expected": {
+      "supplierPin": "P052222222B",
+      "supplierName": "Kiboko Steel & Wire Ltd",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01161",
+      "cuInvoiceNo": null,
+      "invoiceDate": "2026-10-22",
+      "amountTotal": 231652,
+      "vatAmount": 31952
+    },
+    "text": "Tax Invoice | Kiboko Steel & Wire Ltd\nSupplier KRA PIN P052222222B\nInv # INV-01161   Dated 2026-10-22\nCustomer: DEMO HARDWARE & SUPPLIES LTD (PIN: P051234567Z)\nAmount excl. VAT  199,700.00\nVAT               31,952.00\nAmount incl. VAT  231,652.00\n\n"
+  },
+  {
+    "id": "syn-025",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "P052222222B",
+      "supplierName": "Kiboko Steel & Wire Ltd",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01168",
+      "cuInvoiceNo": "KRAMW83983298160024",
+      "invoiceDate": "2026-10-03",
+      "amountTotal": 221420.8,
+      "vatAmount": 30540.8
+    },
+    "text": "KIBOKO STEEL & WIRE LTD\nPIN: P052222222B\nTAX INVOICE\nInvoice No: INV-01168\nDate: 03/10/2026\nBill to: Demo Hardware & Supplies Ltd  PIN P051234567Z\nCable 2.5mm ........ 133,616.00\nWall putty ........ 57,264.00\nSubtotal: 190,880.00\nVAT 16%: 30,540.80\nTOTAL KES: 221,420.80\nCU Invoice No: KRAMW83983298160024\n"
+  },
+  {
+    "id": "syn-026",
+    "scenario": "missing CU invoice number",
+    "expectedStatus": "needs_review",
+    "expected": {
+      "supplierPin": "P055555555E",
+      "supplierName": "Nyota Electricals",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01175",
+      "cuInvoiceNo": null,
+      "invoiceDate": "2026-10-01",
+      "amountTotal": 272078,
+      "vatAmount": 37528
+    },
+    "text": "NYOTA ELECTRICALS\nPIN: P055555555E\nTAX INVOICE\nInvoice No: INV-01175\nDate: 01/10/2026\nBill to: Demo Hardware & Supplies Ltd  PIN P051234567Z\nDelivery charges ........ 164,185.00\nNails 3in (kg) ........ 70,365.00\nSubtotal: 234,550.00\nVAT 16%: 37,528.00\nTOTAL KES: 272,078.00\nThank you for your business\n"
+  },
+  {
+    "id": "syn-027",
+    "scenario": "not issued through eTIMS",
+    "expectedStatus": "not_found",
+    "expected": {
+      "supplierPin": "P051111111A",
+      "supplierName": "Mwangaza Cement Distributors",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01182",
+      "cuInvoiceNo": "KRAMW83543567760026",
+      "invoiceDate": "2026-10-02",
+      "amountTotal": 254538.8,
+      "vatAmount": 35108.8
+    },
+    "text": "MWANGAZA CEMENT DISTRIBUTORS\nPIN: P051111111A\nTAX INVOICE\nInvoice No: INV-01182\nDate: 02/10/2026\nBill to: Demo Hardware & Supplies Ltd  PIN P051234567Z\nPVC pipes 4in ........ 153,601.00\nNails 3in (kg) ........ 65,829.00\nSubtotal: 219,430.00\nVAT 16%: 35,108.80\nTOTAL KES: 254,538.80\nCU Invoice No: KRAMW83543567760026\n"
+  },
+  {
+    "id": "syn-028",
+    "scenario": "messy layout",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "P054444444D",
+      "supplierName": "Rift Valley Paints Co",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01189",
+      "cuInvoiceNo": "KRAMW95544359140027",
+      "invoiceDate": "2026-10-25",
+      "amountTotal": 208080.8,
+      "vatAmount": 28700.8
+    },
+    "text": "rift valley paints co ... invoice inv-01189 ... pin p054444444d\ndate 25.10.2026 customer pin p051234567z\ntotal kes 208080.80 (vat 28700.80 incl)\ncu no kramw95544359140027\n"
+  },
+  {
+    "id": "syn-029",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "A003333333C",
+      "supplierName": "Pwani Timber Merchants",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01196",
+      "cuInvoiceNo": "KRAMW21498453020028",
+      "invoiceDate": "2026-10-09",
+      "amountTotal": 43372.4,
+      "vatAmount": 5982.4
+    },
+    "text": "PWANI TIMBER MERCHANTS\nPIN: A003333333C\nTAX INVOICE\nInvoice No: INV-01196\nDate: 09/10/2026\nBill to: Demo Hardware & Supplies Ltd  PIN P051234567Z\nCable 2.5mm ........ 26,173.00\nWall putty ........ 11,217.00\nSubtotal: 37,390.00\nVAT 16%: 5,982.40\nTOTAL KES: 43,372.40\nCU Invoice No: KRAMW21498453020028\n"
+  },
+  {
+    "id": "syn-030",
+    "scenario": "issued to wrong buyer PIN",
+    "expectedStatus": "invalid",
+    "expected": {
+      "supplierPin": "P054444444D",
+      "supplierName": "Rift Valley Paints Co",
+      "buyerPin": "P059999999K",
+      "invoiceNo": "INV-01203",
+      "cuInvoiceNo": "KRAMW65606841980029",
+      "invoiceDate": "2026-10-09",
+      "amountTotal": 257914.4,
+      "vatAmount": 35574.4
+    },
+    "text": "Rift Valley Paints Co\nInvoice: INV-01203\nDate: 9 Oct 2026\nPIN No. P054444444D\nBuyer PIN: P059999999K\nGoods: Cement 50kg bags, Binding wire\nNet 222,340.00 | VAT 35,574.40 | Gross 257,914.40\nCUIN: KRAMW65606841980029\n"
+  },
+  {
+    "id": "syn-031",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "A003333333C",
+      "supplierName": "Pwani Timber Merchants",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01210",
+      "cuInvoiceNo": "KRAMW92752281310030",
+      "invoiceDate": "2026-10-25",
+      "amountTotal": 253703.6,
+      "vatAmount": 34993.6
+    },
+    "text": "PWANI TIMBER MERCHANTS\nPIN: A003333333C\nTAX INVOICE\nInvoice No: INV-01210\nDate: 25/10/2026\nBill to: Demo Hardware & Supplies Ltd  PIN P051234567Z\nPVC pipes 4in ........ 153,097.00\nTiles 40x40 ........ 65,613.00\nSubtotal: 218,710.00\nVAT 16%: 34,993.60\nTOTAL KES: 253,703.60\nCU Invoice No: KRAMW92752281310030\n"
+  },
+  {
+    "id": "syn-032",
+    "scenario": "amount differs from eTIMS record",
+    "expectedStatus": "mismatch",
+    "expected": {
+      "supplierPin": "A006666666F",
+      "supplierName": "Lake Basin Plumbing Supplies",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01217",
+      "cuInvoiceNo": "KRAMW20315695230031",
+      "invoiceDate": "2026-10-16",
+      "amountTotal": 224924,
+      "vatAmount": 31024
+    },
+    "text": "Tax Invoice | Lake Basin Plumbing Supplies\nSupplier KRA PIN A006666666F\nInv # INV-01217   Dated 2026-10-16\nCustomer: DEMO HARDWARE & SUPPLIES LTD (PIN: P051234567Z)\nAmount excl. VAT  193,900.00\nVAT               31,024.00\nAmount incl. VAT  224,924.00\nControl Unit Invoice Number KRAMW20315695230031\n"
+  },
+  {
+    "id": "syn-033",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "P057777777G",
+      "supplierName": "Savannah Transporters",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01224",
+      "cuInvoiceNo": "KRAMW61373049290032",
+      "invoiceDate": "2026-10-08",
+      "amountTotal": 157748.4,
+      "vatAmount": 21758.4
+    },
+    "text": "Savannah Transporters\nInvoice: INV-01224\nDate: 8 Oct 2026\nPIN No. P057777777G\nBuyer PIN: P051234567Z\nGoods: Cement 50kg bags, Tiles 40x40\nNet 135,990.00 | VAT 21,758.40 | Gross 157,748.40\nCUIN: KRAMW61373049290032\n"
+  },
+  {
+    "id": "syn-034",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "P051111111A",
+      "supplierName": "Mwangaza Cement Distributors",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01231",
+      "cuInvoiceNo": "KRAMW30401471990033",
+      "invoiceDate": "2026-10-21",
+      "amountTotal": 215748.4,
+      "vatAmount": 29758.4
+    },
+    "text": "Tax Invoice | Mwangaza Cement Distributors\nSupplier KRA PIN P051111111A\nInv # INV-01231   Dated 2026-10-21\nCustomer: DEMO HARDWARE & SUPPLIES LTD (PIN: P051234567Z)\nAmount excl. VAT  185,990.00\nVAT               29,758.40\nAmount incl. VAT  215,748.40\nControl Unit Invoice Number KRAMW30401471990033\n"
+  },
+  {
+    "id": "syn-035",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "P054444444D",
+      "supplierName": "Rift Valley Paints Co",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01238",
+      "cuInvoiceNo": "KRAMW65762516870034",
+      "invoiceDate": "2026-10-23",
+      "amountTotal": 234552,
+      "vatAmount": 32352
+    },
+    "text": "Rift Valley Paints Co\nInvoice: INV-01238\nDate: 23 Oct 2026\nPIN No. P054444444D\nBuyer PIN: P051234567Z\nGoods: Cable 2.5mm, Binding wire\nNet 202,200.00 | VAT 32,352.00 | Gross 234,552.00\nCUIN: KRAMW65762516870034\n"
+  },
+  {
+    "id": "syn-036",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "P054444444D",
+      "supplierName": "Rift Valley Paints Co",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01245",
+      "cuInvoiceNo": "KRAMW37639155860035",
+      "invoiceDate": "2026-10-27",
+      "amountTotal": 271126.8,
+      "vatAmount": 37396.8
+    },
+    "text": "Tax Invoice | Rift Valley Paints Co\nSupplier KRA PIN P054444444D\nInv # INV-01245   Dated 2026-10-27\nCustomer: DEMO HARDWARE & SUPPLIES LTD (PIN: P051234567Z)\nAmount excl. VAT  233,730.00\nVAT               37,396.80\nAmount incl. VAT  271,126.80\nControl Unit Invoice Number KRAMW37639155860035\n"
+  },
+  {
+    "id": "syn-037",
+    "scenario": "issued to wrong buyer PIN",
+    "expectedStatus": "invalid",
+    "expected": {
+      "supplierPin": "A006666666F",
+      "supplierName": "Lake Basin Plumbing Supplies",
+      "buyerPin": "P059999999K",
+      "invoiceNo": "INV-01252",
+      "cuInvoiceNo": "KRAMW83319463480036",
+      "invoiceDate": "2026-10-04",
+      "amountTotal": 109132.8,
+      "vatAmount": 15052.8
+    },
+    "text": "Lake Basin Plumbing Supplies\nInvoice: INV-01252\nDate: 4 Oct 2026\nPIN No. A006666666F\nBuyer PIN: P059999999K\nGoods: PVC pipes 4in, Binding wire\nNet 94,080.00 | VAT 15,052.80 | Gross 109,132.80\nCUIN: KRAMW83319463480036\n"
+  },
+  {
+    "id": "syn-038",
+    "scenario": "messy layout",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "P057777777G",
+      "supplierName": "Savannah Transporters",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01259",
+      "cuInvoiceNo": "KRAMW64559898000037",
+      "invoiceDate": "2026-10-19",
+      "amountTotal": 176505.6,
+      "vatAmount": 24345.6
+    },
+    "text": "savannah transporters ... invoice inv-01259 ... pin p057777777g\ndate 19.10.2026 customer pin p051234567z\ntotal kes 176505.60 (vat 24345.60 incl)\ncu no kramw64559898000037\n"
+  },
+  {
+    "id": "syn-039",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "P057777777G",
+      "supplierName": "Savannah Transporters",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01266",
+      "cuInvoiceNo": "KRAMW20573582740038",
+      "invoiceDate": "2026-10-03",
+      "amountTotal": 278179.6,
+      "vatAmount": 38369.6
+    },
+    "text": "Savannah Transporters\nInvoice: INV-01266\nDate: 3 Oct 2026\nPIN No. P057777777G\nBuyer PIN: P051234567Z\nGoods: Gloss paint 4L, Tiles 40x40\nNet 239,810.00 | VAT 38,369.60 | Gross 278,179.60\nCUIN: KRAMW20573582740038\n"
+  },
+  {
+    "id": "syn-040",
+    "scenario": "not issued through eTIMS",
+    "expectedStatus": "not_found",
+    "expected": {
+      "supplierPin": "P052222222B",
+      "supplierName": "Kiboko Steel & Wire Ltd",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01273",
+      "cuInvoiceNo": "KRAMW86643587310039",
+      "invoiceDate": "2026-10-26",
+      "amountTotal": 122855.6,
+      "vatAmount": 16945.6
+    },
+    "text": "Kiboko Steel & Wire Ltd\nInvoice: INV-01273\nDate: 26 Oct 2026\nPIN No. P052222222B\nBuyer PIN: P051234567Z\nGoods: Timber 2x4, Nails 3in (kg)\nNet 105,910.00 | VAT 16,945.60 | Gross 122,855.60\nCUIN: KRAMW86643587310039\n"
+  },
+  {
+    "id": "syn-041",
+    "scenario": "issued to wrong buyer PIN",
+    "expectedStatus": "invalid",
+    "expected": {
+      "supplierPin": "P058888888H",
+      "supplierName": "Mlima Hardware Wholesalers",
+      "buyerPin": "P059999999K",
+      "invoiceNo": "INV-01280",
+      "cuInvoiceNo": "KRAMW58361208860040",
+      "invoiceDate": "2026-10-22",
+      "amountTotal": 222836,
+      "vatAmount": 30736
+    },
+    "text": "MLIMA HARDWARE WHOLESALERS\nPIN: P058888888H\nTAX INVOICE\nInvoice No: INV-01280\nDate: 22/10/2026\nBill to: Demo Hardware & Supplies Ltd  PIN P059999999K\nTimber 2x4 ........ 134,470.00\nBinding wire ........ 57,630.00\nSubtotal: 192,100.00\nVAT 16%: 30,736.00\nTOTAL KES: 222,836.00\nCU Invoice No: KRAMW58361208860040\n"
+  },
+  {
+    "id": "syn-042",
+    "scenario": "amount differs from eTIMS record",
+    "expectedStatus": "mismatch",
+    "expected": {
+      "supplierPin": "P051111111A",
+      "supplierName": "Mwangaza Cement Distributors",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01287",
+      "cuInvoiceNo": "KRAMW41489253330041",
+      "invoiceDate": "2026-10-08",
+      "amountTotal": 40542,
+      "vatAmount": 5592
+    },
+    "text": "Tax Invoice | Mwangaza Cement Distributors\nSupplier KRA PIN P051111111A\nInv # INV-01287   Dated 2026-10-08\nCustomer: DEMO HARDWARE & SUPPLIES LTD (PIN: P051234567Z)\nAmount excl. VAT  34,950.00\nVAT               5,592.00\nAmount incl. VAT  40,542.00\nControl Unit Invoice Number KRAMW41489253330041\n"
+  },
+  {
+    "id": "syn-043",
+    "scenario": "messy layout",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "P051111111A",
+      "supplierName": "Mwangaza Cement Distributors",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01294",
+      "cuInvoiceNo": "KRAMW99673917850042",
+      "invoiceDate": "2026-10-19",
+      "amountTotal": 60900,
+      "vatAmount": 8400
+    },
+    "text": "mwangaza cement distributors ... invoice inv-01294 ... pin p051111111a\ndate 19.10.2026 customer pin p051234567z\ntotal kes 60900.00 (vat 8400.00 incl)\ncu no kramw99673917850042\n"
+  },
+  {
+    "id": "syn-044",
+    "scenario": "amount differs from eTIMS record",
+    "expectedStatus": "mismatch",
+    "expected": {
+      "supplierPin": "P058888888H",
+      "supplierName": "Mlima Hardware Wholesalers",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01301",
+      "cuInvoiceNo": "KRAMW12526392990043",
+      "invoiceDate": "2026-10-24",
+      "amountTotal": 19824.4,
+      "vatAmount": 2734.4
+    },
+    "text": "Tax Invoice | Mlima Hardware Wholesalers\nSupplier KRA PIN P058888888H\nInv # INV-01301   Dated 2026-10-24\nCustomer: DEMO HARDWARE & SUPPLIES LTD (PIN: P051234567Z)\nAmount excl. VAT  17,090.00\nVAT               2,734.40\nAmount incl. VAT  19,824.40\nControl Unit Invoice Number KRAMW12526392990043\n"
+  },
+  {
+    "id": "syn-045",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "A006666666F",
+      "supplierName": "Lake Basin Plumbing Supplies",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01308",
+      "cuInvoiceNo": "KRAMW40101522020044",
+      "invoiceDate": "2026-10-11",
+      "amountTotal": 25891.2,
+      "vatAmount": 3571.2
+    },
+    "text": "Lake Basin Plumbing Supplies\nInvoice: INV-01308\nDate: 11 Oct 2026\nPIN No. A006666666F\nBuyer PIN: P051234567Z\nGoods: PVC pipes 4in, Door hinges\nNet 22,320.00 | VAT 3,571.20 | Gross 25,891.20\nCUIN: KRAMW40101522020044\n"
+  },
+  {
+    "id": "syn-046",
+    "scenario": "missing CU invoice number",
+    "expectedStatus": "needs_review",
+    "expected": {
+      "supplierPin": "P055555555E",
+      "supplierName": "Nyota Electricals",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01315",
+      "cuInvoiceNo": null,
+      "invoiceDate": "2026-10-17",
+      "amountTotal": 110420.4,
+      "vatAmount": 15230.4
+    },
+    "text": "NYOTA ELECTRICALS\nPIN: P055555555E\nTAX INVOICE\nInvoice No: INV-01315\nDate: 17/10/2026\nBill to: Demo Hardware & Supplies Ltd  PIN P051234567Z\nCement 50kg bags ........ 66,633.00\nBinding wire ........ 28,557.00\nSubtotal: 95,190.00\nVAT 16%: 15,230.40\nTOTAL KES: 110,420.40\nThank you for your business\n"
+  },
+  {
+    "id": "syn-047",
+    "scenario": "missing CU invoice number",
+    "expectedStatus": "needs_review",
+    "expected": {
+      "supplierPin": "P052222222B",
+      "supplierName": "Kiboko Steel & Wire Ltd",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01322",
+      "cuInvoiceNo": null,
+      "invoiceDate": "2026-10-17",
+      "amountTotal": 174533.6,
+      "vatAmount": 24073.6
+    },
+    "text": "Kiboko Steel & Wire Ltd\nInvoice: INV-01322\nDate: 17 Oct 2026\nPIN No. P052222222B\nBuyer PIN: P051234567Z\nGoods: Delivery charges, Nails 3in (kg)\nNet 150,460.00 | VAT 24,073.60 | Gross 174,533.60\n\n"
+  },
+  {
+    "id": "syn-048",
+    "scenario": "not issued through eTIMS",
+    "expectedStatus": "not_found",
+    "expected": {
+      "supplierPin": "P051111111A",
+      "supplierName": "Mwangaza Cement Distributors",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01329",
+      "cuInvoiceNo": "KRAMW79701663120047",
+      "invoiceDate": "2026-10-12",
+      "amountTotal": 174788.8,
+      "vatAmount": 24108.8
+    },
+    "text": "Mwangaza Cement Distributors\nInvoice: INV-01329\nDate: 12 Oct 2026\nPIN No. P051111111A\nBuyer PIN: P051234567Z\nGoods: PVC pipes 4in, Door hinges\nNet 150,680.00 | VAT 24,108.80 | Gross 174,788.80\nCUIN: KRAMW79701663120047\n"
+  },
+  {
+    "id": "syn-049",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "P051111111A",
+      "supplierName": "Mwangaza Cement Distributors",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01336",
+      "cuInvoiceNo": "KRAMW37702088240048",
+      "invoiceDate": "2026-10-21",
+      "amountTotal": 275233.2,
+      "vatAmount": 37963.2
+    },
+    "text": "Tax Invoice | Mwangaza Cement Distributors\nSupplier KRA PIN P051111111A\nInv # INV-01336   Dated 2026-10-21\nCustomer: DEMO HARDWARE & SUPPLIES LTD (PIN: P051234567Z)\nAmount excl. VAT  237,270.00\nVAT               37,963.20\nAmount incl. VAT  275,233.20\nControl Unit Invoice Number KRAMW37702088240048\n"
+  },
+  {
+    "id": "syn-050",
+    "scenario": "not issued through eTIMS",
+    "expectedStatus": "not_found",
+    "expected": {
+      "supplierPin": "P054444444D",
+      "supplierName": "Rift Valley Paints Co",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01343",
+      "cuInvoiceNo": "KRAMW27742728500049",
+      "invoiceDate": "2026-10-21",
+      "amountTotal": 99806.4,
+      "vatAmount": 13766.4
+    },
+    "text": "RIFT VALLEY PAINTS CO\nPIN: P054444444D\nTAX INVOICE\nInvoice No: INV-01343\nDate: 21/10/2026\nBill to: Demo Hardware & Supplies Ltd  PIN P051234567Z\nCement 50kg bags ........ 60,228.00\nBinding wire ........ 25,812.00\nSubtotal: 86,040.00\nVAT 16%: 13,766.40\nTOTAL KES: 99,806.40\nCU Invoice No: KRAMW27742728500049\n"
+  },
+  {
+    "id": "syn-051",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "A003333333C",
+      "supplierName": "Pwani Timber Merchants",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01350",
+      "cuInvoiceNo": "KRAMW17962030690050",
+      "invoiceDate": "2026-10-26",
+      "amountTotal": 204937.2,
+      "vatAmount": 28267.2
+    },
+    "text": "Tax Invoice | Pwani Timber Merchants\nSupplier KRA PIN A003333333C\nInv # INV-01350   Dated 2026-10-26\nCustomer: DEMO HARDWARE & SUPPLIES LTD (PIN: P051234567Z)\nAmount excl. VAT  176,670.00\nVAT               28,267.20\nAmount incl. VAT  204,937.20\nControl Unit Invoice Number KRAMW17962030690050\n"
+  },
+  {
+    "id": "syn-052",
+    "scenario": "messy layout",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "P057777777G",
+      "supplierName": "Savannah Transporters",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01357",
+      "cuInvoiceNo": "KRAMW48178739490051",
+      "invoiceDate": "2026-10-22",
+      "amountTotal": 88426.8,
+      "vatAmount": 12196.8
+    },
+    "text": "savannah transporters ... invoice inv-01357 ... pin p057777777g\ndate 22.10.2026 customer pin p051234567z\ntotal kes 88426.80 (vat 12196.80 incl)\ncu no kramw48178739490051\n"
+  },
+  {
+    "id": "syn-053",
+    "scenario": "not issued through eTIMS",
+    "expectedStatus": "not_found",
+    "expected": {
+      "supplierPin": "A003333333C",
+      "supplierName": "Pwani Timber Merchants",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01364",
+      "cuInvoiceNo": "KRAMW93661428650052",
+      "invoiceDate": "2026-10-22",
+      "amountTotal": 123992.4,
+      "vatAmount": 17102.4
+    },
+    "text": "Pwani Timber Merchants\nInvoice: INV-01364\nDate: 22 Oct 2026\nPIN No. A003333333C\nBuyer PIN: P051234567Z\nGoods: Roofing sheets 30g, Nails 3in (kg)\nNet 106,890.00 | VAT 17,102.40 | Gross 123,992.40\nCUIN: KRAMW93661428650052\n"
+  },
+  {
+    "id": "syn-054",
+    "scenario": "amount differs from eTIMS record",
+    "expectedStatus": "mismatch",
+    "expected": {
+      "supplierPin": "P057777777G",
+      "supplierName": "Savannah Transporters",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01371",
+      "cuInvoiceNo": "KRAMW69523032290053",
+      "invoiceDate": "2026-10-15",
+      "amountTotal": 31911.6,
+      "vatAmount": 4401.6
+    },
+    "text": "SAVANNAH TRANSPORTERS\nPIN: P057777777G\nTAX INVOICE\nInvoice No: INV-01371\nDate: 15/10/2026\nBill to: Demo Hardware & Supplies Ltd  PIN P051234567Z\nGloss paint 4L ........ 19,257.00\nDoor hinges ........ 8,253.00\nSubtotal: 27,510.00\nVAT 16%: 4,401.60\nTOTAL KES: 31,911.60\nCU Invoice No: KRAMW69523032290053\n"
+  },
+  {
+    "id": "syn-055",
+    "scenario": "missing CU invoice number",
+    "expectedStatus": "needs_review",
+    "expected": {
+      "supplierPin": "P054444444D",
+      "supplierName": "Rift Valley Paints Co",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01378",
+      "cuInvoiceNo": null,
+      "invoiceDate": "2026-10-13",
+      "amountTotal": 181818.4,
+      "vatAmount": 25078.4
+    },
+    "text": "Tax Invoice | Rift Valley Paints Co\nSupplier KRA PIN P054444444D\nInv # INV-01378   Dated 2026-10-13\nCustomer: DEMO HARDWARE & SUPPLIES LTD (PIN: P051234567Z)\nAmount excl. VAT  156,740.00\nVAT               25,078.40\nAmount incl. VAT  181,818.40\n\n"
+  },
+  {
+    "id": "syn-056",
+    "scenario": "messy layout",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "P052222222B",
+      "supplierName": "Kiboko Steel & Wire Ltd",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01385",
+      "cuInvoiceNo": "KRAMW41842066520055",
+      "invoiceDate": "2026-10-02",
+      "amountTotal": 267264,
+      "vatAmount": 36864
+    },
+    "text": "kiboko steel & wire ltd ... invoice inv-01385 ... pin p052222222b\ndate 02.10.2026 customer pin p051234567z\ntotal kes 267264.00 (vat 36864.00 incl)\ncu no kramw41842066520055\n"
+  },
+  {
+    "id": "syn-057",
+    "scenario": "issued to wrong buyer PIN",
+    "expectedStatus": "invalid",
+    "expected": {
+      "supplierPin": "P055555555E",
+      "supplierName": "Nyota Electricals",
+      "buyerPin": "P059999999K",
+      "invoiceNo": "INV-01392",
+      "cuInvoiceNo": "KRAMW92109051460056",
+      "invoiceDate": "2026-10-23",
+      "amountTotal": 157249.6,
+      "vatAmount": 21689.6
+    },
+    "text": "NYOTA ELECTRICALS\nPIN: P055555555E\nTAX INVOICE\nInvoice No: INV-01392\nDate: 23/10/2026\nBill to: Demo Hardware & Supplies Ltd  PIN P059999999K\nGloss paint 4L ........ 94,892.00\nTiles 40x40 ........ 40,668.00\nSubtotal: 135,560.00\nVAT 16%: 21,689.60\nTOTAL KES: 157,249.60\nCU Invoice No: KRAMW92109051460056\n"
+  },
+  {
+    "id": "syn-058",
+    "scenario": "issued to wrong buyer PIN",
+    "expectedStatus": "invalid",
+    "expected": {
+      "supplierPin": "P057777777G",
+      "supplierName": "Savannah Transporters",
+      "buyerPin": "P059999999K",
+      "invoiceNo": "INV-01399",
+      "cuInvoiceNo": "KRAMW27703001860057",
+      "invoiceDate": "2026-10-03",
+      "amountTotal": 170520,
+      "vatAmount": 23520
+    },
+    "text": "SAVANNAH TRANSPORTERS\nPIN: P057777777G\nTAX INVOICE\nInvoice No: INV-01399\nDate: 03/10/2026\nBill to: Demo Hardware & Supplies Ltd  PIN P059999999K\nRoofing sheets 30g ........ 102,900.00\nTiles 40x40 ........ 44,100.00\nSubtotal: 147,000.00\nVAT 16%: 23,520.00\nTOTAL KES: 170,520.00\nCU Invoice No: KRAMW27703001860057\n"
+  },
+  {
+    "id": "syn-059",
+    "scenario": "clean",
+    "expectedStatus": "valid",
+    "expected": {
+      "supplierPin": "P052222222B",
+      "supplierName": "Kiboko Steel & Wire Ltd",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01406",
+      "cuInvoiceNo": "KRAMW76157124640058",
+      "invoiceDate": "2026-10-27",
+      "amountTotal": 61166.8,
+      "vatAmount": 8436.8
+    },
+    "text": "Kiboko Steel & Wire Ltd\nInvoice: INV-01406\nDate: 27 Oct 2026\nPIN No. P052222222B\nBuyer PIN: P051234567Z\nGoods: Timber 2x4, Door hinges\nNet 52,730.00 | VAT 8,436.80 | Gross 61,166.80\nCUIN: KRAMW76157124640058\n"
+  },
+  {
+    "id": "syn-060",
+    "scenario": "amount differs from eTIMS record",
+    "expectedStatus": "mismatch",
+    "expected": {
+      "supplierPin": "P058888888H",
+      "supplierName": "Mlima Hardware Wholesalers",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01413",
+      "cuInvoiceNo": "KRAMW62317248830059",
+      "invoiceDate": "2026-10-09",
+      "amountTotal": 275906,
+      "vatAmount": 38056
+    },
+    "text": "Mlima Hardware Wholesalers\nInvoice: INV-01413\nDate: 9 Oct 2026\nPIN No. P058888888H\nBuyer PIN: P051234567Z\nGoods: PVC pipes 4in, Wall putty\nNet 237,850.00 | VAT 38,056.00 | Gross 275,906.00\nCUIN: KRAMW62317248830059\n"
+  },
+  {
+    "id": "syn-004-dup",
+    "scenario": "duplicate submission",
+    "expectedStatus": "duplicate",
+    "expected": {
+      "supplierPin": "P057777777G",
+      "supplierName": "Savannah Transporters",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01021",
+      "cuInvoiceNo": "KRAMW73589221020003",
+      "invoiceDate": "2026-10-11",
+      "amountTotal": 68335.6,
+      "vatAmount": 9425.6
+    },
+    "text": "Savannah Transporters\nInvoice: INV-01021\nDate: 11 Oct 2026\nPIN No. P057777777G\nBuyer PIN: P051234567Z\nGoods: Roofing sheets 30g, Nails 3in (kg)\nNet 58,910.00 | VAT 9,425.60 | Gross 68,335.60\nCUIN: KRAMW73589221020003\n"
+  },
+  {
+    "id": "syn-012-dup",
+    "scenario": "duplicate submission",
+    "expectedStatus": "duplicate",
+    "expected": {
+      "supplierPin": "A003333333C",
+      "supplierName": "Pwani Timber Merchants",
+      "buyerPin": "P051234567Z",
+      "invoiceNo": "INV-01077",
+      "cuInvoiceNo": "KRAMW31275012840011",
+      "invoiceDate": "2026-10-04",
+      "amountTotal": 151971.6,
+      "vatAmount": 20961.6
+    },
+    "text": "Tax Invoice | Pwani Timber Merchants\nSupplier KRA PIN A003333333C\nInv # INV-01077   Dated 2026-10-04\nCustomer: DEMO HARDWARE & SUPPLIES LTD (PIN: P051234567Z)\nAmount excl. VAT  131,010.00\nVAT               20,961.60\nAmount incl. VAT  151,971.60\nControl Unit Invoice Number KRAMW31275012840011\n"
+  }
+]

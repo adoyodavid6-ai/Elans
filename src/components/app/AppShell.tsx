@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { Children, type ReactNode } from "react";
 import { cookies } from "next/headers";
 import { TreeMark } from "@/components/ui/Logo";
 import { Icon } from "@/components/ui/Icon";
@@ -88,15 +88,16 @@ export function Panel({ title, actions, children, className = "" }: { title?: Re
 }
 
 export function Table({ head, children, empty }: { head: ReactNode[]; children: ReactNode; empty?: ReactNode }) {
+  const hasRows = Children.toArray(children).length > 0;
   return (
     <div className="overflow-x-auto">
-      <table className="w-full min-w-[40rem] text-left text-sm">
+      <table className="w-full min-w-[32rem] text-left text-sm">
         <thead className="border-b border-line text-xs uppercase tracking-wide text-muted">
           <tr>{head.map((h, i) => <th key={i} className="whitespace-nowrap px-3 py-2.5 font-semibold">{h}</th>)}</tr>
         </thead>
         <tbody className="divide-y divide-line">{children}</tbody>
       </table>
-      {empty}
+      {!hasRows && empty ? <div className="px-3 py-6 text-center text-sm text-muted">{empty}</div> : null}
     </div>
   );
 }

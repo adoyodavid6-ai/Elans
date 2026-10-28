@@ -29,7 +29,7 @@ export const mockEtims: EtimsAdaptor = {
     const ref = `MOCK-${Date.now().toString(36).toUpperCase()}`;
     if (!rec) return { status: "not_found", reason: "No eTIMS record found for this CU invoice number", reference: ref };
     if (q.supplierPin && rec.supplierPin !== q.supplierPin) return { status: "mismatch", reason: `Supplier PIN on the eTIMS record is ${rec.supplierPin}`, reference: ref };
-    if (q.amountTotal !== null && Math.abs(rec.total - q.amountTotal) > 1) return { status: "mismatch", reason: `eTIMS total is KES ${rec.total.toLocaleString("en-GB")}, invoice shows KES ${q.amountTotal.toLocaleString("en-GB")}`, reference: ref };
+    if (q.amountTotal !== null && Math.abs(rec.total - q.amountTotal) > 1) return { status: "mismatch", reason: `eTIMS total is KES ${rec.total.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}, invoice shows KES ${q.amountTotal.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, reference: ref };
     return { status: "valid", reason: "Matches the eTIMS record", reference: ref };
   },
 };

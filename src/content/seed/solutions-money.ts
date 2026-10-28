@@ -72,7 +72,7 @@ export const moneySolutions = [
     complexity: "medium",
     timeline: "3–5 weeks",
     pricing: { approach: "Setup plus monthly retainer; usage allowance in document pages, overage per page.", package: "launch" },
-    demo: { kind: "interactive", href: "/portal/automations/etims", label: "Explore the demo workspace (illustrative data)" },
+    demo: { kind: "interactive", href: "/portal/demo?next=/portal/automations/etims", label: "Explore the demo workspace (illustrative data)" },
     faqs: [
       { q: "Is this tax advice?", a: "No. Elans checks documents and data against eTIMS and your ledger and reports the gaps. Your accountant or tax adviser interprets the results and files your returns." },
       { q: "How do you connect to eTIMS?", a: "Through an integration route confirmed during setup, either an accredited integrator or a direct KRA-approved connection. Until that is in place, demonstrations run on a clearly labelled mock." },

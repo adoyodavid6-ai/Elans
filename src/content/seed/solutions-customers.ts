@@ -52,7 +52,7 @@ export const customerSolutions = [
     complexity: "medium",
     timeline: "3–4 weeks",
     pricing: { approach: "Setup plus monthly retainer with a conversation allowance, or price per resolved conversation.", package: "launch" },
-    demo: { kind: "interactive", href: "/portal/conversations", label: "Try the agent simulator (illustrative)" },
+    demo: { kind: "interactive", href: "/portal/demo?next=/portal/conversations", label: "Try the agent simulator (illustrative)" },
     faqs: [
       { q: "Will the AI make up prices or promises?", a: "No. It answers only from the knowledge you approve. If the answer is not there, it says so and hands over to your team." },
       { q: "Can I keep using WhatsApp on my phone?", a: "The agent runs on the WhatsApp Business Platform. You and your team reply from the Elans inbox, which works on mobile. We will advise whether to use a new number or migrate an existing one." },
