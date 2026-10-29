@@ -5,6 +5,7 @@ import { operationsSolutions } from "./solutions-operations";
 import { peopleSolutions } from "./solutions-people";
 import { sectorSolutions } from "./solutions-sector";
 import { platformSolutions } from "./solutions-platform";
+import { transformationSolutions } from "./solutions-transformation";
 import { industries } from "./industries";
 import { packs, growthServices, frontierTopics } from "./growth";
 import { templates, resources, examples } from "./library";
@@ -25,6 +26,7 @@ export const seed = {
     ...peopleSolutions,
     ...sectorSolutions,
     ...platformSolutions,
+    ...transformationSolutions,
   ],
   industries,
   packs,

@@ -22,6 +22,7 @@ export const FUNCTIONS = [
   { key: "reporting", label: "Reporting & dashboards" },
   { key: "compliance", label: "Data protection & compliance" },
   { key: "admin", label: "Executive & admin" },
+  { key: "transformation", label: "Digital transformation (paper, spreadsheets, old systems)" },
   { key: "custom", label: "Something else / custom" },
 ] as const;
 

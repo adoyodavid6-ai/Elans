@@ -484,7 +484,7 @@ export const industries: Industry[] = [
     ],
     leakage: ["Lost enquiries", "Owner time", "Penalties", "Unidentified payments"],
     repetitiveTasks: ["Answering WhatsApp questions", "Matching payments", "Chasing invoices", "Statutory deadlines", "Supplier invoices"],
-    solutions: ["whatsapp-sales-support-agent", "mpesa-bank-reconciliation", "etims-compliance-reconciliation", "statutory-deadline-guardian", "collections-receivables", "kpi-pack-whatsapp", "ai-voice-receptionist", "dpa-operations"],
+    solutions: ["whatsapp-sales-support-agent", "mpesa-bank-reconciliation", "etims-compliance-reconciliation", "statutory-deadline-guardian", "collections-receivables", "kpi-pack-whatsapp", "ai-voice-receptionist", "dpa-operations", "digital-transformation-roadmap"],
     growth: ["Local SEO and Google Business Profile", "AI-visibility check", "Always-on social content"],
     architecture: flow(["i:WhatsApp / M-Pesa / invoices", "a:Agents and document reading", "r:Rules for money and tax", "p:Owner approves what matters", "o:Time back, fewer leaks"]),
     integrations: ["whatsapp-business", "mpesa-daraja", "etims", "quickbooks", "csv-excel"],

@@ -10,7 +10,7 @@ accreditation exist. **Needs credentials** = code path exists, switched off unti
 | Feature | Status | Notes |
 |---|---|---|
 | All sitemap pages (home, solutions, industries, packs, growth, frontier, templates, pricing, about, trust, partners, careers, contact, legal, resources, case studies, integrations, how it works) | Working | DB-first content with typed seed fallback; edits in Console → Content |
-| Solutions catalogue: 28 categories, 112 solutions, 15-field detail pages, status badges | Working | Incomplete pages render `noindex` and are left out of the sitemap (D-015) |
+| Solutions catalogue: 29 categories (incl. Digital transformation), 117 solutions, 15-field detail pages, status badges | Working | Incomplete pages render `noindex` and are left out of the sitemap (D-015) |
 | AI Opportunity Assessment (10 steps, save & resume, consent, contact last) | Working | Rules mode without an API key; AI hypotheses labelled when a key is set |
 | Opportunity Score (11 weighted criteria, versioned weights, exclusions) and report | Working | Weights editable/activated in Console → Content → Weights |
 | ROI calculators (master + 8 specialist, low/base/high, capacity vs cash) | Working | |

@@ -83,7 +83,7 @@ interface Doc {
 function corpus(cat: Catalogue): Doc[] {
   const docs: Doc[] = [];
   for (const s of cat.solutions)
-    docs.push({ title: s.name, body: `${s.summary} Typical timeline ${s.timeline}; status: ${s.status}.`, href: `/solutions/${s.category}/${s.slug}`, tokens: tokens([s.name, s.name, s.summary, ...s.keywords].join(" ")), weight: 1.3, keywords: s.keywords });
+    docs.push({ title: s.name, body: `${s.summary} Typical timeline ${s.timeline}; status: ${({ live: "Live", pilot: "Pilot", planned: "Planned", custom: "Custom assessment" } as Record<string, string>)[s.status] ?? s.status}`, href: `/solutions/${s.category}/${s.slug}`, tokens: tokens([s.name, s.name, s.summary, ...s.keywords].join(" ")), weight: 1.3, keywords: s.keywords });
   for (const i of cat.industries) docs.push({ title: `${i.name}`, body: `${i.summary} ${i.context}`, href: `/industries/${i.slug}`, tokens: tokens([i.name, i.short, i.summary, ...i.repetitiveTasks].join(" ")) });
   for (const g of cat.growthServices) docs.push({ title: g.name, body: `${g.summary} ${g.problem}`, href: `/growth/${g.slug}`, tokens: tokens([g.name, g.summary, g.problem].join(" ")) });
   for (const r of cat.resources) docs.push({ title: r.title, body: r.summary, href: `/resources/${r.slug}`, tokens: tokens([r.title, r.summary, r.category].join(" ")) });

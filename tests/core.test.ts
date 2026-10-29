@@ -80,6 +80,16 @@ describe("opportunity scoring", () => {
     expect(top.slice(0, 3)).toEqual(expect.arrayContaining(["school-fee-collection"]));
     expect(top).toEqual(expect.arrayContaining(["mpesa-bank-reconciliation"]));
   });
+  it("surfaces digital transformation for a paper- and spreadsheet-based business", () => {
+    const a = answersSchema.parse({
+      industry: "general-smes", companySize: "21-50", functions: ["transformation", "records"], software: ["paper", "csv-excel"],
+      tasks: ["Paper forms for approvals", "Too many spreadsheets that one person knows"], frequency: "daily", volumePerMonth: 400, minutesPerTask: 10, people: 3,
+      errorFrequency: "often", errorImpact: "medium", customerImpact: [], growthGoals: [], urgency: "quarter",
+    });
+    const fit = seed.industries.find((i) => i.slug === "general-smes")!.solutions;
+    const top = rankOpportunities(seed.solutions, a, DEFAULT_WEIGHTS, 5, fit).map((o) => o.solution);
+    expect(top).toEqual(expect.arrayContaining(["paper-to-digital-processes", "spreadsheet-to-system"]));
+  });
   it("scores are bounded, explained and flag high-risk solutions", () => {
     const s = seed.solutions.find((x) => x.slug === "collections-receivables")!;
     const o = scoreSolution(s, answers);

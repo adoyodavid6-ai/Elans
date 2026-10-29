@@ -54,11 +54,11 @@ describe("catalogue integrity", () => {
     expect(problems).toEqual([]);
   });
 
-  it("has 21 industries, 11 packs, 10 frontier topics and 28 categories", () => {
+  it("has 21 industries, 11 packs, 10 frontier topics and 29 categories (28 + digital transformation)", () => {
     expect(seed.industries.length).toBe(21);
     expect(seed.packs.length).toBe(11);
     expect(seed.frontierTopics.length).toBe(10);
-    expect(seed.categories.length).toBe(28);
+    expect(seed.categories.length).toBe(29);
   });
 
   it("every solution meets the completeness gate", () => {
