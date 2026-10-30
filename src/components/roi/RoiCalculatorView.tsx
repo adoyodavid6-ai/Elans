@@ -84,7 +84,7 @@ export function RoiCalculatorView({ slug, initial }: { slug: string; initial: Re
         </button>
       </form>
 
-      <div className="space-y-6 lg:sticky lg:top-32 lg:self-start">
+      <div className="space-y-6 lg:sticky lg:top-[8.5rem] lg:self-start">
         <section aria-live="polite" aria-label="Results" className="rounded-[var(--radius-card)] border border-line bg-white p-5 sm:p-6">
           <h2 className="font-display text-2xl font-semibold">Results</h2>
           <ul className="mt-4 grid gap-3 sm:grid-cols-2">

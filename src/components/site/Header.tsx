@@ -67,6 +67,11 @@ export function Header({ menus }: { menus: MegaMenu[] }) {
 
   return (
     <header className="no-print sticky top-0 z-40">
+      {/* Accent line: #04005A on the left half, #6A012A on the right half, meeting in the middle. */}
+      <div aria-hidden="true" className="flex h-1">
+        <span className="flex-1 bg-[#04005A]" />
+        <span className="flex-1 bg-brown" />
+      </div>
       {/* Tier 1: main bar */}
       <div className="border-b border-line/80 bg-ivory/92 backdrop-blur supports-[backdrop-filter]:bg-ivory/80">
       <div className="mx-auto flex h-16 max-w-[88rem] items-center gap-4 px-4 sm:px-6 lg:h-[4.5rem] lg:px-8">
@@ -140,7 +145,7 @@ export function Header({ menus }: { menus: MegaMenu[] }) {
 
 
       {mobile && (
-        <div id="mobile-menu" className="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto bg-ivory px-4 pb-28 pt-4 lg:hidden">
+        <div id="mobile-menu" className="fixed inset-x-0 bottom-0 top-[4.25rem] z-40 overflow-y-auto bg-ivory px-4 pb-28 pt-4 lg:hidden">
           <nav aria-label="Mobile">
             {menus.map((m) => (
               <details key={m.key} className="group border-b border-line py-1">
