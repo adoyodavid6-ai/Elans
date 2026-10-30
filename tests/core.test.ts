@@ -114,3 +114,27 @@ describe("opportunity scoring", () => {
     expect(recommendPackage({ ...answers, companySize: "1000+" }, []).key).toBe("enterprise");
   });
 });
+
+describe("database URL resolution", () => {
+  it("uses explicit app and admin URLs as given", async () => {
+    const { resolveDbUrls } = await import("@/lib/db/urls");
+    const r = resolveDbUrls({ DATABASE_URL: "postgres://elans_app:x@h/db", DATABASE_ADMIN_URL: "postgres://owner:y@h/db" } as unknown as NodeJS.ProcessEnv);
+    expect(r).toMatchObject({ app: "postgres://elans_app:x@h/db", admin: "postgres://owner:y@h/db", derived: false });
+  });
+  it("derives a restricted app role from an owner-only URL (Neon integration)", async () => {
+    const { resolveDbUrls, derivedAppPassword } = await import("@/lib/db/urls");
+    const env = { DATABASE_URL: "postgres://neondb_owner:pw@ep-x-pooler.neon.tech/neondb?sslmode=require", DATABASE_URL_UNPOOLED: "postgres://neondb_owner:pw@ep-x.neon.tech/neondb?sslmode=require", SESSION_SECRET: "s".repeat(40) } as unknown as NodeJS.ProcessEnv;
+    const r = resolveDbUrls(env);
+    expect(r.derived).toBe(true);
+    expect(r.admin).toBe(env.DATABASE_URL_UNPOOLED);
+    const app = new URL(r.app!);
+    expect(app.username).toBe("elans_app");
+    expect(app.password).toBe(derivedAppPassword(env.SESSION_SECRET!));
+    expect(app.host).toBe("ep-x-pooler.neon.tech");
+    expect(app.searchParams.get("sslmode")).toBe("require");
+  });
+  it("refuses to run the app as the owner when no secret is available", async () => {
+    const { resolveDbUrls } = await import("@/lib/db/urls");
+    expect(resolveDbUrls({ DATABASE_URL: "postgres://owner:pw@h/db" } as unknown as NodeJS.ProcessEnv).app).toBeNull();
+  });
+});

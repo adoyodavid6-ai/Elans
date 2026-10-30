@@ -1,4 +1,5 @@
 import postgres from "postgres";
+import { resolveDbUrls } from "./urls";
 
 /**
  * Database access. Every query runs inside a transaction that sets the RLS context,
@@ -13,13 +14,14 @@ declare global {
 }
 
 export function dbConfigured(): boolean {
-  return Boolean(process.env.DATABASE_URL);
+  return Boolean(resolveDbUrls().app);
 }
 
 export function sql(): Sql {
-  if (!process.env.DATABASE_URL) throw new DbUnavailableError();
+  const url = resolveDbUrls().app;
+  if (!url) throw new DbUnavailableError();
   if (!globalThis.__elansSql) {
-    globalThis.__elansSql = postgres(process.env.DATABASE_URL, {
+    globalThis.__elansSql = postgres(url, {
       max: 10,
       idle_timeout: 20,
       prepare: false,

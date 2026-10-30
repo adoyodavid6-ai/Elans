@@ -17,6 +17,7 @@ import { extractFromText, extractionSchema, FIELDS, validate, type Extracted } f
 import { mockEtims } from "@/lib/solutions/etims/etims-mock";
 import { PROMPT } from "@/lib/solutions/etims/workflow";
 import { aiAvailable, generateStructured } from "@/lib/ai";
+import { resolveDbUrls } from "@/lib/db/urls";
 
 const THRESHOLD = 0.85;
 const PERIOD = "2026-10";
@@ -87,8 +88,9 @@ async function main() {
   console.log(`  unsafe errors   ${unsafe}  (wrong status with no person in the loop)`);
   console.log(`  score           ${score}  (synthetic: overstates real-world accuracy)`);
 
-  if (process.env.DATABASE_ADMIN_URL) {
-    const db = postgres(process.env.DATABASE_ADMIN_URL, { max: 1, onnotice: () => {} });
+  const adminUrl = resolveDbUrls().admin;
+  if (adminUrl) {
+    const db = postgres(adminUrl, { max: 1, onnotice: () => {} });
     await db`insert into eval_runs (prompt_key, version, mode, score, cases, details) values (${PROMPT.key}, ${version}, ${mode}, ${score}, ${invoices.length}, ${db.json(details as never)})`;
     await db`insert into prompt_versions (prompt_key, version, body, model, eval_score, active) values (${PROMPT.key}, ${version}, ${useAi ? "see src/lib/solutions/etims/workflow.ts extract()" : "deterministic regex extractor (src/lib/solutions/etims/extract.ts)"}, ${useAi ? "primary" : "rules"}, ${score}, ${!useAi})
       on conflict (prompt_key, version) do update set eval_score = excluded.eval_score`;

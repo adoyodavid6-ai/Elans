@@ -8,10 +8,12 @@ import postgres from "postgres";
 import fs from "node:fs";
 import path from "node:path";
 import "./env";
+import { resolveDbUrls } from "../src/lib/db/urls";
 
-const adminUrl = process.env.DATABASE_ADMIN_URL;
-const appUrl = process.env.DATABASE_URL;
-if (!adminUrl || !appUrl) throw new Error("DATABASE_ADMIN_URL and DATABASE_URL must be set");
+const urls = resolveDbUrls();
+const adminUrl = urls.admin;
+const appUrl = urls.app;
+if (!adminUrl || !appUrl) throw new Error("Set DATABASE_URL and DATABASE_ADMIN_URL, or an owner DATABASE_URL plus SESSION_SECRET (see README)");
 
 const target = new URL(adminUrl);
 const dbName = target.pathname.slice(1);
@@ -50,7 +52,8 @@ async function main() {
   const db = postgres(adminUrl!, { max: 1, onnotice: () => {} });
   const role = await db`select 1 from pg_roles where rolname = ${appRole}`;
   if (!role.length) await db.unsafe(`create role "${appRole}" login password '${appPassword.replace(/'/g, "''")}' nobypassrls`);
-  if (appRole === decodeURIComponent(target.username)) console.warn("WARNING: DATABASE_URL uses the owner role, so row-level security is bypassed. Use a separate app role (see README).");
+  else if (urls.derived) await db.unsafe(`alter role "${appRole}" with login password '${appPassword.replace(/'/g, "''")}' nobypassrls`); // keep in sync with SESSION_SECRET
+  if (appRole === decodeURIComponent(target.username)) console.warn("WARNING: the app connection uses the owner role, so row-level security is bypassed. Use a separate app role (see README).");
   await db`create table if not exists schema_migrations (name text primary key, applied_at timestamptz not null default now())`;
   const dir = path.join(process.cwd(), "db", "migrations");
   const files = fs.readdirSync(dir).filter((f) => f.endsWith(".sql")).sort();

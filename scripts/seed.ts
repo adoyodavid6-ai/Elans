@@ -13,6 +13,7 @@ import path from "node:path";
 import { seed } from "../src/content/seed";
 import { DEFAULT_WEIGHTS } from "../src/lib/core/scoring";
 import { seedDemoTenant } from "./seed-demo";
+import { resolveDbUrls } from "../src/lib/db/urls";
 
 const INTERNAL = "00000000-0000-4000-8000-000000000001";
 const DEMO = "00000000-0000-4000-8000-0000000000d1";
@@ -25,7 +26,9 @@ function hashPassword(password: string) {
 
 async function main() {
   const force = process.argv.includes("--force-content");
-  const db = postgres(process.env.DATABASE_ADMIN_URL!, { max: 1, onnotice: () => {} });
+  const adminUrl = resolveDbUrls().admin;
+  if (!adminUrl) throw new Error("No owner database connection: set DATABASE_ADMIN_URL (or an owner DATABASE_URL plus SESSION_SECRET)");
+  const db = postgres(adminUrl, { max: 1, onnotice: () => {} });
 
   await db.begin(async (tx) => {
     await tx`select set_config('app.auth', 'system', true)`;

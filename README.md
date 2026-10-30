@@ -47,27 +47,36 @@ The public site runs without a database (it falls back to built-in content). The
 demo workspace (`/portal/demo`), the staff console and the forms need Postgres**. Without it,
 `/portal/demo` shows a "not available on this deployment yet" message.
 
-1. **Create a Postgres 16 database** (e.g. Neon from the Vercel Marketplace, or Supabase). Use its
-   *pooled* connection string where offered, with `sslmode=require`.
-2. **Choose an app role.** The app must connect as a role that cannot bypass row-level security.
-   Pick a name and password, e.g. `elans_app`; the first deploy creates it.
-3. **Add environment variables** in Vercel → Project → Settings → Environment Variables (Production):
+### Quickest: Vercel's Neon integration
+
+1. In Vercel, open the project → **Storage** → **Create Database** → **Neon** (Serverless Postgres).
+   Choose a region near your users (e.g. Frankfurt), connect it to this project for **Production**.
+   This creates the database and sets `DATABASE_URL` (and `DATABASE_URL_UNPOOLED`) for you.
+2. In **Settings → Environment Variables** (Production), add:
 
    | Variable | Value |
    |---|---|
-   | `DATABASE_ADMIN_URL` | Owner connection string from your provider |
-   | `DATABASE_URL` | Same host and database, with the app role: `postgres://elans_app:<password>@<host>/<db>?sslmode=require` |
-   | `SESSION_SECRET` | A long random string (`openssl rand -hex 32`) |
+   | `SESSION_SECRET` | A long random string (`openssl rand -hex 32`). Keep it stable: it also derives the app's database password. |
    | `NEXT_PUBLIC_SITE_URL` | Your site URL, e.g. `https://lasselanselans.vercel.app` |
    | `ELANS_ADMIN_EMAIL`, `ELANS_ADMIN_PASSWORD` | Staff console admin (password 14+ characters) |
-   | `MPESA_ENV` | `mock` until Daraja credentials exist |
 
-4. **Redeploy.** The `vercel-build` script applies migrations, seeds content and the demo workspace,
-   then builds. Every later deploy re-applies pending migrations and rebuilds the demo data (edits made
-   in the console are kept).
+3. **Redeploy** (Deployments → ⋯ → Redeploy). The `vercel-build` script applies migrations, seeds
+   content and the demo workspace, then builds.
 
-Scope the database variables to Production only (or give Preview its own database), otherwise
-preview deployments run migrations against production.
+The integration's `DATABASE_URL` is the database owner, which would bypass row-level security. The app
+never runs as the owner: it creates a restricted role (`elans_app`, `NOBYPASSRLS`) during migrations and
+connects as that role, with a password derived from `SESSION_SECRET` (D-040). If you change
+`SESSION_SECRET`, the next deploy updates that password automatically.
+
+### Any other Postgres
+
+Set `DATABASE_ADMIN_URL` (owner) and `DATABASE_URL` (a separate app role, e.g.
+`postgres://elans_app:<password>@<host>/<db>?sslmode=require`; the first deploy creates the role), plus
+the variables above.
+
+Every later deploy re-applies pending migrations and rebuilds the demo data (edits made in the console
+are kept). Connect the database to **Production only** (or give Preview its own branch database),
+otherwise preview deployments run migrations against production.
 
 ## Commands
 
