@@ -57,7 +57,7 @@ export function Header({ menus }: { menus: MegaMenu[] }) {
     document.body.style.overflow = mobile ? "hidden" : "";
   }, [mobile]);
 
-  // Secondary links live in the top utility bar; the main bar keeps the four menus and the main CTA.
+  // Main bar (logo, four menus, primary CTA) sits on top; secondary links live in the utility bar beneath it.
   const simple = [
     { href: "/how-it-works", label: "How It Works" },
     { href: "/pricing", label: "Pricing" },
@@ -67,33 +67,7 @@ export function Header({ menus }: { menus: MegaMenu[] }) {
 
   return (
     <header className="no-print sticky top-0 z-40">
-      {/* Tier 1: utility bar */}
-      <div className="surface-brand hidden text-white lg:block">
-        <div className="mx-auto flex h-9 max-w-[88rem] items-center gap-6 px-4 text-[0.8rem] sm:px-6 lg:px-8">
-          <p className="hidden truncate text-white/80 xl:block">AI automation &amp; growth for businesses in Kenya and East Africa</p>
-          <nav aria-label="Secondary" className="ml-auto">
-            <ul className="flex items-center gap-1">
-              {utility.map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} aria-current={pathname.startsWith(l.href) ? "page" : undefined} className={cx("whitespace-nowrap rounded-full px-2.5 py-1 font-medium text-white/85 hover:bg-white/10 hover:text-white", pathname.startsWith(l.href) && "bg-white/15 text-white")}>
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-              <li className="ml-2 border-l border-white/20 pl-3">
-                <Link href="/sessions" className="whitespace-nowrap rounded-full px-2.5 py-1 font-medium text-white/85 hover:bg-white/10 hover:text-white">Book a session</Link>
-              </li>
-              <li>
-                <Link href="/portal/login" className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-white/10 px-3 py-1 font-semibold text-white hover:bg-white/20">
-                  <Icon name="user" size={14} /> Client Login
-                </Link>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </div>
-
-      {/* Tier 2: main bar */}
+      {/* Tier 1: main bar */}
       <div className="border-b border-line/80 bg-ivory/92 backdrop-blur supports-[backdrop-filter]:bg-ivory/80">
       <div className="mx-auto flex h-16 max-w-[88rem] items-center gap-4 px-4 sm:px-6 lg:h-[4.5rem] lg:px-8">
         <Link href="/" aria-label="Elans home" className="shrink-0">
@@ -138,6 +112,32 @@ export function Header({ menus }: { menus: MegaMenu[] }) {
         </div>
       </div>
       </div>
+      {/* Tier 2: utility bar (below the main bar) */}
+      <div className="surface-brand hidden text-white lg:block">
+        <div className="mx-auto flex h-9 max-w-[88rem] items-center gap-6 px-4 text-[0.8rem] sm:px-6 lg:px-8">
+          <p className="hidden truncate text-white/80 xl:block">AI automation &amp; growth for businesses in Kenya and East Africa</p>
+          <nav aria-label="Secondary" className="ml-auto">
+            <ul className="flex items-center gap-1">
+              {utility.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} aria-current={pathname.startsWith(l.href) ? "page" : undefined} className={cx("whitespace-nowrap rounded-full px-2.5 py-1 font-medium text-white/85 hover:bg-white/10 hover:text-white", pathname.startsWith(l.href) && "bg-white/15 text-white")}>
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+              <li className="ml-2 border-l border-white/20 pl-3">
+                <Link href="/sessions" className="whitespace-nowrap rounded-full px-2.5 py-1 font-medium text-white/85 hover:bg-white/10 hover:text-white">Book a session</Link>
+              </li>
+              <li>
+                <Link href="/portal/login" className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-white/10 px-3 py-1 font-semibold text-white hover:bg-white/20">
+                  <Icon name="user" size={14} /> Client Login
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
 
       {mobile && (
         <div id="mobile-menu" className="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto bg-ivory px-4 pb-28 pt-4 lg:hidden">
