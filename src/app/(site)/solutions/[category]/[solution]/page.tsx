@@ -119,7 +119,7 @@ export default async function SolutionPage({ params }: Props) {
         }
       />
 
-      <div className="border-b border-line bg-white/70">
+      <div className="rule-blend border-b bg-white/70">
         <Container>
           <nav aria-label="On this page" className="-mx-4 flex gap-1 overflow-x-auto px-4 py-2 text-sm">
             {sections.map(([id, label]) => (
@@ -145,7 +145,7 @@ export default async function SolutionPage({ params }: Props) {
               <h2 className="mt-2 font-display text-3xl font-semibold">The problem</h2>
               <p className="mt-4 text-lg leading-relaxed text-text">{s.problem}</p>
             </div>
-            <div className="rounded-[var(--radius-card)] bg-sand/50 p-6">
+            <div className="rounded-[var(--radius-card)] bg-teal-50 p-6">
               <Eyebrow>2 · Businesses most affected</Eyebrow>
               <CheckList className="mt-4 text-[0.95rem]" items={s.affected} />
             </div>

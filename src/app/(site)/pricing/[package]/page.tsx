@@ -72,7 +72,7 @@ export default async function PackagePage({ params }: Props) {
                 </div>
               ))}
             </dl>
-            <Card className="bg-sand/40">
+            <Card className="bg-teal-50">
               <Eyebrow>Exclusions</Eyebrow>
               <ul className="mt-3 space-y-2 text-sm">
                 {p.exclusions.map((x) => (

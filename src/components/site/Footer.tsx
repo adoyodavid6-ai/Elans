@@ -10,7 +10,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
     { title: "Company", links: [["/about", "About"], ["/how-it-works", "How it works"], ["/case-studies", "Case studies"], ["/partners", "Partners"], ["/trust", "Trust & security"], ["/careers", "Careers"], ["/contact", "Contact"]] },
   ];
   return (
-    <footer className="no-print surface-brand border-t border-white/15 text-sand" aria-labelledby="footer-heading">
+    <footer className="no-print surface-brand rule-blend-light border-t text-sand" aria-labelledby="footer-heading">
       <h2 id="footer-heading" className="sr-only">
         Footer
       </h2>
@@ -40,7 +40,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
             </div>
           ))}
         </div>
-        <div className="mt-12 flex flex-col gap-4 border-t border-white/10 pt-6 text-xs text-sand/65 md:flex-row md:items-center md:justify-between">
+        <div className="rule-blend-light mt-12 flex flex-col gap-4 border-t pt-6 text-xs text-sand/65 md:flex-row md:items-center md:justify-between">
           <p>
             © {new Date().getFullYear()} Elans{settings.legalEntity ? ` · ${settings.legalEntity}` : ""}. We do not use client data to train AI models.
             {settings.odpcRegistration ? ` ODPC registration ${settings.odpcRegistration}.` : ""}
@@ -62,7 +62,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
 
 export function MobileCtaBar() {
   return (
-    <div className="no-print fixed inset-x-0 bottom-0 z-30 border-t border-line bg-ivory/95 p-3 backdrop-blur md:hidden">
+    <div className="no-print rule-blend fixed inset-x-0 bottom-0 z-30 border-t bg-ivory/95 p-3 backdrop-blur md:hidden">
       <div className="flex gap-2">
         <Link href="/assessment" className="flex h-11 flex-1 items-center justify-center rounded-full bg-brown text-sm font-semibold text-white">
           Find opportunities

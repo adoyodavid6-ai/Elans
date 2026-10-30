@@ -134,7 +134,7 @@ export default async function ReportPage({ params }: Props) {
                         <p className="mt-2 text-sm">{o.hypothesis}</p>
                       </div>
                     </div>
-                    <div className="mt-5 grid gap-5 border-t border-line pt-5 text-sm md:grid-cols-3">
+                    <div className="rule-blend-soft mt-5 grid gap-5 border-t pt-5 text-sm md:grid-cols-3">
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-wide text-muted">Likely integrations</p>
                         <ul className="mt-2 space-y-1">
@@ -197,7 +197,7 @@ export default async function ReportPage({ params }: Props) {
           </section>
 
           <section className="mt-12 grid gap-6 lg:grid-cols-[1fr_1.2fr]" aria-label="Recommendation and next steps">
-            <div className="rounded-[var(--radius-card)] bg-sand/60 p-6">
+            <div className="rounded-[var(--radius-card)] bg-teal-50 p-6">
               <Eyebrow>Recommended package</Eyebrow>
               <p className="mt-2 font-display text-2xl font-semibold">{r.package.name}</p>
               <p className="mt-2 text-sm">{r.package.reason}</p>

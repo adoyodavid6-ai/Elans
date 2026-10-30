@@ -25,7 +25,7 @@ export default function HowItWorks() {
                 </div>
                 <div className="rounded-2xl border border-line bg-white p-5">
                   <CheckList className="text-sm" items={[...m.detail]} />
-                  <p className="mt-4 flex items-center gap-2 border-t border-line pt-3 text-sm font-semibold text-heading">
+                  <p className="rule-blend-soft mt-4 flex items-center gap-2 border-t pt-3 text-sm font-semibold text-heading">
                     <Icon name="doc" size={16} className="text-copper" /> You receive: {m.output}
                   </p>
                 </div>

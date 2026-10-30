@@ -61,7 +61,7 @@ export default async function GrowthServicePage({ params }: Props) {
               <Eyebrow>Why it matters</Eyebrow>
               <p className="mt-3 text-lg leading-relaxed">{g.problem}</p>
             </div>
-            <Card className="bg-sand/50">
+            <Card className="bg-teal-50">
               <Eyebrow>Pricing</Eyebrow>
               <p className="mt-2 text-sm">{g.pricing.approach}</p>
               {tier && tierPrice && (

@@ -10,8 +10,8 @@ export function Container({ className, children, wide }: { className?: string; c
   return <div className={cx("mx-auto w-full px-4 sm:px-6 lg:px-8", wide ? "max-w-[88rem]" : "max-w-7xl", className)}>{children}</div>;
 }
 
-export function Section({ className, children, tone = "default", id, labelledBy }: { className?: string; children: ReactNode; tone?: "default" | "sand" | "dark" | "white"; id?: string; labelledBy?: string }) {
-  const tones = { default: "", sand: "bg-sand/55", dark: "surface-brand text-sand", white: "bg-white" };
+export function Section({ className, children, tone = "default", id, labelledBy }: { className?: string; children: ReactNode; tone?: "default" | "sand" | "teal" | "dark" | "white"; id?: string; labelledBy?: string }) {
+  const tones = { default: "", sand: "bg-sand/55", teal: "bg-teal-50", dark: "surface-brand text-sand", white: "bg-white" };
   return (
     <section id={id} aria-labelledby={labelledBy} className={cx("py-16 sm:py-24", tones[tone], className)}>
       {children}

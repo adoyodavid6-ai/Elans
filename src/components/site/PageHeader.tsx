@@ -4,7 +4,7 @@ import { JsonLd, breadcrumbLd } from "./JsonLd";
 
 export function PageHeader({ crumbs, eyebrow, title, lead, actions, aside, children }: { crumbs?: { href?: string; label: string }[]; eyebrow?: ReactNode; title: ReactNode; lead?: ReactNode; actions?: ReactNode; aside?: ReactNode; children?: ReactNode }) {
   return (
-    <header className="border-b border-line bg-ivory">
+    <header className="rule-blend border-b bg-ivory">
       {crumbs && <JsonLd data={breadcrumbLd(crumbs.map((c) => ({ name: c.label, path: c.href ?? "" })))} />}
       <Container className="py-10 sm:py-14">
         {crumbs && <Breadcrumbs items={crumbs} />}

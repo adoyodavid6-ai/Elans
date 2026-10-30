@@ -40,7 +40,7 @@ export default async function QuoteView({ params, searchParams }: Props) {
               {q.lines.map((l, i) => <tr key={i}><td className="py-2.5">{l.description}{l.qty !== 1 ? ` × ${l.qty}` : ""}</td><td className="text-muted">{kindLabel[l.kind]}</td><td className="text-right font-medium">{formatMoney(l.amount * l.qty)}</td></tr>)}
             </tbody>
           </table>
-          <dl className="mt-6 space-y-1.5 rounded-2xl bg-sand/50 p-4 text-sm">
+          <dl className="mt-6 space-y-1.5 rounded-2xl bg-teal-50 p-4 text-sm">
             <div className="flex justify-between"><dt>Setup{q.split_setup ? " (in 3 instalments)" : ""}</dt><dd className="font-semibold">{formatMoney(t.setup)}</dd></div>
             <div className="flex justify-between"><dt>Monthly{t.discountPct ? ` (incl. ${t.discountPct}% term discount)` : ""}</dt><dd className="font-semibold">{formatMoney(t.monthly)}</dd></div>
             {t.usageEstimate > 0 && <div className="flex justify-between"><dt>Estimated usage per month</dt><dd>{formatMoney(t.usageEstimate)}</dd></div>}
@@ -48,7 +48,7 @@ export default async function QuoteView({ params, searchParams }: Props) {
           </dl>
           <p className="mt-3 text-xs text-muted">Prices exclude VAT. Fixed scope; changes are quoted as change orders before work starts. Minimum term {q.term_months} months. Usage beyond allowances is billed at published unit rates.</p>
           {q.status === "sent" && !sp.accepted && (
-            <form action={acceptQuote.bind(null, token)} className="mt-8 space-y-4 border-t border-line pt-6">
+            <form action={acceptQuote.bind(null, token)} className="rule-blend mt-8 space-y-4 border-t pt-6">
               <h2 className="font-display text-xl font-semibold">Accept this proposal</h2>
               {sp.error && <Callout tone="danger">Please enter your name, an email for your portal administrator, and agree to the terms.</Callout>}
               <div className="grid gap-4 sm:grid-cols-2">

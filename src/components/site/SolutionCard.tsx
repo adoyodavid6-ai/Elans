@@ -18,7 +18,7 @@ export function SolutionCard({ s, cat, showCategory = true }: { s: Solution; cat
         </Link>
       </h3>
       <p className="mt-2 flex-1 text-sm leading-relaxed text-muted">{s.summary}</p>
-      <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-line pt-3 text-xs text-muted">
+      <div className="rule-blend-soft mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 border-t pt-3 text-xs text-muted">
         <span>{s.timeline}</span>
         <span aria-hidden>·</span>
         <span className="capitalize">{s.complexity} complexity</span>

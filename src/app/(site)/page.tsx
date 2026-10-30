@@ -69,7 +69,7 @@ export default async function Home() {
       <JsonLd data={organisationLd(cat.settings)} />
 
       {/* 1 Hero */}
-      <section className="relative overflow-hidden border-b border-line bg-ivory">
+      <section className="rule-blend relative overflow-hidden border-b bg-ivory">
         <div aria-hidden className="pointer-events-none absolute -right-40 -top-40 h-[34rem] w-[34rem] rounded-full bg-sand/70 blur-3xl" />
         <Container wide className="relative grid gap-12 py-14 sm:py-20 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:py-24">
           <div>
@@ -155,7 +155,7 @@ export default async function Home() {
                     </Link>
                   </h3>
                   <p className="mt-2 flex-1 text-[0.95rem] leading-relaxed text-muted">{s.summary}</p>
-                  <div className="mt-5 border-t border-line pt-4">
+                  <div className="rule-blend-soft mt-5 border-t pt-4">
                     <PackageFrom cat={cat} pkg={s.pricing.package} compact />
                   </div>
                 </Card>
@@ -244,7 +244,7 @@ export default async function Home() {
       </Section>
 
       {/* 7 How it works */}
-      <Section tone="sand" labelledBy="method-h">
+      <Section tone="teal" labelledBy="method-h">
         <Container>
           <div className="max-w-2xl">
             <Eyebrow>How Elans works</Eyebrow>
@@ -415,7 +415,7 @@ export default async function Home() {
       </Section>
 
       {/* 14 Pricing */}
-      <Section tone="sand" labelledBy="pricing-h">
+      <Section tone="teal" labelledBy="pricing-h">
         <Container>
           <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
             <div className="max-w-2xl">
@@ -524,7 +524,7 @@ function HeroVisual() {
             ))}
           </ul>
         </div>
-        <div className="mt-4 grid grid-cols-3 gap-2 border-t border-line pt-4 text-center">
+        <div className="rule-blend-soft mt-4 grid grid-cols-3 gap-2 border-t pt-4 text-center">
           {[
             ["Owner metric", "% receipts auto-matched"],
             ["Review queue", "3 items · SLA 4 h"],

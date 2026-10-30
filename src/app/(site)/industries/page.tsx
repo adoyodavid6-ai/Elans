@@ -53,7 +53,7 @@ export default async function IndustriesPage() {
                   </Link>
                 </h3>
                 <p className="mt-2 flex-1 text-sm text-muted">{p.summary}</p>
-                <div className="mt-4 border-t border-line pt-3">
+                <div className="rule-blend-soft mt-4 border-t pt-3">
                   <PackageFrom cat={cat} pkg={p.package} compact className="text-xs" />
                 </div>
               </li>

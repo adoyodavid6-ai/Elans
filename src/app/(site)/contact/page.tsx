@@ -42,7 +42,7 @@ export default async function Contact({ searchParams }: Props) {
                 <Link href={href} className="mt-2 inline-block text-sm font-semibold text-copper-ink hover:underline">{cta} →</Link>
               </div>
             ))}
-            <div className="rounded-2xl bg-sand/50 p-5 text-sm">
+            <div className="rounded-2xl bg-teal-50 p-5 text-sm">
               <Eyebrow>Office</Eyebrow>
               <p className="mt-2">{cat.settings.address}</p>
               {cat.settings.email && <p>{cat.settings.email}</p>}

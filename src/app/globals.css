@@ -22,6 +22,17 @@
   --wine-100: #f6ecf0;
   --wine-50: #fbf6f8;
 
+  /* teal scale (secondary: pale panels and blended rules; wine stays dominant) */
+  --teal-800: #005f5f;
+  --teal-700: #007d7d;
+  --teal-300: #7fcfcf;
+  --teal-100: #dcefef;
+  --teal-50: #eef7f7;
+  /* teal → wine blend used for the header accent line and horizontal rules */
+  --blend: linear-gradient(90deg, var(--teal-700), var(--wine-700));
+  --blend-soft: linear-gradient(90deg, rgb(0 125 125 / 0.45), rgb(106 1 42 / 0.45));
+  --blend-light: linear-gradient(90deg, var(--teal-300), var(--wine-300));
+
   --espresso: var(--wine-950);
   --brown: var(--wine-700);
   --brown-hover: var(--wine-800);
@@ -94,6 +105,11 @@
   --color-wine-200: var(--wine-200);
   --color-wine-100: var(--wine-100);
   --color-wine-50: var(--wine-50);
+  --color-teal-800: var(--teal-800);
+  --color-teal-700: var(--teal-700);
+  --color-teal-300: var(--teal-300);
+  --color-teal-100: var(--teal-100);
+  --color-teal-50: var(--teal-50);
   --color-bg: var(--bg);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
@@ -128,6 +144,13 @@
   --copper-ink: var(--wine-300);
   --ring: var(--wine-300);
 }
+
+/* Horizontal rules in the teal → wine blend. Use on elements with a single top or bottom border
+   (border-image ignores border-radius, so never on rounded boxes). */
+@utility rule-blend { border-image: var(--blend) 1; }
+@utility rule-blend-soft { border-image: var(--blend-soft) 1; }
+@utility rule-blend-light { border-image: var(--blend-light) 1; }
+@utility bg-blend { background-image: var(--blend); }
 
 @layer base {
 html { -webkit-text-size-adjust: 100%; }

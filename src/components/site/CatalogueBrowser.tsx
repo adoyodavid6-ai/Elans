@@ -88,7 +88,7 @@ export function CatalogueBrowser({ items, categories, industries, divisions }: {
 
   return (
     <div>
-      <div id="search" className="rounded-3xl border border-line bg-sand/40 p-4 sm:p-6">
+      <div id="search" className="rounded-3xl border border-teal-100 bg-teal-50 p-4 sm:p-6">
         <label htmlFor="catalogue-q" className="sr-only">
           Search solutions
         </label>
@@ -164,7 +164,7 @@ export function CatalogueBrowser({ items, categories, industries, divisions }: {
                   </Link>
                 </h3>
                 <p className="mt-2 flex-1 text-sm leading-relaxed text-muted">{i.summary}</p>
-                <div className="mt-4 border-t border-line pt-3 text-xs text-muted">
+                <div className="rule-blend-soft mt-4 border-t pt-3 text-xs text-muted">
                   {i.timeline} · <span className="capitalize">{i.complexity}</span> complexity · {i.priceLabel}
                 </div>
               </article>

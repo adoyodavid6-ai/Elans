@@ -59,7 +59,7 @@ export default async function IndustryPage({ params }: Props) {
               <h2 className="mt-2 font-display text-3xl font-semibold">What is happening in your sector</h2>
               <p className="mt-4 text-lg leading-relaxed">{ind.context}</p>
             </div>
-            <Card className="bg-sand/50">
+            <Card className="bg-teal-50">
               <Eyebrow>Where revenue and time leak</Eyebrow>
               <ul className="mt-4 space-y-2.5">
                 {ind.leakage.map((l) => (

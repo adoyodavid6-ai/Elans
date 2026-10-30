@@ -67,13 +67,10 @@ export function Header({ menus }: { menus: MegaMenu[] }) {
 
   return (
     <header className="no-print sticky top-0 z-40">
-      {/* Accent line: #007D7D on the left half, #6A012A on the right half, meeting in the middle. */}
-      <div aria-hidden="true" className="flex h-1">
-        <span className="flex-1 bg-[#007D7D]" />
-        <span className="flex-1 bg-brown" />
-      </div>
+      {/* Accent line: #007D7D blending into #6A012A. */}
+      <div aria-hidden="true" className="bg-blend h-1" />
       {/* Tier 1: main bar */}
-      <div className="border-b border-line/80 bg-ivory/92 backdrop-blur supports-[backdrop-filter]:bg-ivory/80">
+      <div className="rule-blend border-b bg-ivory/92 backdrop-blur supports-[backdrop-filter]:bg-ivory/80">
       <div className="mx-auto flex h-16 max-w-[88rem] items-center gap-4 px-4 sm:px-6 lg:h-[4.5rem] lg:px-8">
         <Link href="/" aria-label="Elans home" className="shrink-0">
           <Wordmark />
@@ -215,7 +212,7 @@ function MegaPanel({ menu }: { menu: MegaMenu }) {
           </div>
         )}
       </div>
-      <div className="mt-5 flex items-center justify-between border-t border-line pt-4">
+      <div className="rule-blend-soft mt-5 flex items-center justify-between border-t pt-4">
         <Link href={menu.href} className="inline-flex items-center gap-1 text-sm font-semibold text-copper-ink hover:underline">
           Browse all {menu.label.toLowerCase()} <Icon name="arrow-right" size={14} />
         </Link>
