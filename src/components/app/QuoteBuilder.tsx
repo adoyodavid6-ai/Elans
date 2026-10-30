@@ -54,7 +54,7 @@ export function QuoteBuilder(p: { id: string; status: string; initial: { lines: 
         <div className="mt-5 grid gap-4 sm:grid-cols-3">
           <label className="text-sm"><span className="mb-1 block text-muted">Term (months)</span><input disabled={!editable} type="number" min={1} value={term} onChange={(e) => setTerm(Number(e.target.value))} className={cell} /></label>
           <label className="text-sm"><span className="mb-1 block text-muted">Discount on monthly (%) · max {maxDiscountForTerm(term)}%</span><input disabled={!editable} type="number" min={0} value={discount} onChange={(e) => setDiscount(Number(e.target.value))} className={cell} /></label>
-          <label className="flex items-end gap-2 pb-2 text-sm"><input disabled={!editable} type="checkbox" checked={split} onChange={(e) => setSplit(e.target.checked)} className="h-4 w-4 accent-[#6B4936]" /> Split setup over 3 months</label>
+          <label className="flex items-end gap-2 pb-2 text-sm"><input disabled={!editable} type="checkbox" checked={split} onChange={(e) => setSplit(e.target.checked)} className="h-4 w-4 accent-brown" /> Split setup over 3 months</label>
         </div>
         {editable && (
           <div className="mt-5 flex flex-wrap items-center gap-3">

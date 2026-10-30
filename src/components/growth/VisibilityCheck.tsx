@@ -95,8 +95,8 @@ export function VisibilityCheck() {
         <label className="text-sm"><span className="mb-1 block font-semibold">Your name *</span><input required value={f.name} onChange={(e) => set("name", e.target.value)} className={input} autoComplete="name" /></label>
         <label className="text-sm"><span className="mb-1 block font-semibold">Email *</span><input required type="email" value={f.email} onChange={(e) => set("email", e.target.value)} className={input} autoComplete="email" /></label>
       </div>
-      <label className="flex items-start gap-2 text-sm"><input type="checkbox" checked={f.consent} onChange={(e) => set("consent", e.target.checked)} required className="mt-0.5 h-5 w-5 accent-[#6B4936]" /><span>Elans may use these details to run the check, send me the results and follow up (see the <a href="/legal/privacy" className="underline">privacy notice</a>). *</span></label>
-      <label className="flex items-start gap-2 text-sm"><input type="checkbox" checked={f.marketing} onChange={(e) => set("marketing", e.target.checked)} className="mt-0.5 h-5 w-5 accent-[#6B4936]" /><span>Send me occasional insights (optional).</span></label>
+      <label className="flex items-start gap-2 text-sm"><input type="checkbox" checked={f.consent} onChange={(e) => set("consent", e.target.checked)} required className="mt-0.5 h-5 w-5 accent-brown" /><span>Elans may use these details to run the check, send me the results and follow up (see the <a href="/legal/privacy" className="underline">privacy notice</a>). *</span></label>
+      <label className="flex items-start gap-2 text-sm"><input type="checkbox" checked={f.marketing} onChange={(e) => set("marketing", e.target.checked)} className="mt-0.5 h-5 w-5 accent-brown" /><span>Send me occasional insights (optional).</span></label>
       <Turnstile />
       {res && !res.ok && <p role="alert" className="rounded-xl bg-danger-bg p-3 text-sm text-danger">{res.message}</p>}
       <button disabled={pending} className="inline-flex h-12 items-center gap-2 rounded-full bg-brown px-6 font-semibold text-white disabled:opacity-60">

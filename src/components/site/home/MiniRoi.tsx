@@ -21,7 +21,7 @@ export function MiniRoi({ setup, monthly }: { setup: number; monthly: number }) 
           {suffix}
         </output>
       </div>
-      <input id={id} type="range" min={min} max={max} step={step} value={value} onChange={(e) => set(Number(e.target.value))} className="mt-2 w-full accent-[#B98258]" />
+      <input id={id} type="range" min={min} max={max} step={step} value={value} onChange={(e) => set(Number(e.target.value))} className="mt-2 w-full accent-copper" />
     </div>
   );
   return (
@@ -45,7 +45,7 @@ export function MiniRoi({ setup, monthly }: { setup: number; monthly: number }) 
             <p className="text-xs text-sand/60">{h}</p>
           </div>
         ))}
-        <Link href={`/roi/master?tasksPerMonth=${tasks}&minutesPerTask=${minutes}&hourlyCost=${hourly}`} className="col-span-full mt-2 inline-flex h-11 items-center justify-center rounded-full bg-copper px-5 text-sm font-semibold text-espresso hover:bg-[#c99168]">
+        <Link href={`/roi/master?tasksPerMonth=${tasks}&minutesPerTask=${minutes}&hourlyCost=${hourly}`} className="col-span-full mt-2 inline-flex h-11 items-center justify-center rounded-full bg-copper px-5 text-sm font-semibold text-espresso hover:bg-wine-300">
           Open the full calculator with formulas →
         </Link>
       </div>

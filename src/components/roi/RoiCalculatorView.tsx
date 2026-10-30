@@ -182,13 +182,13 @@ export function RoiCalculatorView({ slug, initial }: { slug: string; initial: Re
                 <input value={save.organisation} onChange={(e) => setSave((s) => ({ ...s, organisation: e.target.value }))} className="h-11 w-full rounded-xl border border-line bg-white px-3" autoComplete="organization" />
               </label>
               <label className="flex items-start gap-2 text-sm sm:col-span-2">
-                <input type="checkbox" checked={save.consent} onChange={(e) => setSave((s) => ({ ...s, consent: e.target.checked }))} className="mt-0.5 h-5 w-5 accent-[#6B4936]" required />
+                <input type="checkbox" checked={save.consent} onChange={(e) => setSave((s) => ({ ...s, consent: e.target.checked }))} className="mt-0.5 h-5 w-5 accent-brown" required />
                 <span>
                   Elans may use these details to send this estimate and follow up (see the <a className="underline" href="/legal/privacy">privacy notice</a>).
                 </span>
               </label>
               <label className="flex items-start gap-2 text-sm sm:col-span-2">
-                <input type="checkbox" checked={save.marketing} onChange={(e) => setSave((s) => ({ ...s, marketing: e.target.checked }))} className="mt-0.5 h-5 w-5 accent-[#6B4936]" />
+                <input type="checkbox" checked={save.marketing} onChange={(e) => setSave((s) => ({ ...s, marketing: e.target.checked }))} className="mt-0.5 h-5 w-5 accent-brown" />
                 <span>Send me occasional insights (optional).</span>
               </label>
               {save.msg && <p role="alert" className="text-sm text-danger sm:col-span-2">{save.msg}</p>}

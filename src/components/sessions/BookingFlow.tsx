@@ -109,7 +109,7 @@ export function BookingFlow({ types, initialType, mpesaMode }: { types: TypeOpt[
                 ["invoice", "Send my organisation an invoice"],
               ].map(([v, l]) => (
                 <label key={v} className={cx("flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-3 text-sm", f.payWith === v ? "border-brown ring-1 ring-brown" : "border-line")}>
-                  <input type="radio" name="payWith" value={v} checked={f.payWith === v} onChange={() => setF({ ...f, payWith: v })} className="accent-[#6B4936]" /> {l}
+                  <input type="radio" name="payWith" value={v} checked={f.payWith === v} onChange={() => setF({ ...f, payWith: v })} className="accent-brown" /> {l}
                 </label>
               ))}
             </div>
@@ -118,8 +118,8 @@ export function BookingFlow({ types, initialType, mpesaMode }: { types: TypeOpt[
         )}
 
         <div className="space-y-2 text-sm">
-          <label className="flex items-start gap-2"><input type="checkbox" checked={f.consent} onChange={(e) => setF({ ...f, consent: e.target.checked })} className="mt-0.5 h-5 w-5 accent-[#6B4936]" /><span>Elans may use these details to arrange this session (see the <a href="/legal/privacy" className="underline" target="_blank">privacy notice</a>). *</span></label>
-          <label className="flex items-start gap-2"><input type="checkbox" checked={f.marketing} onChange={(e) => setF({ ...f, marketing: e.target.checked })} className="mt-0.5 h-5 w-5 accent-[#6B4936]" /><span>Send me occasional insights (optional).</span></label>
+          <label className="flex items-start gap-2"><input type="checkbox" checked={f.consent} onChange={(e) => setF({ ...f, consent: e.target.checked })} className="mt-0.5 h-5 w-5 accent-brown" /><span>Elans may use these details to arrange this session (see the <a href="/legal/privacy" className="underline" target="_blank">privacy notice</a>). *</span></label>
+          <label className="flex items-start gap-2"><input type="checkbox" checked={f.marketing} onChange={(e) => setF({ ...f, marketing: e.target.checked })} className="mt-0.5 h-5 w-5 accent-brown" /><span>Send me occasional insights (optional).</span></label>
         </div>
         <Turnstile />
         {err && <p role="alert" className="rounded-xl bg-danger-bg p-3 text-sm text-danger">{err.message}</p>}

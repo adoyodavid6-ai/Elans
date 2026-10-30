@@ -44,7 +44,7 @@ export function Checkbox({ name, label, error, required, ...rest }: { name: stri
   return (
     <div>
       <label htmlFor={name} className="flex cursor-pointer items-start gap-3 text-sm leading-relaxed">
-        <input id={name} name={name} type="checkbox" required={required} aria-invalid={Boolean(error)} className="mt-0.5 h-5 w-5 shrink-0 rounded border-line accent-[#6B4936]" {...rest} />
+        <input id={name} name={name} type="checkbox" required={required} aria-invalid={Boolean(error)} className="mt-0.5 h-5 w-5 shrink-0 rounded border-line accent-brown" {...rest} />
         <span>
           {label} {required && <span className="text-danger" aria-hidden>*</span>}
         </span>

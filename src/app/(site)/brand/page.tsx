@@ -10,12 +10,12 @@ import { Button } from "@/components/ui/primitives";
 export const metadata: Metadata = { title: "Brand & design system", robots: { index: false, follow: false } };
 
 const COLOURS = [
-  ["--espresso", "#35271F", "Primary dark, headings, dark sections"],
-  ["--brown", "#6B4936", "Brand colour, primary buttons"],
-  ["--copper", "#B98258", "Accent and large text only (3.1:1 on ivory)"],
-  ["--copper-ink", "#8A5A36", "Small accent text (5.5:1 on ivory)"],
-  ["--ivory", "#FAF8F5", "Page background"],
-  ["--sand", "#EAE1D7", "Cards, surfaces, dividers"],
+  ["--espresso", "#2B0012", "Deepest wine: headings, dark sections"],
+  ["--brown", "#6A012A", "Brand wine: primary buttons, key panels"],
+  ["--copper", "#C25B80", "Rose accent: large text and UI only (4.0:1 on #FCFCFC)"],
+  ["--copper-ink", "#8C1D47", "Small accent text and links (8.6:1)"],
+  ["--ivory", "#FCFCFC", "Page background"],
+  ["--sand", "#F6ECF0", "Wine tint: panels, soft sections"],
   ["--graphite", "#242424", "Body text"],
 ];
 const CONCEPTS: [LogoConcept, string, string][] = [

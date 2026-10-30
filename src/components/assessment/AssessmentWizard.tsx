@@ -319,7 +319,7 @@ export function AssessmentWizard({ industries, initial }: { industries: Industry
             </div>
             <div className="space-y-3 rounded-2xl bg-surface-2/70 p-4 text-sm">
               <label className="flex items-start gap-3">
-                <input type="checkbox" checked={contact.consentReport} onChange={(e) => setContact((c) => ({ ...c, consentReport: e.target.checked }))} className="mt-0.5 h-5 w-5 accent-[#6B4936]" />
+                <input type="checkbox" checked={contact.consentReport} onChange={(e) => setContact((c) => ({ ...c, consentReport: e.target.checked }))} className="mt-0.5 h-5 w-5 accent-brown" />
                 <span>
                   I agree that Elans may use my answers and contact details to prepare and send my report and to follow up about it, as described in the{" "}
                   <a href="/legal/privacy" target="_blank" className="underline">
@@ -330,7 +330,7 @@ export function AssessmentWizard({ industries, initial }: { industries: Industry
               </label>
               {errors.consentReport && <p className="ml-8 text-xs font-medium text-danger">{errors.consentReport}</p>}
               <label className="flex items-start gap-3">
-                <input type="checkbox" checked={contact.consentMarketing} onChange={(e) => setContact((c) => ({ ...c, consentMarketing: e.target.checked }))} className="mt-0.5 h-5 w-5 accent-[#6B4936]" />
+                <input type="checkbox" checked={contact.consentMarketing} onChange={(e) => setContact((c) => ({ ...c, consentMarketing: e.target.checked }))} className="mt-0.5 h-5 w-5 accent-brown" />
                 <span>Also send me occasional insights and offers (optional; unsubscribe any time).</span>
               </label>
             </div>
@@ -416,7 +416,7 @@ function Choices({ options, value, onPick, name }: { options: readonly { key: st
     <div className="grid gap-2 sm:grid-cols-2">
       {options.map((o) => (
         <label key={o.key} className={cx("flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 text-[0.95rem] transition", value === o.key ? "border-brown bg-brown/5 ring-1 ring-brown" : "border-line hover:border-sand-strong")}>
-          <input type="radio" name={name} value={o.key} checked={value === o.key} onChange={() => onPick(o.key)} className="h-4 w-4 accent-[#6B4936]" />
+          <input type="radio" name={name} value={o.key} checked={value === o.key} onChange={() => onPick(o.key)} className="h-4 w-4 accent-brown" />
           {o.label}
         </label>
       ))}

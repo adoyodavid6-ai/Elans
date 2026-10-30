@@ -1,19 +1,35 @@
 @import "tailwindcss";
 
 /* ------------------------------------------------------------------
-   Elans design tokens. Contrast (WCAG 2.2) measured on --ivory:
-   espresso 13.6:1 · brown 8.0:1 · copper-ink 5.5:1 · graphite 14.6:1
-   copper 3.1:1 → large text (≥24px / 19px bold) and non-text UI only.
+   Elans design tokens: wine theme (brand #6A012A, page #FCFCFC).
+   Token names predate the theme change (D-034): "brown" = brand wine,
+   "espresso" = deepest wine, "copper" = rose accent, "sand" = wine tint,
+   "ivory" = page background. Contrast (WCAG 2.2) on #FCFCFC:
+   espresso 18.4:1 · brown 12.4:1 · copper-ink 8.6:1 · graphite 15.1:1
+   copper 4.0:1 → large text (≥24px / 19px bold) and non-text UI only
+   (copper is 4.6:1 on espresso sections). White on brown 12.7:1.
    ------------------------------------------------------------------ */
 :root {
-  --espresso: #35271f;
-  --brown: #6b4936;
-  --brown-hover: #5a3c2c;
-  --copper: #b98258;
-  --copper-ink: #8a5a36;
-  --ivory: #faf8f5;
-  --sand: #eae1d7;
-  --sand-strong: #d9ccbd;
+  /* wine scale */
+  --wine-950: #2b0012;
+  --wine-900: #3f001b;
+  --wine-800: #540122;
+  --wine-700: #6a012a; /* brand */
+  --wine-600: #8c1d47;
+  --wine-500: #c25b80;
+  --wine-300: #e6a3ba;
+  --wine-200: #f0d6df;
+  --wine-100: #f6ecf0;
+  --wine-50: #fbf6f8;
+
+  --espresso: var(--wine-950);
+  --brown: var(--wine-700);
+  --brown-hover: var(--wine-800);
+  --copper: var(--wine-500);
+  --copper-ink: var(--wine-600);
+  --ivory: #fcfcfc;
+  --sand: var(--wine-100);
+  --sand-strong: var(--wine-200);
   --graphite: #242424;
   --white: #ffffff;
 
@@ -29,25 +45,25 @@
   /* semantic surface tokens (portal/console flip these in dark mode) */
   --bg: var(--ivory);
   --surface: var(--white);
-  --surface-2: #f3eee8;
+  --surface-2: var(--wine-50);
   --text: var(--graphite);
-  --text-muted: #5c544d;
+  --text-muted: #5e5257;
   --heading: var(--espresso);
-  --border: #e2d8cc;
+  --border: #ecdfe4;
   --ring: var(--copper);
 }
 
 [data-theme="dark"] {
-  --bg: #1b1512;
-  --surface: #241d19;
-  --surface-2: #2d2520;
-  --text: #ede6de;
-  --text-muted: #b5aaa0;
-  --heading: #f6efe7;
-  --border: #3b322c;
-  --brown: #b98258;
-  --brown-hover: #c99168;
-  --copper-ink: #d7a67f;
+  --bg: #170b10;
+  --surface: #1f1218;
+  --surface-2: #2a1820;
+  --text: #f0e6ea;
+  --text-muted: #bfaab3;
+  --heading: #fbf2f5;
+  --border: #3d2530;
+  --brown: #a8325f;
+  --brown-hover: #b8406e;
+  --copper-ink: #f0a6c0;
   --success-bg: #173426;
   --success: #7fd1a8;
   --warning-bg: #3a2c10;
@@ -68,6 +84,16 @@
   --color-sand: var(--sand);
   --color-sand-strong: var(--sand-strong);
   --color-graphite: var(--graphite);
+  --color-wine-950: var(--wine-950);
+  --color-wine-900: var(--wine-900);
+  --color-wine-800: var(--wine-800);
+  --color-wine-700: var(--wine-700);
+  --color-wine-600: var(--wine-600);
+  --color-wine-500: var(--wine-500);
+  --color-wine-300: var(--wine-300);
+  --color-wine-200: var(--wine-200);
+  --color-wine-100: var(--wine-100);
+  --color-wine-50: var(--wine-50);
   --color-bg: var(--bg);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
@@ -90,8 +116,8 @@
   --font-alt-sans: "Manrope Variable", system-ui, sans-serif;
 
   --radius-card: 1.25rem;
-  --shadow-soft: 0 1px 2px rgb(53 39 31 / 0.06), 0 8px 24px -12px rgb(53 39 31 / 0.18);
-  --shadow-lift: 0 2px 4px rgb(53 39 31 / 0.08), 0 24px 48px -24px rgb(53 39 31 / 0.35);
+  --shadow-soft: 0 1px 2px rgb(43 0 18 / 0.06), 0 8px 24px -12px rgb(43 0 18 / 0.18);
+  --shadow-lift: 0 2px 4px rgb(43 0 18 / 0.08), 0 24px 48px -24px rgb(43 0 18 / 0.35);
 }
 
 @layer base {
