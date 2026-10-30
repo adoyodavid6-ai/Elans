@@ -15,7 +15,7 @@ export default function RoiHub() {
       <PageHeader crumbs={[{ href: "/", label: "Home" }, { label: "ROI calculators" }]} eyebrow="Estimate before you spend" title="ROI calculators with nothing hidden" lead="Every calculator shows its formulas and assumptions, separates time freed from cash saved, and gives low, base and high cases. Estimates only. No guarantees." />
       <Section className="pt-10">
         <Container>
-          <Link href={`/roi/${master.slug}`} className="group flex flex-col gap-4 rounded-[2rem] bg-espresso p-6 text-sand sm:flex-row sm:items-center sm:justify-between sm:p-10">
+          <Link href={`/roi/${master.slug}`} className="group flex flex-col gap-4 rounded-[2rem] surface-brand p-6 text-sand sm:flex-row sm:items-center sm:justify-between sm:p-10">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-copper">Start here</p>
               <h2 className="mt-2 font-display text-3xl font-semibold text-ivory">{master.name}</h2>

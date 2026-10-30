@@ -25,7 +25,7 @@ export function MiniRoi({ setup, monthly }: { setup: number; monthly: number }) 
     </div>
   );
   return (
-    <div className="grid gap-8 rounded-[2rem] bg-espresso p-6 text-sand lg:grid-cols-2 lg:p-10">
+    <div className="grid gap-8 rounded-[2rem] surface-brand p-6 text-sand lg:grid-cols-2 lg:p-10">
       <div className="space-y-6">
         {field("roi-tasks", "Times the task happens each month", tasks, setTasks, 50, 5000, 50, "")}
         {field("roi-min", "Minutes per task", minutes, setMinutes, 1, 60, 1, " min")}

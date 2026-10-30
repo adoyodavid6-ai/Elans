@@ -49,7 +49,7 @@ export default async function FrontierTopicPage({ params }: Props) {
               <Eyebrow>What to do now</Eyebrow>
               <CheckList className="mt-4" items={t.doNow} />
             </section>
-            <section className="rounded-[var(--radius-card)] bg-espresso p-6 text-sand">
+            <section className="rounded-[var(--radius-card)] surface-brand p-6 text-sand">
               <Eyebrow tone="light">The Elans offer</Eyebrow>
               <p className="mt-2 text-lg text-ivory">{t.offer}</p>
               <ButtonLink href="/sessions" variant="light" className="mt-5">

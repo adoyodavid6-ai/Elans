@@ -10,7 +10,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
     { title: "Company", links: [["/about", "About"], ["/how-it-works", "How it works"], ["/case-studies", "Case studies"], ["/partners", "Partners"], ["/trust", "Trust & security"], ["/careers", "Careers"], ["/contact", "Contact"]] },
   ];
   return (
-    <footer className="no-print bg-espresso text-sand" aria-labelledby="footer-heading">
+    <footer className="no-print surface-brand border-t border-white/15 text-sand" aria-labelledby="footer-heading">
       <h2 id="footer-heading" className="sr-only">
         Footer
       </h2>

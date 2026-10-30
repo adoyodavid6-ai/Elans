@@ -28,7 +28,7 @@ export default async function PricingPage() {
               const s = priceLabel(cat, p.setupKey);
               const m = priceLabel(cat, p.monthlyKey);
               return (
-                <li key={p.key} className={cx("flex flex-col rounded-[var(--radius-card)] p-6 ring-1", i === 1 ? "bg-espresso text-sand ring-espresso" : "bg-white ring-line")}>
+                <li key={p.key} className={cx("flex flex-col rounded-[var(--radius-card)] p-6 ring-1", i === 1 ? "surface-brand text-sand ring-brown" : "bg-white ring-line")}>
                   {i === 1 && <span className="mb-3 self-start rounded-full bg-copper px-2.5 py-0.5 text-xs font-semibold text-espresso">Most common</span>}
                   <h2 className={cx("font-display text-2xl font-semibold", i === 1 ? "text-ivory" : "text-heading")}>{p.name}</h2>
                   <p className={cx("mt-1 text-sm", i === 1 ? "text-sand/75" : "text-muted")}>{p.forWho}</p>

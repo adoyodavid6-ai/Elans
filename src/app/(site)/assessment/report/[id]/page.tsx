@@ -45,9 +45,9 @@ export default async function ReportPage({ params }: Props) {
             <PrintButton />
           </div>
 
-          <header className="rounded-[2rem] bg-espresso p-6 text-sand sm:p-10">
+          <header className="rounded-[2rem] surface-brand p-6 text-sand sm:p-10">
             <div className="flex items-center gap-3">
-              <TreeMark size={36} />
+              <TreeMark size={36} onBrand />
               <p className="text-sm font-semibold uppercase tracking-[0.14em] text-copper">Elans · Preliminary AI Opportunity report</p>
             </div>
             <h1 className="mt-5 font-display text-3xl font-semibold text-ivory sm:text-5xl">{r.organisation}</h1>

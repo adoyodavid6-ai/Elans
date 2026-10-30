@@ -75,7 +75,7 @@ export default async function GrowthPage() {
             {cat.growTiers.map((t, i) => {
               const p = priceLabel(cat, t.priceKey);
               return (
-                <li key={t.key} className={cx("flex flex-col rounded-[var(--radius-card)] p-6 ring-1", i === 1 ? "bg-espresso text-sand ring-espresso" : "bg-white ring-line")}>
+                <li key={t.key} className={cx("flex flex-col rounded-[var(--radius-card)] p-6 ring-1", i === 1 ? "surface-brand text-sand ring-brown" : "bg-white ring-line")}>
                   <p className={cx("font-display text-2xl font-semibold", i === 1 ? "text-ivory" : "text-heading")}>{t.name}</p>
                   <p className={cx("text-sm", i === 1 ? "text-sand/75" : "text-muted")}>{t.forWho}</p>
                   <p className={cx("mt-4 font-semibold", i === 1 ? "text-ivory" : "text-heading")}>

@@ -166,7 +166,7 @@ export default async function IndustryPage({ params }: Props) {
           </section>
 
           {packs.length > 0 && (
-            <section className="rounded-[var(--radius-card)] bg-espresso p-6 text-sand sm:p-10">
+            <section className="rounded-[var(--radius-card)] surface-brand p-6 text-sand sm:p-10">
               <Eyebrow tone="light">Industry Pack</Eyebrow>
               {packs.map((p) => (
                 <div key={p.slug} className="mt-3 grid gap-6 lg:grid-cols-[1.5fr_1fr] lg:items-center">

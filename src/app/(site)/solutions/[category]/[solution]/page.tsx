@@ -139,7 +139,7 @@ export default async function SolutionPage({ params }: Props) {
             </Callout>
           )}
 
-          <section id="problem" className="grid scroll-mt-24 gap-8 lg:grid-cols-[1.4fr_1fr]">
+          <section id="problem" className="grid scroll-mt-24 lg:scroll-mt-32 gap-8 lg:grid-cols-[1.4fr_1fr]">
             <div>
               <Eyebrow>1 · Problem statement</Eyebrow>
               <h2 className="mt-2 font-display text-3xl font-semibold">The problem</h2>
@@ -151,7 +151,7 @@ export default async function SolutionPage({ params }: Props) {
             </div>
           </section>
 
-          <section id="workflow" className="scroll-mt-24">
+          <section id="workflow" className="scroll-mt-24 lg:scroll-mt-32">
             <Eyebrow>3–4 · Current vs automated workflow</Eyebrow>
             <div className="mt-2 flex flex-wrap items-end justify-between gap-4">
               <h2 className="font-display text-3xl font-semibold">Before & after</h2>
@@ -160,7 +160,7 @@ export default async function SolutionPage({ params }: Props) {
             <BeforeAfter className="mt-6" before={s.manualFlow} after={s.automatedFlow} />
           </section>
 
-          <section id="capabilities" className="scroll-mt-24">
+          <section id="capabilities" className="scroll-mt-24 lg:scroll-mt-32">
             <Eyebrow>5 · Main capabilities</Eyebrow>
             <h2 className="mt-2 font-display text-3xl font-semibold">What it does</h2>
             <ul className="mt-6 grid gap-3 md:grid-cols-2">
@@ -173,7 +173,7 @@ export default async function SolutionPage({ params }: Props) {
             </ul>
           </section>
 
-          <section id="data" className="grid scroll-mt-24 gap-8 lg:grid-cols-2">
+          <section id="data" className="grid scroll-mt-24 lg:scroll-mt-32 gap-8 lg:grid-cols-2">
             <div>
               <Eyebrow>6 · Required data</Eyebrow>
               <h2 className="mt-2 font-display text-3xl font-semibold">What we need from you</h2>
@@ -198,14 +198,14 @@ export default async function SolutionPage({ params }: Props) {
             </div>
           </section>
 
-          <section id="results" className="grid scroll-mt-24 gap-8 lg:grid-cols-2">
+          <section id="results" className="grid scroll-mt-24 lg:scroll-mt-32 gap-8 lg:grid-cols-2">
             <div>
               <Eyebrow>7 · Expected operational benefits</Eyebrow>
               <h2 className="mt-2 font-display text-3xl font-semibold">Benefits</h2>
               <CheckList className="mt-5" items={s.benefits} />
               <p className="mt-4 text-xs text-muted">Benefits are described qualitatively. We measure your actual results against a baseline captured before go-live.</p>
             </div>
-            <div className="rounded-[var(--radius-card)] bg-espresso p-6 text-sand">
+            <div className="rounded-[var(--radius-card)] surface-brand p-6 text-sand">
               <Eyebrow tone="light">8 · Success indicators</Eyebrow>
               <p className="mt-3 text-sm text-sand/70">Owner metric</p>
               <p className="font-display text-xl font-semibold text-ivory">{s.ownerMetric}</p>
@@ -219,7 +219,7 @@ export default async function SolutionPage({ params }: Props) {
             </div>
           </section>
 
-          <section id="approvals" className="scroll-mt-24">
+          <section id="approvals" className="scroll-mt-24 lg:scroll-mt-32">
             <Eyebrow>9 · Human approval points</Eyebrow>
             <h2 className="mt-2 font-display text-3xl font-semibold">What people stay in control of</h2>
             <ul className="mt-6 grid gap-3 md:grid-cols-2">
@@ -232,7 +232,7 @@ export default async function SolutionPage({ params }: Props) {
             </ul>
           </section>
 
-          <section id="delivery" className="grid scroll-mt-24 gap-6 lg:grid-cols-3">
+          <section id="delivery" className="grid scroll-mt-24 lg:scroll-mt-32 gap-6 lg:grid-cols-3">
             <Card>
               <Eyebrow>10 · Complexity</Eyebrow>
               <p className="mt-2 text-2xl font-semibold capitalize text-heading">{s.complexity}</p>
@@ -287,7 +287,7 @@ export default async function SolutionPage({ params }: Props) {
             </div>
           </section>
 
-          <section id="faqs" className="grid scroll-mt-24 gap-8 lg:grid-cols-[1fr_1.6fr]">
+          <section id="faqs" className="grid scroll-mt-24 lg:scroll-mt-32 gap-8 lg:grid-cols-[1fr_1.6fr]">
             <div>
               <Eyebrow>14 · FAQs</Eyebrow>
               <h2 className="mt-2 font-display text-3xl font-semibold">Questions about {s.name}</h2>

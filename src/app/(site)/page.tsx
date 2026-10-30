@@ -428,7 +428,7 @@ export default async function Home() {
           </div>
           <ul className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {cat.packages.map((p, i) => (
-              <li key={p.key} className={cx("flex flex-col rounded-[var(--radius-card)] p-6 ring-1", i === 1 ? "bg-espresso text-sand ring-espresso" : "bg-white ring-line")}>
+              <li key={p.key} className={cx("flex flex-col rounded-[var(--radius-card)] p-6 ring-1", i === 1 ? "surface-brand text-sand ring-brown" : "bg-white ring-line")}>
                 <p className={cx("font-display text-xl font-semibold", i === 1 ? "text-ivory" : "text-heading")}>{p.name}</p>
                 <p className={cx("mt-1 text-sm", i === 1 ? "text-sand/80" : "text-muted")}>{p.forWho}</p>
                 <div className="mt-5 flex-1">
@@ -504,7 +504,7 @@ function HeroVisual() {
                 <path key={y} d={`M0 ${y} C 22 ${y}, 22 110, 44 110`} stroke="#B98258" strokeWidth="1.5" fill="none" className="flow-line" />
               ))}
             </svg>
-            <div className="relative z-10 grid w-[5.5rem] gap-1.5 rounded-2xl bg-espresso p-2.5 text-center sm:w-28 sm:p-3">
+            <div className="relative z-10 grid w-[5.5rem] gap-1.5 rounded-2xl surface-brand p-2.5 text-center sm:w-28 sm:p-3">
               <span className="text-[0.62rem] font-semibold uppercase tracking-widest text-copper">Elans</span>
               {["Rules", "AI", "Approvals"].map((x) => (
                 <span key={x} className="rounded-lg bg-white/10 px-1 py-1 text-[0.7rem] font-medium text-ivory">

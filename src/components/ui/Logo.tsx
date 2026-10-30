@@ -4,7 +4,7 @@
  */
 export type LogoConcept = "a" | "b" | "c";
 
-export function TreeMark({ concept = "a", size = 32, title }: { concept?: LogoConcept; size?: number; title?: string }) {
+export function TreeMark({ concept = "a", size = 32, title, onBrand = false }: { concept?: LogoConcept; size?: number; title?: string; onBrand?: boolean }) {
   const label = title ? { role: "img", "aria-label": title } : { "aria-hidden": true };
   if (concept === "b") {
     // Branching nodes: a trunk that splits into connected nodes (systems that grow).
@@ -36,7 +36,8 @@ export function TreeMark({ concept = "a", size = 32, title }: { concept?: LogoCo
   // Concept A — Rooted canopy
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" {...label}>
-      <rect width="48" height="48" rx="12" fill="#6A012A" />
+      {/* On #6A012A surfaces the tile is lifted with a translucent white so the mark keeps its edge. */}
+      <rect width="48" height="48" rx="12" fill={onBrand ? "#FFFFFF" : "#6A012A"} fillOpacity={onBrand ? 0.14 : 1} />
       <circle cx="24" cy="17" r="10.5" fill="#E6A3BA" />
       <circle cx="16.5" cy="21" r="6" fill="#E6A3BA" />
       <circle cx="31.5" cy="21" r="6" fill="#E6A3BA" />
@@ -50,7 +51,7 @@ export function TreeMark({ concept = "a", size = 32, title }: { concept?: LogoCo
 export function Wordmark({ concept = "a", className = "", tone = "dark" }: { concept?: LogoConcept; className?: string; tone?: "dark" | "light" }) {
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <TreeMark concept={concept} size={32} />
+      <TreeMark concept={concept} size={32} onBrand={tone === "light"} />
       <span className={`font-display text-[1.45rem] font-semibold tracking-tight ${tone === "light" ? "text-ivory" : "text-espresso"}`} style={{ fontVariationSettings: '"opsz" 72' }}>
         Elans
       </span>

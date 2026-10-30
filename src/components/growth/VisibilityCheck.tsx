@@ -22,7 +22,7 @@ export function VisibilityCheck() {
     const hits = res.results.filter((r) => r.mentioned).length;
     return (
       <div className="space-y-6" aria-live="polite">
-        <div className="rounded-[var(--radius-card)] bg-espresso p-6 text-sand">
+        <div className="rounded-[var(--radius-card)] surface-brand p-6 text-sand">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-copper">Sample snapshot · not a full audit</p>
           <p className="mt-2 font-display text-3xl font-semibold text-ivory">
             Mentioned in {hits} of {res.results.length} answers

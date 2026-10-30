@@ -57,21 +57,51 @@ export function Header({ menus }: { menus: MegaMenu[] }) {
     document.body.style.overflow = mobile ? "hidden" : "";
   }, [mobile]);
 
+  // Secondary links live in the top utility bar; the main bar keeps the four menus and the main CTA.
   const simple = [
     { href: "/how-it-works", label: "How It Works" },
     { href: "/pricing", label: "Pricing" },
     { href: "/resources", label: "Resources" },
   ];
+  const utility = [...simple, { href: "/partners", label: "Partners" }, { href: "/contact", label: "Contact" }];
 
   return (
-    <header className="no-print sticky top-0 z-40 border-b border-line/80 bg-ivory/92 backdrop-blur supports-[backdrop-filter]:bg-ivory/80">
+    <header className="no-print sticky top-0 z-40">
+      {/* Tier 1: utility bar */}
+      <div className="surface-brand hidden text-white lg:block">
+        <div className="mx-auto flex h-9 max-w-[88rem] items-center gap-6 px-4 text-[0.8rem] sm:px-6 lg:px-8">
+          <p className="hidden truncate text-white/80 xl:block">AI automation &amp; growth for businesses in Kenya and East Africa</p>
+          <nav aria-label="Secondary" className="ml-auto">
+            <ul className="flex items-center gap-1">
+              {utility.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} aria-current={pathname.startsWith(l.href) ? "page" : undefined} className={cx("whitespace-nowrap rounded-full px-2.5 py-1 font-medium text-white/85 hover:bg-white/10 hover:text-white", pathname.startsWith(l.href) && "bg-white/15 text-white")}>
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+              <li className="ml-2 border-l border-white/20 pl-3">
+                <Link href="/sessions" className="whitespace-nowrap rounded-full px-2.5 py-1 font-medium text-white/85 hover:bg-white/10 hover:text-white">Book a session</Link>
+              </li>
+              <li>
+                <Link href="/portal/login" className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-white/10 px-3 py-1 font-semibold text-white hover:bg-white/20">
+                  <Icon name="user" size={14} /> Client Login
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+      {/* Tier 2: main bar */}
+      <div className="border-b border-line/80 bg-ivory/92 backdrop-blur supports-[backdrop-filter]:bg-ivory/80">
       <div className="mx-auto flex h-16 max-w-[88rem] items-center gap-4 px-4 sm:px-6 lg:h-[4.5rem] lg:px-8">
         <Link href="/" aria-label="Elans home" className="shrink-0">
           <Wordmark />
         </Link>
 
-        <nav ref={navRef} aria-label="Primary" className="ml-4 hidden flex-1 xl:block">
-          <ul className="flex items-center gap-0.5 xl:gap-1">
+        <nav ref={navRef} aria-label="Primary" className="ml-4 hidden flex-1 lg:block">
+          <ul className="flex items-center gap-1">
             {menus.map((m) => (
               <li key={m.key} className="relative">
                 <button
@@ -80,7 +110,7 @@ export function Header({ menus }: { menus: MegaMenu[] }) {
                   aria-controls={`menu-${m.key}`}
                   onClick={() => setOpen(open === m.key ? null : m.key)}
                   className={cx(
-                    "flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-2 text-[0.93rem] font-medium text-espresso hover:bg-sand/60",
+                    "flex items-center gap-1 whitespace-nowrap rounded-full px-3.5 py-2 text-[0.95rem] font-medium text-espresso hover:bg-sand/60",
                     (open === m.key || pathname.startsWith(m.href)) && "bg-sand/60",
                   )}
                 >
@@ -90,34 +120,27 @@ export function Header({ menus }: { menus: MegaMenu[] }) {
                 {open === m.key && <MegaPanel menu={m} />}
               </li>
             ))}
-            {simple.map((l) => (
-              <li key={l.href}>
-                <Link href={l.href} className={cx("whitespace-nowrap rounded-full px-3 py-2 text-[0.93rem] font-medium text-espresso hover:bg-sand/60", pathname.startsWith(l.href) && "bg-sand/60")}>
-                  {l.label}
-                </Link>
-              </li>
-            ))}
           </ul>
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
-          <Link href="/portal/login" aria-label="Client Login" title="Client Login" className="hidden items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-2 text-sm font-semibold text-espresso hover:bg-sand/60 sm:inline-flex">
+          <Link href="/portal/login" aria-label="Client Login" title="Client Login" className="hidden h-10 w-10 place-items-center rounded-full text-espresso hover:bg-sand/60 sm:grid lg:hidden">
             <Icon name="user" size={18} />
-            <span className="xl:hidden 2xl:inline">Client Login</span>
           </Link>
           <Link href="/assessment" className="hidden items-center gap-2 whitespace-nowrap rounded-full bg-brown px-4 py-2.5 text-sm font-semibold text-white shadow-[var(--shadow-soft)] hover:bg-brown-hover md:inline-flex">
-            <span className="hidden 2xl:inline">Find Your Automation Opportunities</span>
-            <span className="2xl:hidden">Find opportunities</span>
+            <span className="hidden xl:inline">Find Your Automation Opportunities</span>
+            <span className="xl:hidden">Find opportunities</span>
             <Icon name="arrow-right" size={16} />
           </Link>
-          <button type="button" className="grid h-10 w-10 place-items-center rounded-full text-espresso hover:bg-sand/60 xl:hidden" aria-label={mobile ? "Close menu" : "Open menu"} aria-expanded={mobile} aria-controls="mobile-menu" onClick={() => setMobile(!mobile)}>
+          <button type="button" className="grid h-10 w-10 place-items-center rounded-full text-espresso hover:bg-sand/60 lg:hidden" aria-label={mobile ? "Close menu" : "Open menu"} aria-expanded={mobile} aria-controls="mobile-menu" onClick={() => setMobile(!mobile)}>
             <Icon name={mobile ? "x" : "menu"} size={22} />
           </button>
         </div>
       </div>
+      </div>
 
       {mobile && (
-        <div id="mobile-menu" className="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto bg-ivory px-4 pb-28 pt-4 xl:hidden">
+        <div id="mobile-menu" className="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto bg-ivory px-4 pb-28 pt-4 lg:hidden">
           <nav aria-label="Mobile">
             {menus.map((m) => (
               <details key={m.key} className="group border-b border-line py-1">
@@ -146,7 +169,7 @@ export function Header({ menus }: { menus: MegaMenu[] }) {
                 </div>
               </details>
             ))}
-            {[...simple, { href: "/assessment", label: "AI Opportunity Assessment" }, { href: "/roi", label: "ROI calculators" }, { href: "/integrations", label: "Integrations" }, { href: "/trust", label: "Trust & security" }, { href: "/sessions", label: "Book a session" }, { href: "/portal/login", label: "Client Login" }].map((l) => (
+            {[...simple, { href: "/assessment", label: "AI Opportunity Assessment" }, { href: "/roi", label: "ROI calculators" }, { href: "/integrations", label: "Integrations" }, { href: "/trust", label: "Trust & security" }, { href: "/partners", label: "Partners" }, { href: "/contact", label: "Contact" }, { href: "/sessions", label: "Book a session" }, { href: "/portal/login", label: "Client Login" }].map((l) => (
               <Link key={l.href} href={l.href} className="block border-b border-line py-3.5 text-lg font-semibold text-espresso">
                 {l.label}
               </Link>
@@ -178,7 +201,7 @@ function MegaPanel({ menu }: { menu: MegaMenu }) {
           </div>
         ))}
         {menu.feature && (
-          <div className="rounded-2xl bg-espresso p-5 text-sand">
+          <div className="rounded-2xl surface-brand p-5 text-sand">
             <p className="font-display text-lg font-semibold text-ivory">{menu.feature.title}</p>
             <p className="mt-2 text-sm leading-relaxed text-sand/85">{menu.feature.body}</p>
             <Link href={menu.feature.href} className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-copper">

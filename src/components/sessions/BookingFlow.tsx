@@ -72,7 +72,7 @@ export function BookingFlow({ types, initialType, mpesaMode }: { types: TypeOpt[
             <>
               <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
                 {days.map((d) => (
-                  <button key={d} type="button" onClick={() => { setDay(d); setSlot(null); }} aria-pressed={d === activeDay} className={cx("shrink-0 rounded-xl px-3 py-2 text-sm font-medium", d === activeDay ? "bg-espresso text-ivory" : "bg-surface-2 text-espresso hover:bg-sand")}>
+                  <button key={d} type="button" onClick={() => { setDay(d); setSlot(null); }} aria-pressed={d === activeDay} className={cx("shrink-0 rounded-xl px-3 py-2 text-sm font-medium", d === activeDay ? "surface-brand text-ivory" : "bg-surface-2 text-espresso hover:bg-sand")}>
                     {d}
                   </button>
                 ))}

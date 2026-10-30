@@ -77,7 +77,7 @@ export function MiniAssessment({ industries, options }: { industries: { slug: st
             {results.map((r, i) => (
               <li key={r.slug}>
                 <Link href={r.href} className="group flex gap-4 rounded-2xl border border-line bg-ivory p-4 hover:border-sand-strong hover:bg-white">
-                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-espresso font-display text-sm font-semibold text-ivory">{i + 1}</span>
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full surface-brand font-display text-sm font-semibold text-ivory">{i + 1}</span>
                   <span>
                     <span className="block font-semibold text-heading group-hover:underline">{r.name}</span>
                     <span className="mt-0.5 block text-sm text-muted">{r.summary}</span>

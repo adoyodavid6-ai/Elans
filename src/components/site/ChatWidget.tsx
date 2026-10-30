@@ -93,14 +93,14 @@ export function ChatWidget() {
   return (
     <div className="no-print">
       {!open && (
-        <button type="button" onClick={() => setOpen(true)} aria-label="Open chat with Elans" className="fixed bottom-20 right-4 z-40 flex h-14 items-center gap-2 rounded-full bg-espresso pl-3 pr-5 text-sm font-semibold text-ivory shadow-[var(--shadow-lift)] hover:bg-brown md:bottom-6 md:right-6">
-          <TreeMark size={32} /> Chat with us
+        <button type="button" onClick={() => setOpen(true)} aria-label="Open chat with Elans" className="fixed bottom-20 right-4 z-40 flex h-14 items-center gap-2 rounded-full surface-brand pl-3 pr-5 text-sm font-semibold text-ivory shadow-[var(--shadow-lift)] hover:bg-brown md:bottom-6 md:right-6">
+          <TreeMark size={32} onBrand /> Chat with us
         </button>
       )}
       {open && (
         <section role="dialog" aria-label="Chat with Elans" className="fixed inset-x-2 bottom-2 z-50 flex max-h-[85dvh] flex-col overflow-hidden rounded-3xl border border-line bg-white shadow-[var(--shadow-lift)] sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[24rem]">
-          <header className="flex items-center gap-3 bg-espresso px-4 py-3 text-ivory">
-            <TreeMark size={32} />
+          <header className="flex items-center gap-3 surface-brand px-4 py-3 text-ivory">
+            <TreeMark size={32} onBrand />
             <div className="flex-1">
               <p className="font-semibold">Elans assistant</p>
               <p className="text-xs text-sand/80">{handedOff ? "A team member will reply here" : "AI assistant · a person can take over"}</p>

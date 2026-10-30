@@ -44,8 +44,8 @@ export default function Brand() {
                     <TreeMark concept={k} size={32} />
                     <span className="font-display text-2xl font-semibold text-espresso">Elans</span>
                   </div>
-                  <div className="mt-4 flex items-center gap-2.5 rounded-xl bg-espresso p-3">
-                    <TreeMark concept={k} size={28} />
+                  <div className="mt-4 flex items-center gap-2.5 rounded-xl surface-brand p-3">
+                    <TreeMark concept={k} size={28} onBrand />
                     <span className="font-display text-xl font-semibold text-ivory">Elans</span>
                   </div>
                   <p className="mt-4 font-semibold text-heading">{name}</p>

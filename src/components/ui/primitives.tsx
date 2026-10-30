@@ -11,7 +11,7 @@ export function Container({ className, children, wide }: { className?: string; c
 }
 
 export function Section({ className, children, tone = "default", id, labelledBy }: { className?: string; children: ReactNode; tone?: "default" | "sand" | "dark" | "white"; id?: string; labelledBy?: string }) {
-  const tones = { default: "", sand: "bg-sand/55", dark: "bg-espresso text-sand", white: "bg-white" };
+  const tones = { default: "", sand: "bg-sand/55", dark: "surface-brand text-sand", white: "bg-white" };
   return (
     <section id={id} aria-labelledby={labelledBy} className={cx("py-16 sm:py-24", tones[tone], className)}>
       {children}
@@ -88,7 +88,7 @@ export function Card({ children, className, as: As = "div", interactive }: { chi
 }
 
 export function Pill({ children, className, tone = "sand" }: { children: ReactNode; className?: string; tone?: "sand" | "dark" | "copper" | "white" }) {
-  const t = { sand: "bg-sand text-espresso", dark: "bg-espresso text-ivory", copper: "bg-copper/15 text-copper-ink", white: "bg-white text-espresso ring-1 ring-line" };
+  const t = { sand: "bg-sand text-espresso", dark: "surface-brand text-ivory", copper: "bg-copper/15 text-copper-ink", white: "bg-white text-espresso ring-1 ring-line" };
   return <span className={cx("inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium", t[tone], className)}>{children}</span>;
 }
 

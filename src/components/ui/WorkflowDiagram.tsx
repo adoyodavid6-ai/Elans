@@ -8,7 +8,7 @@ const KIND: Record<FlowKind, { label: string; icon: string; cls: string }> = {
   wait: { label: "Waiting", icon: "clock", cls: "bg-warning-bg text-warning ring-warning/25" },
   ai: { label: "AI step", icon: "spark", cls: "bg-copper/15 text-copper-ink ring-copper/30" },
   rule: { label: "Rule (deterministic)", icon: "layers", cls: "bg-info-bg text-info ring-info/25" },
-  approval: { label: "Human approval", icon: "shield", cls: "bg-espresso text-ivory ring-espresso" },
+  approval: { label: "Human approval", icon: "shield", cls: "surface-brand text-ivory ring-brown" },
   action: { label: "Action", icon: "bolt", cls: "bg-white text-brown ring-brown/30" },
   outcome: { label: "Outcome", icon: "target", cls: "bg-success-bg text-success ring-success/25" },
   risk: { label: "Risk / leakage", icon: "alert", cls: "bg-danger-bg text-danger ring-danger/25" },

@@ -30,8 +30,8 @@ export default async function About() {
             <p>Elans grows from LassElans and La Mada, earlier ventures in operations agents and growth marketing. Our mark is a growing tree: the roots are the systems, the trunk is the platform and the canopy is your growth.</p>
           </div>
           <aside className="space-y-6">
-            <div className="flex items-center gap-4 rounded-[var(--radius-card)] bg-espresso p-6 text-sand">
-              <TreeMark size={64} />
+            <div className="flex items-center gap-4 rounded-[var(--radius-card)] surface-brand p-6 text-sand">
+              <TreeMark size={64} onBrand />
               <div>
                 <p className="font-display text-2xl font-semibold text-ivory">Elans</p>
                 <p className="text-sm text-sand/80">{cat.settings.tagline}</p>

@@ -120,6 +120,15 @@
   --shadow-lift: 0 2px 4px rgb(43 0 18 / 0.08), 0 24px 48px -24px rgb(43 0 18 / 0.35);
 }
 
+/* Dark brand surfaces (sections, footer, feature panels): #6A012A. The rose accent is lifted to
+   wine-300 inside them so accent text stays readable (6.3:1); white text is 12.7:1. */
+@utility surface-brand {
+  background-color: var(--wine-700);
+  --copper: var(--wine-300);
+  --copper-ink: var(--wine-300);
+  --ring: var(--wine-300);
+}
+
 @layer base {
 html { -webkit-text-size-adjust: 100%; }
 body {

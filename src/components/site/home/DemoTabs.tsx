@@ -13,7 +13,7 @@ export function DemoTabs({ examples }: { examples: IllustrativeExample[] }) {
     <div>
       <div role="tablist" aria-label="Workflow examples" className="flex flex-wrap gap-2">
         {examples.map((e, j) => (
-          <button key={e.slug} role="tab" id={`tab-${e.slug}`} aria-selected={i === j} aria-controls={`panel-${e.slug}`} onClick={() => setI(j)} className={cx("rounded-full px-4 py-2 text-sm font-semibold transition", i === j ? "bg-espresso text-ivory" : "bg-white text-espresso ring-1 ring-line hover:bg-sand/50")}>
+          <button key={e.slug} role="tab" id={`tab-${e.slug}`} aria-selected={i === j} aria-controls={`panel-${e.slug}`} onClick={() => setI(j)} className={cx("rounded-full px-4 py-2 text-sm font-semibold transition", i === j ? "surface-brand text-ivory" : "bg-white text-espresso ring-1 ring-line hover:bg-sand/50")}>
             {e.title}
           </button>
         ))}
