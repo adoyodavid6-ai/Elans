@@ -45,7 +45,7 @@ export default async function ResourcePage({ params }: Props) {
             )}
           </article>
           {related.length > 0 && (
-            <aside className="space-y-4">
+            <aside className="space-y-4 self-start">
               <p className="text-xs font-semibold uppercase tracking-wide text-copper-ink">Related solutions</p>
               {related.map((s) => <SolutionCard key={s.slug} s={s} cat={cat} />)}
             </aside>
