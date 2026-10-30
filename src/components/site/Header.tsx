@@ -67,9 +67,9 @@ export function Header({ menus }: { menus: MegaMenu[] }) {
 
   return (
     <header className="no-print sticky top-0 z-40">
-      {/* Accent line: #04005A on the left half, #6A012A on the right half, meeting in the middle. */}
+      {/* Accent line: #007D7D on the left half, #6A012A on the right half, meeting in the middle. */}
       <div aria-hidden="true" className="flex h-1">
-        <span className="flex-1 bg-[#04005A]" />
+        <span className="flex-1 bg-[#007D7D]" />
         <span className="flex-1 bg-brown" />
       </div>
       {/* Tier 1: main bar */}
