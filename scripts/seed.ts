@@ -75,14 +75,21 @@ async function main() {
         on conflict (id) do nothing`;
     }
 
-    // Staff users
+    // Staff users. The default password is for local development only: on a deployed environment
+    // (Vercel, or NODE_ENV=production) the admin is created only from ELANS_ADMIN_EMAIL/ELANS_ADMIN_PASSWORD.
+    const deployed = Boolean(process.env.VERCEL) || process.env.NODE_ENV === "production";
     const adminEmail = process.env.ELANS_ADMIN_EMAIL ?? "admin@elans.local";
-    const adminPassword = process.env.ELANS_ADMIN_PASSWORD ?? "ElansAdmin!2026";
+    const envPassword = process.env.ELANS_ADMIN_PASSWORD;
     const [admin] = await tx`select id from users where email = ${adminEmail}`;
     if (!admin) {
-      const [u] = await tx`insert into users (email, name, password_hash, staff_role) values (${adminEmail}, 'Elans Admin', ${hashPassword(adminPassword)}, 'admin') returning id`;
-      await tx`insert into memberships (tenant_id, user_id, role) values (${INTERNAL}, ${u.id}, 'owner')`;
-      console.log(`created staff admin ${adminEmail} / ${adminPassword}  (MFA enrolment required at first login)`);
+      if (deployed && (!envPassword || envPassword.length < 14)) {
+        console.warn("skipped staff admin: set ELANS_ADMIN_EMAIL and ELANS_ADMIN_PASSWORD (14+ characters) to create one on a deployed environment");
+      } else {
+        const adminPassword = envPassword ?? "ElansAdmin!2026";
+        const [u] = await tx`insert into users (email, name, password_hash, staff_role) values (${adminEmail}, 'Elans Admin', ${hashPassword(adminPassword)}, 'admin') returning id`;
+        await tx`insert into memberships (tenant_id, user_id, role) values (${INTERNAL}, ${u.id}, 'owner')`;
+        console.log(`created staff admin ${adminEmail}${envPassword ? "" : ` / ${adminPassword}`}  (MFA enrolment required at first login)`);
+      }
     }
 
     // Demo client user (illustrative tenant only; no MFA requirement for the demo tenant)

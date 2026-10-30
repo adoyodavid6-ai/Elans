@@ -34,12 +34,40 @@ hypotheses in reports, AI answers in chat, image/PDF invoice extraction and the 
 
 | Where | How |
 |---|---|
-| Ops console `/ops/login` | `admin@elans.local` / `ElansAdmin!2026` — you will be asked to enrol an authenticator app. **Change both before any deployment.** |
+| Ops console `/ops/login` | Locally: `admin@elans.local` / `ElansAdmin!2026` (you will be asked to enrol an authenticator app). On a deployed environment this default is never created: set `ELANS_ADMIN_EMAIL` and `ELANS_ADMIN_PASSWORD` instead. |
 | Client portal demo | Open `/portal/demo` (or "Open the demo workspace" on `/portal/login`). Illustrative data only. |
 
 Suggested demo path: `/portal/demo?next=/portal/automations/etims` → upload or simulate an invoice →
 **Approvals** (edit and approve a supplier request) → **Agents & Conversations** (order 20 bags of cement,
 then send the code shown) → **Reports** (print the monthly report).
+
+## Deploying to Vercel
+
+The public site runs without a database (it falls back to built-in content). The **client portal, the
+demo workspace (`/portal/demo`), the staff console and the forms need Postgres**. Without it,
+`/portal/demo` shows a "not available on this deployment yet" message.
+
+1. **Create a Postgres 16 database** (e.g. Neon from the Vercel Marketplace, or Supabase). Use its
+   *pooled* connection string where offered, with `sslmode=require`.
+2. **Choose an app role.** The app must connect as a role that cannot bypass row-level security.
+   Pick a name and password, e.g. `elans_app`; the first deploy creates it.
+3. **Add environment variables** in Vercel → Project → Settings → Environment Variables (Production):
+
+   | Variable | Value |
+   |---|---|
+   | `DATABASE_ADMIN_URL` | Owner connection string from your provider |
+   | `DATABASE_URL` | Same host and database, with the app role: `postgres://elans_app:<password>@<host>/<db>?sslmode=require` |
+   | `SESSION_SECRET` | A long random string (`openssl rand -hex 32`) |
+   | `NEXT_PUBLIC_SITE_URL` | Your site URL, e.g. `https://lasselanselans.vercel.app` |
+   | `ELANS_ADMIN_EMAIL`, `ELANS_ADMIN_PASSWORD` | Staff console admin (password 14+ characters) |
+   | `MPESA_ENV` | `mock` until Daraja credentials exist |
+
+4. **Redeploy.** The `vercel-build` script applies migrations, seeds content and the demo workspace,
+   then builds. Every later deploy re-applies pending migrations and rebuilds the demo data (edits made
+   in the console are kept).
+
+Scope the database variables to Production only (or give Preview its own database), otherwise
+preview deployments run migrations against production.
 
 ## Commands
 

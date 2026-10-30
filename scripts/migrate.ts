@@ -20,20 +20,37 @@ const appPassword = decodeURIComponent(new URL(appUrl).password);
 
 async function main() {
   const reset = process.argv.includes("--reset");
-  const server = new URL(adminUrl!);
-  server.pathname = "/postgres";
-  const root = postgres(server.toString(), { max: 1, onnotice: () => {} });
-  if (reset) {
-    if (process.env.NODE_ENV === "production") throw new Error("Refusing to reset in production");
-    await root.unsafe(`drop database if exists "${dbName}" with (force)`);
+  // Hosted Postgres (Neon, Supabase, RDS) usually provides the database already and may not allow
+  // connecting to the "postgres" maintenance database, so that step only runs when needed.
+  const canReachTarget = await (async () => {
+    if (reset) return false;
+    const probe = postgres(adminUrl!, { max: 1, onnotice: () => {}, connect_timeout: 15 });
+    try {
+      await probe`select 1`;
+      return true;
+    } catch {
+      return false;
+    } finally {
+      await probe.end();
+    }
+  })();
+  if (!canReachTarget) {
+    const server = new URL(adminUrl!);
+    server.pathname = "/postgres";
+    const root = postgres(server.toString(), { max: 1, onnotice: () => {} });
+    if (reset) {
+      if (process.env.NODE_ENV === "production" || process.env.VERCEL) throw new Error("Refusing to reset in production");
+      await root.unsafe(`drop database if exists "${dbName}" with (force)`);
+    }
+    const exists = await root`select 1 from pg_database where datname = ${dbName}`;
+    if (!exists.length) await root.unsafe(`create database "${dbName}"`);
+    await root.end();
   }
-  const exists = await root`select 1 from pg_database where datname = ${dbName}`;
-  if (!exists.length) await root.unsafe(`create database "${dbName}"`);
-  const role = await root`select 1 from pg_roles where rolname = ${appRole}`;
-  if (!role.length) await root.unsafe(`create role "${appRole}" login password '${appPassword.replace(/'/g, "''")}' nobypassrls`);
-  await root.end();
 
   const db = postgres(adminUrl!, { max: 1, onnotice: () => {} });
+  const role = await db`select 1 from pg_roles where rolname = ${appRole}`;
+  if (!role.length) await db.unsafe(`create role "${appRole}" login password '${appPassword.replace(/'/g, "''")}' nobypassrls`);
+  if (appRole === decodeURIComponent(target.username)) console.warn("WARNING: DATABASE_URL uses the owner role, so row-level security is bypassed. Use a separate app role (see README).");
   await db`create table if not exists schema_migrations (name text primary key, applied_at timestamptz not null default now())`;
   const dir = path.join(process.cwd(), "db", "migrations");
   const files = fs.readdirSync(dir).filter((f) => f.endsWith(".sql")).sort();

@@ -5,7 +5,7 @@ import QRCode from "qrcode";
 import { authenticate, currentUser, endSession, getMfaSecret, markMfaPassed, newTotpSecret, setMfaSecret, startSession, totpFor, verifyTotp } from "@/lib/auth";
 import { clientIp, userAgent } from "@/lib/request";
 import { rateLimit } from "@/lib/security";
-import { withDb } from "@/lib/db";
+import { dbConfigured, withDb } from "@/lib/db";
 import { audit } from "@/lib/audit";
 import type { FormState } from "@/components/forms/fields";
 
@@ -14,6 +14,7 @@ type Area = "ops" | "portal";
 export async function login(area: Area, _: FormState, fd: FormData): Promise<FormState> {
   const email = String(fd.get("email") ?? "").trim();
   const password = String(fd.get("password") ?? "");
+  if (!dbConfigured()) return { ok: false, message: "Sign-in is not available on this deployment yet. Please try again later." };
   const ip = await clientIp();
   if (!rateLimit(`login:${ip}`, 10, 15 * 60_000).ok || !rateLimit(`login:${email.toLowerCase()}`, 8, 15 * 60_000).ok) return { ok: false, message: "Too many attempts. Please wait 15 minutes." };
   const u = await authenticate(email, password).catch(() => null);
