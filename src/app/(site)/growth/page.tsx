@@ -40,7 +40,7 @@ export default async function GrowthPage() {
               <section key={d} aria-labelledby={`div-${d}`} className="grid gap-6 lg:grid-cols-[1fr_2fr]">
                 <div>
                   <Eyebrow>{div.tagline}</Eyebrow>
-                  <h2 id={`div-${d}`} className="mt-2 font-display text-3xl font-semibold">
+                  <h2 id={`div-${d}`} className="mt-2 font-display text-3xl font-bold">
                     {div.name}
                   </h2>
                   <p className="mt-3 text-muted">{div.description}</p>
@@ -68,7 +68,7 @@ export default async function GrowthPage() {
       <Section tone="sand" labelledBy="retainers-h">
         <Container>
           <Eyebrow>Marketing retainers</Eyebrow>
-          <h2 id="retainers-h" className="mt-2 font-display text-3xl font-semibold">
+          <h2 id="retainers-h" className="mt-2 font-display text-3xl font-bold">
             Three ways to grow with us
           </h2>
           <ul className="mt-8 grid gap-4 md:grid-cols-3">
@@ -76,7 +76,7 @@ export default async function GrowthPage() {
               const p = priceLabel(cat, t.priceKey);
               return (
                 <li key={t.key} className={cx("flex flex-col rounded-[var(--radius-card)] p-6 ring-1", i === 1 ? "surface-brand text-sand ring-brown" : "bg-white ring-line")}>
-                  <p className={cx("font-display text-2xl font-semibold", i === 1 ? "text-ivory" : "text-heading")}>{t.name}</p>
+                  <p className={cx("font-display text-2xl font-bold", i === 1 ? "text-ivory" : "text-heading")}>{t.name}</p>
                   <p className={cx("text-sm", i === 1 ? "text-sand/75" : "text-muted")}>{t.forWho}</p>
                   <p className={cx("mt-4 font-semibold", i === 1 ? "text-ivory" : "text-heading")}>
                     From {p.text}/month {!p.confirmed && <IndicativeTag />}

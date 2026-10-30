@@ -9,7 +9,7 @@ Ordered by the **earliest stage it blocks**. P0 = needed before or during Stage 
 | P0 | Legal entity name & registration no. | Footer, legal pages, invoices, contracts | — | | |
 | P0 | Company contact details (address, phone, email, WhatsApp number) | Contact page, NAP data for GEO, chat | — | WA number needs Meta verification | |
 | P0 | `{{MARKET_SCOPE_CONFIRM}}` | Home and About copy | Kenya-led, East Africa + international section (D-002) | | |
-| P0 | `{{TYPEFACES}}` | Stage 1 | Two pairings proposed at Stage 1 | Licence cost if not open-source | |
+| P0 | `{{TYPEFACES}}` | Stage 1 | Plus Jakarta Sans adopted (D-042); open-source, no licence cost | — | |
 | P0 | `{{MADA_TM_CONFIRM}}` | Grow copy | Use "MADA Growth Engine™" (™ only — never ® unless registered) | Trademark search | |
 | P0 | Trademark clearance for "Elans" (Kenya KIPI + key markets) | Logo sign-off | — | Yes | |
 | P0 | Status of **LedgerLock, MezaTap, Fondly, LassElans** assets — existing code/repos to reuse, or concepts only? | Stage 2 copy, Stages 10–12 | Treated as concepts (no reuse) until shown | | |

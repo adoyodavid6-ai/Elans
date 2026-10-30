@@ -29,7 +29,7 @@ export default async function CaseStudies() {
                     <IllustrativeTag />
                     <Eyebrow>{cat.industries.find((i) => i.slug === e.industry)?.short}</Eyebrow>
                   </div>
-                  <h2 id={`ex-${e.slug}`} className="mt-3 font-display text-3xl font-semibold">{e.title}</h2>
+                  <h2 id={`ex-${e.slug}`} className="mt-3 font-display text-3xl font-bold">{e.title}</h2>
                   <p className="mt-2 max-w-3xl text-muted">{e.scenario}</p>
                   <BeforeAfter className="mt-6" before={e.before} after={e.after} />
                   <p className="mt-4 text-sm">

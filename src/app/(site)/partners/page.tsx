@@ -19,7 +19,7 @@ export default function Partners() {
             ].map((p) => (
               <section key={p.t} className="rounded-[var(--radius-card)] border border-line bg-white p-6">
                 <div className="flex items-center justify-between gap-2">
-                  <h2 className="font-display text-2xl font-semibold">{p.t}</h2>
+                  <h2 className="font-display text-2xl font-bold">{p.t}</h2>
                   <StatusBadge status={p.s} />
                 </div>
                 <CheckList className="mt-4" items={p.items} />
@@ -31,7 +31,7 @@ export default function Partners() {
             </div>
           </div>
           <div className="rounded-[var(--radius-card)] border border-line bg-white p-6 sm:p-8">
-            <h2 className="font-display text-2xl font-semibold">Register interest</h2>
+            <h2 className="font-display text-2xl font-bold">Register interest</h2>
             <p className="mt-2 text-sm text-muted">The programme is opening to a small first cohort. We will contact you within five business days.</p>
             <PartnerForm />
           </div>

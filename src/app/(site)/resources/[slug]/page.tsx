@@ -39,7 +39,7 @@ export default async function ResourcePage({ params }: Props) {
             <Markdown source={r.body} />
             {r.faqs && (
               <div className="mt-10">
-                <h2 className="mb-4 font-display text-2xl font-semibold">Questions</h2>
+                <h2 className="mb-4 font-display text-2xl font-bold">Questions</h2>
                 <Faqs items={r.faqs} />
               </div>
             )}

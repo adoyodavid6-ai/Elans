@@ -42,7 +42,7 @@ export default async function Trust() {
       <Section tone="sand">
         <Container className="max-w-3xl">
           <Eyebrow>Responsible disclosure</Eyebrow>
-          <h2 className="mt-2 font-display text-3xl font-semibold">Found a security issue?</h2>
+          <h2 className="mt-2 font-display text-3xl font-bold">Found a security issue?</h2>
           <p className="mt-3 text-muted">Please report it through our contact form with the topic &quot;Security&quot;. We will acknowledge within two business days and keep you informed.</p>
         </Container>
       </Section>

@@ -27,7 +27,7 @@ export default async function AssessmentReview({ params }: Props) {
             <ol className="space-y-4">
               {s.opportunities.map((o) => (
                 <li key={o.slug} className="rounded-xl border border-line p-4">
-                  <div className="flex items-center justify-between"><p className="font-semibold">{o.name}</p><span className="font-display text-xl font-semibold">{o.score}</span></div>
+                  <div className="flex items-center justify-between"><p className="font-semibold">{o.name}</p><span className="font-display text-xl font-bold">{o.score}</span></div>
                   {o.flag !== "none" && <Badge tone="warn">Human review required</Badge>}
                   <p className="mt-2 text-sm text-muted">{o.rationale}</p>
                   <p className="mt-2 rounded-lg bg-surface-2 p-2 text-sm"><strong>Hypothesis:</strong> {o.hypothesis}</p>

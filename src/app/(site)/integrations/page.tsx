@@ -31,7 +31,7 @@ export default async function IntegrationsPage() {
           <div className="space-y-10">
             {groups.map((g) => (
               <section key={g} aria-labelledby={`g-${g}`}>
-                <h2 id={`g-${g}`} className="font-display text-2xl font-semibold">{g}</h2>
+                <h2 id={`g-${g}`} className="font-display text-2xl font-bold">{g}</h2>
                 <ul className="mt-4 grid gap-3 md:grid-cols-2">
                   {cat.integrations.filter((i) => i.category === g).map((i) => (
                     <li key={i.slug} className="flex items-start justify-between gap-4 rounded-2xl border border-line bg-white p-4">

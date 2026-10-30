@@ -17,9 +17,9 @@ export default function HowItWorks() {
           <ol className="relative space-y-6 before:absolute before:left-6 before:top-4 before:h-[calc(100%-2rem)] before:w-px before:bg-line md:before:left-8">
             {method.map((m, i) => (
               <li key={m.key} className="relative grid gap-4 pl-16 md:grid-cols-[1fr_1.2fr] md:pl-24">
-                <span className="absolute left-0 top-0 grid h-12 w-12 place-items-center rounded-full surface-brand font-display text-lg font-semibold text-ivory md:h-16 md:w-16 md:text-2xl">{i + 1}</span>
+                <span className="absolute left-0 top-0 grid h-12 w-12 place-items-center rounded-full surface-brand font-display text-lg font-bold text-ivory md:h-16 md:w-16 md:text-2xl">{i + 1}</span>
                 <div>
-                  <h2 className="font-display text-2xl font-semibold">{m.name}</h2>
+                  <h2 className="font-display text-2xl font-bold">{m.name}</h2>
                   <p className="text-sm font-medium text-copper-ink">{m.duration}</p>
                   <p className="mt-2 text-muted">{m.summary}</p>
                 </div>
@@ -37,7 +37,7 @@ export default function HowItWorks() {
       <Section tone="sand" labelledBy="principles-h">
         <Container>
           <Eyebrow>Engineering principles</Eyebrow>
-          <h2 id="principles-h" className="mt-2 font-display text-3xl font-semibold">How we build so it keeps working</h2>
+          <h2 id="principles-h" className="mt-2 font-display text-3xl font-bold">How we build so it keeps working</h2>
           <div className="mt-4"><FlowLegend /></div>
           <ul className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {[

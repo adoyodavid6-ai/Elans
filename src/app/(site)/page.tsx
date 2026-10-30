@@ -191,7 +191,7 @@ export default async function Home() {
                 .filter((d) => ["grow", "studio", "relate", "intelligence"].includes(d.key))
                 .map((d) => (
                   <li key={d.key} className="rounded-[var(--radius-card)] border border-line bg-white p-6">
-                    <p className="font-display text-xl font-semibold text-heading">{d.name}</p>
+                    <p className="font-display text-xl font-bold text-heading">{d.name}</p>
                     <p className="mt-1 text-sm font-medium text-copper-ink">{d.tagline}</p>
                     <p className="mt-3 text-sm leading-relaxed text-muted">{d.description}</p>
                   </li>
@@ -256,7 +256,7 @@ export default async function Home() {
           <ol className="mt-10 grid gap-4 md:grid-cols-3 lg:grid-cols-6">
             {method.map((m, i) => (
               <li key={m.key} className="relative rounded-[var(--radius-card)] bg-white p-5 ring-1 ring-line">
-                <span className="font-display text-3xl font-semibold text-copper">{String(i + 1).padStart(2, "0")}</span>
+                <span className="font-display text-3xl font-bold text-copper">{String(i + 1).padStart(2, "0")}</span>
                 <p className="mt-2 font-semibold text-heading">{m.name}</p>
                 <p className="mt-0.5 text-xs font-medium text-copper-ink">{m.duration}</p>
                 <p className="mt-2 text-sm leading-relaxed text-muted">{m.summary}</p>
@@ -429,7 +429,7 @@ export default async function Home() {
           <ul className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {cat.packages.map((p, i) => (
               <li key={p.key} className={cx("flex flex-col rounded-[var(--radius-card)] p-6 ring-1", i === 1 ? "surface-brand text-sand ring-brown" : "bg-white ring-line")}>
-                <p className={cx("font-display text-xl font-semibold", i === 1 ? "text-ivory" : "text-heading")}>{p.name}</p>
+                <p className={cx("font-display text-xl font-bold", i === 1 ? "text-ivory" : "text-heading")}>{p.name}</p>
                 <p className={cx("mt-1 text-sm", i === 1 ? "text-sand/80" : "text-muted")}>{p.forWho}</p>
                 <div className="mt-5 flex-1">
                   {p.key === "enterprise" ? (

@@ -60,7 +60,7 @@ export default async function SolutionsPage() {
       </Section>
       <Section tone="sand" labelledBy="by-function">
         <Container>
-          <h2 id="by-function" className="font-display text-2xl font-semibold">
+          <h2 id="by-function" className="font-display text-2xl font-bold">
             Browse by business function
           </h2>
           <div className="mt-6 grid gap-8 md:grid-cols-2 lg:grid-cols-3">

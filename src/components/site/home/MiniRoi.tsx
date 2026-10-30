@@ -16,7 +16,7 @@ export function MiniRoi({ setup, monthly }: { setup: number; monthly: number }) 
         <label htmlFor={id} className="text-sm font-medium text-sand">
           {label}
         </label>
-        <output htmlFor={id} className="font-display text-lg font-semibold text-ivory">
+        <output htmlFor={id} className="font-display text-lg font-bold text-ivory">
           {formatNumber(value)}
           {suffix}
         </output>
@@ -41,7 +41,7 @@ export function MiniRoi({ setup, monthly }: { setup: number; monthly: number }) 
         ].map(([l, v, h]) => (
           <div key={l} className="rounded-2xl bg-white/6 p-4 ring-1 ring-white/10">
             <p className="text-xs uppercase tracking-wide text-sand/70">{l}</p>
-            <p className="mt-1 font-display text-2xl font-semibold text-ivory">{v}</p>
+            <p className="mt-1 font-display text-2xl font-bold text-ivory">{v}</p>
             <p className="text-xs text-sand/60">{h}</p>
           </div>
         ))}

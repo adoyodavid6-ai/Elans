@@ -126,10 +126,9 @@
   --color-info: var(--info);
   --color-info-bg: var(--info-bg);
 
-  --font-display: "Fraunces Variable", Georgia, "Times New Roman", serif;
-  --font-sans: "Inter Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-alt-display: "Newsreader Variable", Georgia, serif;
-  --font-alt-sans: "Manrope Variable", system-ui, sans-serif;
+  /* One family throughout (D-042): Plus Jakarta Sans, variable 200–800. */
+  --font-display: "Plus Jakarta Sans Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: "Plus Jakarta Sans Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
 
   --radius-card: 1.25rem;
   --shadow-soft: 0 1px 2px rgb(43 0 18 / 0.06), 0 8px 24px -12px rgb(43 0 18 / 0.18);
@@ -158,11 +157,15 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
-  font-feature-settings: "cv11", "ss01";
+  font-feature-settings: "kern", "liga";
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 h1, h2, h3, h4 { color: var(--heading); text-wrap: balance; }
+/* Display text: bolder and slightly tighter, as the sans replaces a serif for headings. */
+.font-display { letter-spacing: -0.022em; }
+/* Aligned figures in tables and money values. */
+table, .tabular-nums { font-variant-numeric: tabular-nums; }
 /* Grid items may shrink below their content's min width (prevents mobile overflow). */
 .grid > * { min-width: 0; }
 p { text-wrap: pretty; }
@@ -181,7 +184,7 @@ p { text-wrap: pretty; }
 
 /* Long-form copy (resources, legal) */
 .prose-elans { max-width: 70ch; line-height: 1.7; }
-.prose-elans h2 { font-family: var(--font-display); font-size: 1.6rem; margin: 2.25rem 0 0.75rem; }
+.prose-elans h2 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em; font-size: 1.6rem; margin: 2.25rem 0 0.75rem; }
 .prose-elans h3 { font-weight: 650; font-size: 1.15rem; margin: 1.75rem 0 0.5rem; }
 .prose-elans p, .prose-elans ul, .prose-elans ol { margin: 0 0 1rem; }
 .prose-elans ul { list-style: disc; padding-left: 1.25rem; }

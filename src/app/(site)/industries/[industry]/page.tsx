@@ -56,7 +56,7 @@ export default async function IndustryPage({ params }: Props) {
           <section className="grid gap-8 lg:grid-cols-[1.3fr_1fr]">
             <div>
               <Eyebrow>Context</Eyebrow>
-              <h2 className="mt-2 font-display text-3xl font-semibold">What is happening in your sector</h2>
+              <h2 className="mt-2 font-display text-3xl font-bold">What is happening in your sector</h2>
               <p className="mt-4 text-lg leading-relaxed">{ind.context}</p>
             </div>
             <Card className="bg-teal-50">
@@ -73,7 +73,7 @@ export default async function IndustryPage({ params }: Props) {
 
           <section>
             <Eyebrow>Operational challenges</Eyebrow>
-            <h2 className="mt-2 font-display text-3xl font-semibold">The challenges we hear most</h2>
+            <h2 className="mt-2 font-display text-3xl font-bold">The challenges we hear most</h2>
             <ul className="mt-6 grid gap-4 md:grid-cols-2">
               {ind.challenges.map((c) => (
                 <li key={c.title} className="rounded-2xl border border-line bg-white p-5">
@@ -87,7 +87,7 @@ export default async function IndustryPage({ params }: Props) {
           <section className="grid gap-8 lg:grid-cols-2">
             <div>
               <Eyebrow>Frequent manual tasks</Eyebrow>
-              <h2 className="mt-2 font-display text-2xl font-semibold">Repetitive work worth automating</h2>
+              <h2 className="mt-2 font-display text-2xl font-bold">Repetitive work worth automating</h2>
               <CheckList className="mt-5" items={ind.repetitiveTasks} />
             </div>
             <div>
@@ -100,7 +100,7 @@ export default async function IndustryPage({ params }: Props) {
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
                 <Eyebrow>High-value opportunities</Eyebrow>
-                <h2 className="mt-2 font-display text-3xl font-semibold">Where to start, in order</h2>
+                <h2 className="mt-2 font-display text-3xl font-bold">Where to start, in order</h2>
                 <p className="mt-2 text-sm text-muted">Ordered by typical fit for {ind.short.toLowerCase()} and the Elans Opportunity Score. Your assessment re-ranks them for your business.</p>
               </div>
             </div>
@@ -108,7 +108,7 @@ export default async function IndustryPage({ params }: Props) {
               {solutions.map((s, idx) => (
                 <li key={s.slug}>
                   <Link href={`/solutions/${s.category}/${s.slug}`} className="group grid gap-3 rounded-2xl border border-line bg-white p-5 transition hover:shadow-[var(--shadow-soft)] md:grid-cols-[3rem_1fr_auto] md:items-center">
-                    <span className="font-display text-2xl font-semibold text-copper">{String(idx + 1).padStart(2, "0")}</span>
+                    <span className="font-display text-2xl font-bold text-copper">{String(idx + 1).padStart(2, "0")}</span>
                     <span>
                       <span className="flex flex-wrap items-center gap-2">
                         <span className="font-semibold text-heading group-hover:underline">{s.name}</span>
@@ -171,7 +171,7 @@ export default async function IndustryPage({ params }: Props) {
               {packs.map((p) => (
                 <div key={p.slug} className="mt-3 grid gap-6 lg:grid-cols-[1.5fr_1fr] lg:items-center">
                   <div>
-                    <h2 className="font-display text-3xl font-semibold text-ivory">{p.name}</h2>
+                    <h2 className="font-display text-3xl font-bold text-ivory">{p.name}</h2>
                     <p className="mt-2 text-sand/85">{p.summary}</p>
                     <p className="mt-3 text-sm text-sand/70">Ideal for: {p.idealFor}</p>
                   </div>

@@ -142,7 +142,7 @@ export default async function SolutionPage({ params }: Props) {
           <section id="problem" className="grid scroll-mt-24 lg:scroll-mt-[8.5rem] gap-8 lg:grid-cols-[1.4fr_1fr]">
             <div>
               <Eyebrow>1 · Problem statement</Eyebrow>
-              <h2 className="mt-2 font-display text-3xl font-semibold">The problem</h2>
+              <h2 className="mt-2 font-display text-3xl font-bold">The problem</h2>
               <p className="mt-4 text-lg leading-relaxed text-text">{s.problem}</p>
             </div>
             <div className="rounded-[var(--radius-card)] bg-teal-50 p-6">
@@ -154,7 +154,7 @@ export default async function SolutionPage({ params }: Props) {
           <section id="workflow" className="scroll-mt-24 lg:scroll-mt-[8.5rem]">
             <Eyebrow>3–4 · Current vs automated workflow</Eyebrow>
             <div className="mt-2 flex flex-wrap items-end justify-between gap-4">
-              <h2 className="font-display text-3xl font-semibold">Before & after</h2>
+              <h2 className="font-display text-3xl font-bold">Before & after</h2>
               <FlowLegend />
             </div>
             <BeforeAfter className="mt-6" before={s.manualFlow} after={s.automatedFlow} />
@@ -162,7 +162,7 @@ export default async function SolutionPage({ params }: Props) {
 
           <section id="capabilities" className="scroll-mt-24 lg:scroll-mt-[8.5rem]">
             <Eyebrow>5 · Main capabilities</Eyebrow>
-            <h2 className="mt-2 font-display text-3xl font-semibold">What it does</h2>
+            <h2 className="mt-2 font-display text-3xl font-bold">What it does</h2>
             <ul className="mt-6 grid gap-3 md:grid-cols-2">
               {s.capabilities.map((cap) => (
                 <li key={cap} className="flex gap-3 rounded-2xl border border-line bg-white p-4">
@@ -176,7 +176,7 @@ export default async function SolutionPage({ params }: Props) {
           <section id="data" className="grid scroll-mt-24 lg:scroll-mt-[8.5rem] gap-8 lg:grid-cols-2">
             <div>
               <Eyebrow>6 · Required data</Eyebrow>
-              <h2 className="mt-2 font-display text-3xl font-semibold">What we need from you</h2>
+              <h2 className="mt-2 font-display text-3xl font-bold">What we need from you</h2>
               <CheckList className="mt-5" items={s.dataRequired} />
             </div>
             <div>
@@ -201,14 +201,14 @@ export default async function SolutionPage({ params }: Props) {
           <section id="results" className="grid scroll-mt-24 lg:scroll-mt-[8.5rem] gap-8 lg:grid-cols-2">
             <div>
               <Eyebrow>7 · Expected operational benefits</Eyebrow>
-              <h2 className="mt-2 font-display text-3xl font-semibold">Benefits</h2>
+              <h2 className="mt-2 font-display text-3xl font-bold">Benefits</h2>
               <CheckList className="mt-5" items={s.benefits} />
               <p className="mt-4 text-xs text-muted">Benefits are described qualitatively. We measure your actual results against a baseline captured before go-live.</p>
             </div>
             <div className="rounded-[var(--radius-card)] surface-brand p-6 text-sand">
               <Eyebrow tone="light">8 · Success indicators</Eyebrow>
               <p className="mt-3 text-sm text-sand/70">Owner metric</p>
-              <p className="font-display text-xl font-semibold text-ivory">{s.ownerMetric}</p>
+              <p className="font-display text-xl font-bold text-ivory">{s.ownerMetric}</p>
               <ul className="mt-5 space-y-2 text-sm">
                 {s.successIndicators.map((x) => (
                   <li key={x} className="flex gap-2">
@@ -221,7 +221,7 @@ export default async function SolutionPage({ params }: Props) {
 
           <section id="approvals" className="scroll-mt-24 lg:scroll-mt-[8.5rem]">
             <Eyebrow>9 · Human approval points</Eyebrow>
-            <h2 className="mt-2 font-display text-3xl font-semibold">What people stay in control of</h2>
+            <h2 className="mt-2 font-display text-3xl font-bold">What people stay in control of</h2>
             <ul className="mt-6 grid gap-3 md:grid-cols-2">
               {s.approvalPoints.map((a) => (
                 <li key={a} className="flex gap-3 rounded-2xl border border-espresso/15 bg-white p-4">
@@ -265,7 +265,7 @@ export default async function SolutionPage({ params }: Props) {
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
                 <Eyebrow>13 · Demo</Eyebrow>
-                <h2 id="demo-h" className="mt-2 font-display text-2xl font-semibold">
+                <h2 id="demo-h" className="mt-2 font-display text-2xl font-bold">
                   See it working
                 </h2>
                 <p className="mt-2 max-w-xl text-sm text-muted">
@@ -290,7 +290,7 @@ export default async function SolutionPage({ params }: Props) {
           <section id="faqs" className="grid scroll-mt-24 lg:scroll-mt-[8.5rem] gap-8 lg:grid-cols-[1fr_1.6fr]">
             <div>
               <Eyebrow>14 · FAQs</Eyebrow>
-              <h2 className="mt-2 font-display text-3xl font-semibold">Questions about {s.name}</h2>
+              <h2 className="mt-2 font-display text-3xl font-bold">Questions about {s.name}</h2>
             </div>
             <Faqs items={s.faqs} />
           </section>
@@ -300,7 +300,7 @@ export default async function SolutionPage({ params }: Props) {
       {(related.length > 0 || industries.length > 0) && (
         <Section tone="sand" labelledBy="related-h">
           <Container>
-            <h2 id="related-h" className="font-display text-2xl font-semibold">
+            <h2 id="related-h" className="font-display text-2xl font-bold">
               Related solutions
             </h2>
             <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

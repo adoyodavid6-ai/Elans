@@ -33,7 +33,7 @@ export default async function About() {
             <div className="flex items-center gap-4 rounded-[var(--radius-card)] surface-brand p-6 text-sand">
               <TreeMark size={64} onBrand />
               <div>
-                <p className="font-display text-2xl font-semibold text-ivory">Elans</p>
+                <p className="font-display text-2xl font-bold text-ivory">Elans</p>
                 <p className="text-sm text-sand/80">{cat.settings.tagline}</p>
               </div>
             </div>

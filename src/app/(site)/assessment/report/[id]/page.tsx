@@ -50,7 +50,7 @@ export default async function ReportPage({ params }: Props) {
               <TreeMark size={36} onBrand />
               <p className="text-sm font-semibold uppercase tracking-[0.14em] text-copper">Elans · Preliminary AI Opportunity report</p>
             </div>
-            <h1 className="mt-5 font-display text-3xl font-semibold text-ivory sm:text-5xl">{r.organisation}</h1>
+            <h1 className="mt-5 font-display text-3xl font-bold text-ivory sm:text-5xl">{r.organisation}</h1>
             <p className="mt-2 text-sand/80">{r.industryName} · prepared {new Date(r.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}</p>
             <div className="mt-6 rounded-2xl bg-white/5 p-4 ring-1 ring-white/10">
               <Kind k="hypothesis" ai={isAi} />
@@ -85,7 +85,7 @@ export default async function ReportPage({ params }: Props) {
 
           <section className="mt-12" aria-labelledby="opps-h">
             <Eyebrow>Top automation opportunities</Eyebrow>
-            <h2 id="opps-h" className="mt-2 font-display text-3xl font-semibold">Ranked by the Elans Opportunity Score</h2>
+            <h2 id="opps-h" className="mt-2 font-display text-3xl font-bold">Ranked by the Elans Opportunity Score</h2>
             <p className="mt-2 text-sm text-muted">Scored 0–100 across 11 weighted criteria (weights version {r.weightVersion ?? "default"}). Scores compare options for your business; they are not probabilities of success.</p>
             {r.opportunities.length === 0 ? (
               <Callout tone="info" className="mt-6">No catalogue solution matched strongly. That usually means a custom design. A Strategy Session is the best next step.</Callout>
@@ -95,7 +95,7 @@ export default async function ReportPage({ params }: Props) {
                   <li key={o.slug} className="rounded-[var(--radius-card)] border border-line bg-white p-5 sm:p-7">
                     <div className="flex flex-wrap items-start justify-between gap-4">
                       <div className="flex items-start gap-4">
-                        <span className="font-display text-3xl font-semibold text-copper">{i + 1}</span>
+                        <span className="font-display text-3xl font-bold text-copper">{i + 1}</span>
                         <div>
                           <h3 className="text-xl font-semibold text-heading">
                             <Link href={o.href} className="hover:underline">{o.name}</Link>
@@ -108,7 +108,7 @@ export default async function ReportPage({ params }: Props) {
                       </div>
                       <div className="text-right">
                         <Kind k="estimate" />
-                        <p className="mt-1 font-display text-4xl font-semibold text-heading">{o.score}<span className="text-lg text-muted">/100</span></p>
+                        <p className="mt-1 font-display text-4xl font-bold text-heading">{o.score}<span className="text-lg text-muted">/100</span></p>
                       </div>
                     </div>
                     {o.flag === "human_review" && (
@@ -165,7 +165,7 @@ export default async function ReportPage({ params }: Props) {
           <section className="mt-12 grid gap-6 lg:grid-cols-2" aria-label="Estimates and growth">
             <div className="rounded-[var(--radius-card)] border border-line bg-white p-6">
               <Kind k="estimate" />
-              <h2 className="mt-2 font-display text-2xl font-semibold">Indicative ROI inputs</h2>
+              <h2 className="mt-2 font-display text-2xl font-bold">Indicative ROI inputs</h2>
               <ul className="mt-4 space-y-4">
                 {r.estimates.map((e) => (
                   <li key={e.label}>
@@ -199,7 +199,7 @@ export default async function ReportPage({ params }: Props) {
           <section className="mt-12 grid gap-6 lg:grid-cols-[1fr_1.2fr]" aria-label="Recommendation and next steps">
             <div className="rounded-[var(--radius-card)] bg-teal-50 p-6">
               <Eyebrow>Recommended package</Eyebrow>
-              <p className="mt-2 font-display text-2xl font-semibold">{r.package.name}</p>
+              <p className="mt-2 font-display text-2xl font-bold">{r.package.name}</p>
               <p className="mt-2 text-sm">{r.package.reason}</p>
               <div className="mt-3"><PackageFrom cat={cat} pkg={r.package.key as "launch"} /></div>
             </div>
@@ -215,7 +215,7 @@ export default async function ReportPage({ params }: Props) {
 
           <section className="mt-12 rounded-[var(--radius-card)] border border-line bg-white p-6" aria-labelledby="told-h">
             <Kind k="told" />
-            <h2 id="told-h" className="mt-2 font-display text-2xl font-semibold">What you told us</h2>
+            <h2 id="told-h" className="mt-2 font-display text-2xl font-bold">What you told us</h2>
             <dl className="mt-4 divide-y divide-line text-sm">
               {r.toldUs.map((t) => (
                 <div key={t.label} className="grid gap-1 py-2.5 sm:grid-cols-[12rem_1fr]">

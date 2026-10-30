@@ -53,7 +53,7 @@ export default async function PackagePage({ params }: Props) {
               <ol className="mt-3 space-y-2">
                 {p.process.map((s, i) => (
                   <li key={s} className="flex gap-3 rounded-xl border border-line bg-white p-3 text-sm">
-                    <span className="font-display font-semibold text-copper">{i + 1}</span> {s}
+                    <span className="font-display font-bold text-copper">{i + 1}</span> {s}
                   </li>
                 ))}
               </ol>

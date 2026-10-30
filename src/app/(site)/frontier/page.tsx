@@ -19,7 +19,7 @@ export default async function FrontierPage() {
           <ul className="grid gap-4 md:grid-cols-2">
             {cat.frontierTopics.map((t, i) => (
               <li key={t.slug} className="relative flex gap-5 rounded-[var(--radius-card)] border border-line bg-white p-6 transition hover:shadow-[var(--shadow-soft)]">
-                <span className="font-display text-3xl font-semibold text-copper">{String(i + 1).padStart(2, "0")}</span>
+                <span className="font-display text-3xl font-bold text-copper">{String(i + 1).padStart(2, "0")}</span>
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
                     <h2 className="text-lg font-semibold text-heading">

@@ -5,7 +5,7 @@ export function FinalCta({ title = "Find your three biggest automation opportuni
     <section className="bg-brown text-ivory" aria-labelledby="final-cta-h">
       <Container className="flex flex-col items-start gap-8 py-16 sm:py-20 lg:flex-row lg:items-center lg:justify-between">
         <div className="max-w-2xl">
-          <h2 id="final-cta-h" className="font-display text-3xl font-semibold leading-tight text-ivory sm:text-4xl">
+          <h2 id="final-cta-h" className="font-display text-3xl font-bold leading-tight text-ivory sm:text-4xl">
             {title}
           </h2>
           <p className="mt-3 text-lg text-sand/85">{body}</p>

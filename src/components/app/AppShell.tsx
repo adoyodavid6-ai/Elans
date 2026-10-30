@@ -16,7 +16,7 @@ export async function AppShell({ area, nav, user, tenantLabel, banner, children,
         <div className="flex h-16 items-center gap-2.5 border-b border-line px-5">
           <TreeMark size={30} />
           <div>
-            <p className="font-display text-lg font-semibold leading-none text-heading">Elans</p>
+            <p className="font-display text-lg font-bold leading-none text-heading">Elans</p>
             <p className="text-[0.7rem] font-medium uppercase tracking-wider text-muted">{area === "ops" ? "Console" : "Client portal"}</p>
           </div>
         </div>
@@ -41,7 +41,7 @@ export async function AppShell({ area, nav, user, tenantLabel, banner, children,
         <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-line bg-surface/95 px-4 backdrop-blur lg:hidden">
           <MobileNav nav={nav} area={area} />
           <TreeMark size={26} />
-          <span className="font-display font-semibold text-heading">{area === "ops" ? "Console" : "Portal"}</span>
+          <span className="font-display font-bold text-heading">{area === "ops" ? "Console" : "Portal"}</span>
           <div className="ml-auto"><ThemeToggle current={theme === "dark" ? "dark" : "light"} /></div>
         </header>
         {banner}
@@ -65,7 +65,7 @@ export function PageTitle({ title, description, actions, crumbs }: { title: Reac
             ))}
           </p>
         )}
-        <h1 className="font-display text-2xl font-semibold text-heading sm:text-3xl">{title}</h1>
+        <h1 className="font-display text-2xl font-bold text-heading sm:text-3xl">{title}</h1>
         {description && <p className="mt-1 max-w-3xl text-sm text-muted">{description}</p>}
       </div>
       {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
@@ -118,7 +118,7 @@ export function Kpi({ label, value, hint, href, tone }: { label: string; value: 
   const body = (
     <div className={`h-full rounded-2xl border bg-surface p-4 ${tone === "bad" ? "border-danger/40" : tone === "warn" ? "border-warning/40" : "border-line"} ${href ? "transition hover:shadow-[var(--shadow-soft)]" : ""}`}>
       <p className="text-xs font-medium uppercase tracking-wide text-muted">{label}</p>
-      <p className="mt-1.5 font-display text-2xl font-semibold text-heading">{value}</p>
+      <p className="mt-1.5 font-display text-2xl font-bold text-heading">{value}</p>
       {hint && <p className="mt-0.5 text-xs text-muted">{hint}</p>}
     </div>
   );

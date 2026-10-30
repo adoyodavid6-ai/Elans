@@ -52,7 +52,7 @@ export function Wordmark({ concept = "a", className = "", tone = "dark" }: { con
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
       <TreeMark concept={concept} size={32} onBrand={tone === "light"} />
-      <span className={`font-display text-[1.45rem] font-semibold tracking-tight ${tone === "light" ? "text-ivory" : "text-espresso"}`} style={{ fontVariationSettings: '"opsz" 72' }}>
+      <span className={`font-display text-[1.4rem] font-extrabold tracking-[-0.03em] ${tone === "light" ? "text-ivory" : "text-espresso"}`}>
         Elans
       </span>
     </span>

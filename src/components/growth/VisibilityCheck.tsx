@@ -24,7 +24,7 @@ export function VisibilityCheck() {
       <div className="space-y-6" aria-live="polite">
         <div className="rounded-[var(--radius-card)] surface-brand p-6 text-sand">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-copper">Sample snapshot · not a full audit</p>
-          <p className="mt-2 font-display text-3xl font-semibold text-ivory">
+          <p className="mt-2 font-display text-3xl font-bold text-ivory">
             Mentioned in {hits} of {res.results.length} answers
           </p>
           <p className="mt-2 text-sm text-sand/80">

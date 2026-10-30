@@ -204,7 +204,7 @@ function MegaPanel({ menu }: { menu: MegaMenu }) {
         ))}
         {menu.feature && (
           <div className="rounded-2xl surface-brand p-5 text-sand">
-            <p className="font-display text-lg font-semibold text-ivory">{menu.feature.title}</p>
+            <p className="font-display text-lg font-bold text-ivory">{menu.feature.title}</p>
             <p className="mt-2 text-sm leading-relaxed text-sand/85">{menu.feature.body}</p>
             <Link href={menu.feature.href} className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-copper">
               {menu.feature.cta} <Icon name="arrow-right" size={14} />

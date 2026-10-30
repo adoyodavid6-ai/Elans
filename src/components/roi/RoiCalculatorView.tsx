@@ -86,7 +86,7 @@ export function RoiCalculatorView({ slug, initial }: { slug: string; initial: Re
 
       <div className="space-y-6 lg:sticky lg:top-[8.5rem] lg:self-start">
         <section aria-live="polite" aria-label="Results" className="rounded-[var(--radius-card)] border border-line bg-white p-5 sm:p-6">
-          <h2 className="font-display text-2xl font-semibold">Results</h2>
+          <h2 className="font-display text-2xl font-bold">Results</h2>
           <ul className="mt-4 grid gap-3 sm:grid-cols-2">
             {result.outputs.map((o) => (
               <OutputTile key={o.key} o={o} />
@@ -97,7 +97,7 @@ export function RoiCalculatorView({ slug, initial }: { slug: string; initial: Re
 
         {result.scenarios && (
           <section className="overflow-x-auto rounded-[var(--radius-card)] border border-line bg-white p-5 sm:p-6" aria-labelledby="scen-h">
-            <h2 id="scen-h" className="font-display text-xl font-semibold">Low / base / high scenarios</h2>
+            <h2 id="scen-h" className="font-display text-xl font-bold">Low / base / high scenarios</h2>
             <table className="mt-4 w-full min-w-[28rem] text-sm">
               <thead>
                 <tr className="text-left text-xs uppercase tracking-wide text-muted">
@@ -133,7 +133,7 @@ export function RoiCalculatorView({ slug, initial }: { slug: string; initial: Re
         )}
 
         <details className="rounded-[var(--radius-card)] border border-line bg-white p-5 sm:p-6" open>
-          <summary className="cursor-pointer font-display text-xl font-semibold">Formulas & assumptions</summary>
+          <summary className="cursor-pointer font-display text-xl font-bold">Formulas & assumptions</summary>
           <ul className="mt-4 space-y-1.5 font-mono text-xs leading-relaxed text-text">
             {result.formulas.map((f) => (
               <li key={f}>• {f}</li>
@@ -208,7 +208,7 @@ function OutputTile({ o }: { o: RoiOutput }) {
     <li className={cx("rounded-2xl border p-4", KIND_CLS[o.kind], o.emphasis && "sm:col-span-2")}>
       <p className="text-[0.68rem] font-semibold uppercase tracking-wide text-muted">{KIND_LABEL[o.kind]}</p>
       <p className="mt-0.5 text-sm text-text">{o.label}</p>
-      <p className={cx("mt-1 font-display font-semibold text-heading", o.emphasis ? "text-3xl" : "text-xl")}>{o.display}</p>
+      <p className={cx("mt-1 font-display font-bold text-heading", o.emphasis ? "text-3xl" : "text-xl")}>{o.display}</p>
     </li>
   );
 }

@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import "@fontsource-variable/newsreader";
-import "@fontsource-variable/manrope";
 import { Container, Eyebrow, Section, Callout } from "@/components/ui/primitives";
 import { TreeMark, type LogoConcept } from "@/components/ui/Logo";
 import { PageHeader } from "@/components/site/PageHeader";
@@ -42,11 +40,11 @@ export default function Brand() {
                   </div>
                   <div className="mt-5 flex items-center gap-2.5">
                     <TreeMark concept={k} size={32} />
-                    <span className="font-display text-2xl font-semibold text-espresso">Elans</span>
+                    <span className="font-display text-2xl font-bold text-espresso">Elans</span>
                   </div>
                   <div className="mt-4 flex items-center gap-2.5 rounded-xl surface-brand p-3">
                     <TreeMark concept={k} size={28} onBrand />
-                    <span className="font-display text-xl font-semibold text-ivory">Elans</span>
+                    <span className="font-display text-xl font-bold text-ivory">Elans</span>
                   </div>
                   <p className="mt-4 font-semibold text-heading">{name}</p>
                   <p className="mt-1 text-sm text-muted">{desc}</p>
@@ -57,20 +55,25 @@ export default function Brand() {
           </section>
 
           <section>
-            <Eyebrow>Typography pairings</Eyebrow>
+            <Eyebrow>Typography</Eyebrow>
             <div className="mt-6 grid gap-6 md:grid-cols-2">
               <div className="rounded-[var(--radius-card)] border border-line bg-white p-6">
-                <p className="text-xs font-semibold uppercase tracking-wide text-copper-ink">Pairing 1 (current): Fraunces + Inter</p>
-                <p className="mt-4 font-display text-4xl font-semibold text-espresso">Intelligent Systems. Measurable Results.</p>
-                <p className="mt-3 font-sans text-[1.05rem] leading-relaxed">Elans finds where your business leaks time, cash and customers, and builds the systems to fix it. Inter is highly legible on low-end Android screens.</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-copper-ink">Plus Jakarta Sans (one family, variable 200–800)</p>
+                <p className="mt-4 font-display text-4xl font-bold text-espresso">Intelligent Systems. Measurable Results.</p>
+                <p className="mt-3 text-[1.05rem] leading-relaxed">Elans finds where your business leaks time, cash and customers, and builds the systems to fix it. Open counters and a generous x-height keep body copy legible on low-end Android screens.</p>
               </div>
               <div className="rounded-[var(--radius-card)] border border-line bg-white p-6">
-                <p className="text-xs font-semibold uppercase tracking-wide text-copper-ink">Pairing 2: Newsreader + Manrope</p>
-                <p className="mt-4 text-4xl font-semibold text-espresso" style={{ fontFamily: "var(--font-alt-display)" }}>Intelligent Systems. Measurable Results.</p>
-                <p className="mt-3 text-[1.05rem] leading-relaxed" style={{ fontFamily: "var(--font-alt-sans)" }}>Elans finds where your business leaks time, cash and customers, and builds the systems to fix it. Manrope gives a slightly more geometric, technical feel.</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-copper-ink">Scale and usage</p>
+                <ul className="mt-4 space-y-2">
+                  <li className="font-display text-3xl font-bold text-espresso">Headings · Bold 700, −2% tracking</li>
+                  <li className="text-lg font-semibold text-heading">Subheadings · SemiBold 600</li>
+                  <li className="text-base">Body · Regular 400, 1.6 line height</li>
+                  <li className="text-sm font-semibold uppercase tracking-[0.14em] text-copper-ink">Eyebrows · SemiBold caps</li>
+                  <li className="text-base tabular-nums">Figures · KES 1,250,000.00 · 98.6%</li>
+                </ul>
               </div>
             </div>
-            <p className="mt-3 text-sm text-muted">All four typefaces are open-source (SIL Open Font Licence) and self-hosted, so there are no licence fees and no third-party font requests.</p>
+            <p className="mt-3 text-sm text-muted">Open-source (SIL Open Font Licence) and self-hosted: no licence fees and no third-party font requests. It replaces Fraunces + Inter (D-042).</p>
           </section>
 
           <section>

@@ -36,7 +36,7 @@ export default async function IndustriesPage() {
       <Section tone="sand" id="packs" labelledBy="packs-h">
         <Container>
           <Eyebrow>Industry Packs</Eyebrow>
-          <h2 id="packs-h" className="mt-2 font-display text-3xl font-semibold">
+          <h2 id="packs-h" className="mt-2 font-display text-3xl font-bold">
             Bundled solutions for your sector
           </h2>
           <p className="mt-3 max-w-2xl text-muted">Packs combine the solutions that work best together in a sector, delivered as one programme with one owner metric per workflow.</p>

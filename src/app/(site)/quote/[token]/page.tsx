@@ -28,10 +28,10 @@ export default async function QuoteView({ params, searchParams }: Props) {
       <Container className="max-w-3xl">
         <div className="rounded-[2rem] border border-line bg-white p-6 sm:p-10">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3"><TreeMark size={36} /><span className="font-display text-xl font-semibold">Elans</span></div>
+            <div className="flex items-center gap-3"><TreeMark size={36} /><span className="font-display text-xl font-bold">Elans</span></div>
             <span className="text-sm text-muted">Proposal {q.number}</span>
           </div>
-          <h1 className="mt-6 font-display text-3xl font-semibold">{q.o?.organisation ?? q.o?.name}</h1>
+          <h1 className="mt-6 font-display text-3xl font-bold">{q.o?.organisation ?? q.o?.name}</h1>
           <p className="text-muted">{q.o?.name} · sent {new Date(q.sent_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}</p>
           {sp.accepted && <Callout tone="success" className="mt-6" title="Proposal accepted">Thank you. We have sent an invitation to activate your client portal, and your accountable engineer will be in touch to book the kick-off.</Callout>}
           <table className="mt-8 w-full text-sm">
@@ -49,7 +49,7 @@ export default async function QuoteView({ params, searchParams }: Props) {
           <p className="mt-3 text-xs text-muted">Prices exclude VAT. Fixed scope; changes are quoted as change orders before work starts. Minimum term {q.term_months} months. Usage beyond allowances is billed at published unit rates.</p>
           {q.status === "sent" && !sp.accepted && (
             <form action={acceptQuote.bind(null, token)} className="rule-blend mt-8 space-y-4 border-t pt-6">
-              <h2 className="font-display text-xl font-semibold">Accept this proposal</h2>
+              <h2 className="font-display text-xl font-bold">Accept this proposal</h2>
               {sp.error && <Callout tone="danger">Please enter your name, an email for your portal administrator, and agree to the terms.</Callout>}
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="text-sm"><span className="mb-1 block font-semibold">Full name</span><input name="name" required className="h-11 w-full rounded-xl border border-line px-3" /></label>

@@ -77,7 +77,7 @@ export default async function GrowthServicePage({ params }: Props) {
             <ol className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               {g.approach.map((a, i) => (
                 <li key={a.title} className="rounded-2xl border border-line bg-white p-5">
-                  <span className="font-display text-2xl font-semibold text-copper">{i + 1}</span>
+                  <span className="font-display text-2xl font-bold text-copper">{i + 1}</span>
                   <p className="mt-1 font-semibold text-heading">{a.title}</p>
                   <p className="mt-1.5 text-sm text-muted">{a.detail}</p>
                 </li>
@@ -111,7 +111,7 @@ export default async function GrowthServicePage({ params }: Props) {
             </Card>
           </section>
           <section className="grid gap-8 lg:grid-cols-[1fr_1.6fr]">
-            <h2 className="font-display text-3xl font-semibold">FAQs</h2>
+            <h2 className="font-display text-3xl font-bold">FAQs</h2>
             <Faqs items={g.faqs} />
           </section>
         </Container>

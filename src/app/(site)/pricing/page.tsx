@@ -30,15 +30,15 @@ export default async function PricingPage() {
               return (
                 <li key={p.key} className={cx("flex flex-col rounded-[var(--radius-card)] p-6 ring-1", i === 1 ? "surface-brand text-sand ring-brown" : "bg-white ring-line")}>
                   {i === 1 && <span className="mb-3 self-start rounded-full bg-copper px-2.5 py-0.5 text-xs font-semibold text-espresso">Most common</span>}
-                  <h2 className={cx("font-display text-2xl font-semibold", i === 1 ? "text-ivory" : "text-heading")}>{p.name}</h2>
+                  <h2 className={cx("font-display text-2xl font-bold", i === 1 ? "text-ivory" : "text-heading")}>{p.name}</h2>
                   <p className={cx("mt-1 text-sm", i === 1 ? "text-sand/75" : "text-muted")}>{p.forWho}</p>
                   <div className="mt-5">
                     {p.key === "enterprise" ? (
-                      <p className={cx("font-display text-3xl font-semibold", i === 1 ? "text-ivory" : "text-heading")}>Quoted</p>
+                      <p className={cx("font-display text-3xl font-bold", i === 1 ? "text-ivory" : "text-heading")}>Quoted</p>
                     ) : (
                       <>
                         <p className={cx("text-xs uppercase tracking-wide", i === 1 ? "text-sand/70" : "text-muted")}>Setup from</p>
-                        <p className={cx("font-display text-3xl font-semibold", i === 1 ? "text-ivory" : "text-heading")}>
+                        <p className={cx("font-display text-3xl font-bold", i === 1 ? "text-ivory" : "text-heading")}>
                           {s.text} {!s.confirmed && <IndicativeTag />}
                         </p>
                         <p className={cx("mt-1 text-sm", i === 1 ? "text-sand/80" : "text-muted")}>
@@ -74,7 +74,7 @@ export default async function PricingPage() {
         <Container className="grid gap-10 lg:grid-cols-2">
           <div>
             <Eyebrow>Sessions & diagnostics</Eyebrow>
-            <h2 id="other-h" className="mt-2 font-display text-3xl font-semibold">Human-led work is paid, and worth it</h2>
+            <h2 id="other-h" className="mt-2 font-display text-3xl font-bold">Human-led work is paid, and worth it</h2>
             <ul className="mt-6 divide-y divide-line rounded-2xl border border-line bg-white">
               {[
                 ["session.discovery", "Short qualification call to see whether we can help."],
@@ -103,7 +103,7 @@ export default async function PricingPage() {
           </div>
           <div>
             <Eyebrow>Revenue model, openly</Eyebrow>
-            <h2 className="mt-2 font-display text-3xl font-semibold">How you pay us</h2>
+            <h2 className="mt-2 font-display text-3xl font-bold">How you pay us</h2>
             <ul className="mt-6 space-y-3 text-[0.95rem]">
               {[
                 ["Setup fee", "Fixed price for the agreed scope; can be split over three months."],
@@ -128,7 +128,7 @@ export default async function PricingPage() {
 
       <Section labelledBy="pfaq">
         <Container className="grid gap-8 lg:grid-cols-[1fr_1.6fr]">
-          <h2 id="pfaq" className="font-display text-3xl font-semibold">Pricing questions</h2>
+          <h2 id="pfaq" className="font-display text-3xl font-bold">Pricing questions</h2>
           <Faqs
             items={[
               { q: "Is there a minimum term?", a: `Yes: ${cat.settings.minTermMonths} months for run retainers, because the first months include the supervised Prove period. Discounts are available only for longer terms.` },

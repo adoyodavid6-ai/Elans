@@ -161,7 +161,7 @@ export function AssessmentWizard({ industries, initial }: { industries: Industry
       </div>
 
       <div className="rounded-[2rem] border border-line bg-white p-6 shadow-[var(--shadow-soft)] sm:p-10">
-        <h2 ref={headingRef} tabIndex={-1} className="font-display text-2xl font-semibold outline-none sm:text-3xl">
+        <h2 ref={headingRef} tabIndex={-1} className="font-display text-2xl font-bold outline-none sm:text-3xl">
           {STEP_TITLES[step - 1]}
         </h2>
 

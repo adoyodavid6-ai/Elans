@@ -25,7 +25,7 @@ export default async function Confirmation({ params }: Props) {
           <span className={`mx-auto grid h-14 w-14 place-items-center rounded-full ${confirmed ? "bg-success-bg text-success" : "bg-warning-bg text-warning"}`}>
             <Icon name={confirmed ? "check" : "clock"} size={28} />
           </span>
-          <h1 className="mt-4 font-display text-3xl font-semibold">{confirmed ? "You're booked" : "Waiting for payment"}</h1>
+          <h1 className="mt-4 font-display text-3xl font-bold">{confirmed ? "You're booked" : "Waiting for payment"}</h1>
           <p className="mt-2 text-muted">
             {meta?.name} · {when} EAT · {meta?.minutes} minutes
           </p>

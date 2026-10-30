@@ -31,7 +31,7 @@ export function Heading({ as: As = "h2", children, className, id, size = "lg" }:
     sm: "text-xl leading-snug",
   };
   return (
-    <As id={id} className={cx("font-display font-semibold tracking-tight", sizes[size], className)}>
+    <As id={id} className={cx("font-display font-bold tracking-tight", sizes[size], className)}>
       {children}
     </As>
   );
@@ -154,7 +154,7 @@ export function Stat({ label, value, hint, className }: { label: string; value: 
   return (
     <div className={cx("rounded-2xl border border-line bg-surface p-4", className)}>
       <p className="text-xs font-medium uppercase tracking-wide text-muted">{label}</p>
-      <p className="mt-1.5 font-display text-2xl font-semibold text-heading">{value}</p>
+      <p className="mt-1.5 font-display text-2xl font-bold text-heading">{value}</p>
       {hint && <p className="mt-1 text-xs text-muted">{hint}</p>}
     </div>
   );

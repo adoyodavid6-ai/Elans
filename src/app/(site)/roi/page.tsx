@@ -18,7 +18,7 @@ export default function RoiHub() {
           <Link href={`/roi/${master.slug}`} className="group flex flex-col gap-4 rounded-[2rem] surface-brand p-6 text-sand sm:flex-row sm:items-center sm:justify-between sm:p-10">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-copper">Start here</p>
-              <h2 className="mt-2 font-display text-3xl font-semibold text-ivory">{master.name}</h2>
+              <h2 className="mt-2 font-display text-3xl font-bold text-ivory">{master.name}</h2>
               <p className="mt-2 max-w-2xl text-sand/80">{master.summary}</p>
             </div>
             <span className="inline-flex items-center gap-2 font-semibold text-copper group-hover:underline">Open <Icon name="arrow-right" /></span>
