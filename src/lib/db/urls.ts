@@ -21,14 +21,15 @@ export interface DbUrls {
 
 export function resolveDbUrls(env: NodeJS.ProcessEnv = process.env): DbUrls {
   const appRole = env.ELANS_DB_APP_ROLE || "elans_app";
-  const url = env.DATABASE_URL || null;
+  // Neon via Vercel sets DATABASE_URL; older Vercel Postgres setups use POSTGRES_URL.
+  const url = env.DATABASE_URL || env.POSTGRES_URL || null;
   const admin = env.DATABASE_ADMIN_URL || null;
   if (!url) return { app: null, admin, appRole, derived: false };
   if (admin) return { app: url, admin, appRole: decodeURIComponent(new URL(url).username), derived: false };
   const user = decodeURIComponent(new URL(url).username);
   if (user === appRole) return { app: url, admin: null, appRole, derived: false };
   // Migrations prefer a direct (unpooled) connection when the provider supplies one (Neon does).
-  const owner = env.DATABASE_URL_UNPOOLED || url;
+  const owner = env.DATABASE_URL_UNPOOLED || env.POSTGRES_URL_NON_POOLING || url;
   if (!env.SESSION_SECRET) return { app: null, admin: owner, appRole, derived: true }; // cannot derive safely
   const app = new URL(url);
   app.username = encodeURIComponent(appRole);

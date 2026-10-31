@@ -138,3 +138,12 @@ describe("database URL resolution", () => {
     expect(resolveDbUrls({ DATABASE_URL: "postgres://owner:pw@h/db" } as unknown as NodeJS.ProcessEnv).app).toBeNull();
   });
 });
+
+describe("database URL resolution: Vercel Postgres variable names", () => {
+  it("accepts POSTGRES_URL / POSTGRES_URL_NON_POOLING", async () => {
+    const { resolveDbUrls } = await import("@/lib/db/urls");
+    const r = resolveDbUrls({ POSTGRES_URL: "postgres://owner:pw@pool.host/db", POSTGRES_URL_NON_POOLING: "postgres://owner:pw@direct.host/db", SESSION_SECRET: "s".repeat(40) } as unknown as NodeJS.ProcessEnv);
+    expect(r.admin).toBe("postgres://owner:pw@direct.host/db");
+    expect(new URL(r.app!).username).toBe("elans_app");
+  });
+});
