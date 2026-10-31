@@ -166,6 +166,9 @@ h1, h2, h3, h4 { color: var(--heading); text-wrap: balance; }
 .font-display { letter-spacing: -0.022em; }
 /* Aligned figures in tables and money values. */
 table, .tabular-nums { font-variant-numeric: tabular-nums; }
+/* Fieldsets default to min-width: min-content, so a scrolling row inside one (e.g. booking dates)
+   would stretch the form past the screen. Let them shrink like any block. */
+fieldset { min-width: 0; }
 /* Grid items may shrink below their content's min width (prevents mobile overflow). */
 .grid > * { min-width: 0; }
 p { text-wrap: pretty; }

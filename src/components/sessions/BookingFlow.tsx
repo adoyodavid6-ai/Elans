@@ -70,12 +70,17 @@ export function BookingFlow({ types, initialType, mpesaMode }: { types: TypeOpt[
             <p className="mt-2 text-sm text-muted">No times available in the next two weeks. Please use the contact form.</p>
           ) : (
             <>
-              <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
-                {days.map((d) => (
-                  <button key={d} type="button" onClick={() => { setDay(d); setSlot(null); }} aria-pressed={d === activeDay} className={cx("shrink-0 rounded-xl px-3 py-2 text-sm font-medium", d === activeDay ? "surface-brand text-ivory" : "bg-surface-2 text-espresso hover:bg-sand")}>
-                    {d}
-                  </button>
-                ))}
+              {/* All available days are visible at once (wrapping grid), so none are hidden off-screen. */}
+              <div className="mt-3 grid grid-cols-4 gap-2 sm:grid-cols-5 xl:grid-cols-7" role="group" aria-label="Available days">
+                {days.map((d) => {
+                  const [weekday, ...date] = d.split(" ");
+                  return (
+                    <button key={d} type="button" onClick={() => { setDay(d); setSlot(null); }} aria-pressed={d === activeDay} aria-label={d} className={cx("flex flex-col items-center rounded-xl px-1 py-2 text-sm leading-tight", d === activeDay ? "surface-brand text-ivory" : "bg-surface-2 text-espresso hover:bg-sand")}>
+                      <span className="text-[0.7rem] font-medium uppercase tracking-wide opacity-80">{weekday}</span>
+                      <span className="font-semibold">{date.join(" ")}</span>
+                    </button>
+                  );
+                })}
               </div>
               <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
                 {type.slots.filter((s) => fmtDay(s) === activeDay).map((s) => (
