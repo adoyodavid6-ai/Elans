@@ -177,7 +177,7 @@ export default async function IndustryPage({ params }: Props) {
                   </div>
                   <div className="flex flex-col gap-3">
                     <PackageFrom cat={cat} pkg={p.package} className="text-sand/80 [&_.text-heading]:text-ivory" />
-                    <ButtonLink href={`/industries/${ind.slug}/packs/${p.slug}`} variant="light" icon="arrow-right">
+                    <ButtonLink href={`/industries/${p.industry}/packs/${p.slug}`} variant="light" icon="arrow-right">
                       See what&apos;s in the pack
                     </ButtonLink>
                   </div>

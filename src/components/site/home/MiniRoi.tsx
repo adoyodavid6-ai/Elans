@@ -42,7 +42,7 @@ export function MiniRoi({ setup, monthly }: { setup: number; monthly: number }) 
           <div key={l} className="rounded-2xl bg-white/6 p-4 ring-1 ring-white/10">
             <p className="text-xs uppercase tracking-wide text-sand/70">{l}</p>
             <p className="mt-1 font-display text-2xl font-bold text-ivory">{v}</p>
-            <p className="text-xs text-sand/60">{h}</p>
+            <p className="text-xs text-sand/85">{h}</p>
           </div>
         ))}
         <Link href={`/roi/master?tasksPerMonth=${tasks}&minutesPerTask=${minutes}&hourlyCost=${hourly}`} className="col-span-full mt-2 inline-flex h-11 items-center justify-center rounded-full bg-copper px-5 text-sm font-semibold text-espresso hover:bg-wine-300">

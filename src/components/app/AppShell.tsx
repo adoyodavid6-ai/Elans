@@ -95,10 +95,11 @@ export function Panel({ title, actions, children, className = "" }: { title?: Re
   );
 }
 
-export function Table({ head, children, empty }: { head: ReactNode[]; children: ReactNode; empty?: ReactNode }) {
+export function Table({ head, children, empty, label = "Data table" }: { head: ReactNode[]; children: ReactNode; empty?: ReactNode; label?: string }) {
   const hasRows = Children.toArray(children).length > 0;
   return (
-    <div className="overflow-x-auto">
+    // Focusable region so keyboard users can scroll wide tables sideways (WCAG 2.1.1).
+    <div className="overflow-x-auto rounded-md focus-visible:outline-2" tabIndex={0} role="region" aria-label={label}>
       <table className="w-full min-w-[32rem] text-left text-sm">
         <thead className="border-b border-line text-xs uppercase tracking-wide text-muted">
           <tr>{head.map((h, i) => <th key={i} className="whitespace-nowrap px-3 py-2.5 font-semibold">{h}</th>)}</tr>

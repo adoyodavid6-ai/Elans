@@ -13,7 +13,7 @@ This repository contains the whole platform in one Next.js app (D-025):
 | Ops console: CRM, pipeline, quotes, CMS, operations | `/ops` | Elans staff (MFA required) |
 | Client portal: automations, approvals, conversations, reports, billing | `/portal` | Clients (MFA for owners/admins) |
 
-What works, what runs in mock/test mode and what needs credentials: **[docs/FEATURE_STATUS.md](docs/FEATURE_STATUS.md)**.
+What works, what runs in mock/test mode and what needs credentials: **[docs/FEATURE_STATUS.md](docs/FEATURE_STATUS.md)**. Launch readiness (accessibility, performance, SEO, security, QA): **[docs/LAUNCH_CHECKLIST.md](docs/LAUNCH_CHECKLIST.md)**.
 
 ## Run it locally
 
@@ -85,6 +85,7 @@ otherwise preview deployments run migrations against production.
 | `npm run dev` / `build` / `start` | Next.js |
 | `npm run typecheck` | TypeScript |
 | `npm test` | Unit, content-integrity and RLS isolation tests (RLS tests skip without a database) |
+| `node scripts/check-overflow.mjs [url]` | Scans every sitemap page at phone and desktop width for content spilling past its container |
 | `npm run eval:etims` | eTIMS extraction/status evaluation on 62 synthetic cases (`-- --ai` to evaluate the AI prompt) |
 | `npm run db:migrate` / `db:seed` / `db:reset` | Database (reset drops and recreates; development only) |
 

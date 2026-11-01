@@ -30,8 +30,23 @@ interface Opt {
 const STATUS_LABEL: Record<string, string> = { live: "Live", pilot: "Pilot", planned: "Planned", custom: "Custom assessment" };
 const STATUS_CLS: Record<string, string> = { live: "bg-success-bg text-success", pilot: "bg-info-bg text-info", planned: "bg-surface-2 text-muted", custom: "bg-warning-bg text-warning" };
 
-export function CatalogueBrowser({ items, categories, industries, divisions }: { items: CatalogueItem[]; categories: Opt[]; industries: Opt[]; divisions: Opt[] }) {
+type BrowserProps = { items: CatalogueItem[]; categories: Opt[]; industries: Opt[]; divisions: Opt[] };
+
+/** Interactive catalogue; filters live in the URL so results can be shared. */
+export function CatalogueBrowser(props: BrowserProps) {
   const sp = useSearchParams();
+  return <CatalogueView {...props} sp={sp} />;
+}
+
+/**
+ * Server-rendered placeholder with exactly the unfiltered layout, used while the URL filters are read on
+ * the client. Prevents the page from jumping (layout shift) when the interactive catalogue takes over.
+ */
+export function CatalogueBrowserStatic(props: BrowserProps) {
+  return <CatalogueView {...props} sp={new URLSearchParams()} />;
+}
+
+function CatalogueView({ items, categories, industries, divisions, sp }: BrowserProps & { sp: URLSearchParams | ReturnType<typeof useSearchParams> }) {
   const router = useRouter();
   const pathname = usePathname();
   const [, start] = useTransition();

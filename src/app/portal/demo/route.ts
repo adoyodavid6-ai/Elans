@@ -23,6 +23,14 @@ export async function GET(req: Request) {
   if (!user) return unavailable("not-seeded");
   await startSession(user.id, false, { ip });
   (await cookies()).set(TENANT_COOKIE, DEMO_TENANT_ID, { path: "/", httpOnly: true, sameSite: "lax", secure: url.protocol === "https:" });
-  const dest = next && next.startsWith("/portal") ? next : "/portal";
+  let dest = next && next.startsWith("/portal") ? next : "/portal";
+  // Resolve friendly automation links (e.g. /portal/automations/etims) here, so visitors get a real redirect.
+  const kw = dest.match(/^\/portal\/automations\/(etims|reconciliation|whatsapp)$/)?.[1];
+  if (kw) {
+    const slugs: Record<string, string> = { etims: "etims-compliance-reconciliation", reconciliation: "mpesa-bank-reconciliation", whatsapp: "whatsapp-sales-support-agent" };
+    const slug = slugs[kw];
+    const inst = await withDb({ tenantId: DEMO_TENANT_ID }, async (tx) => (await tx<{ id: string }[]>`select id from engine_instances where solution_slug = ${slug} limit 1`)[0]).catch(() => undefined);
+    if (inst) dest = `/portal/automations/${inst.id}`;
+  }
   return NextResponse.redirect(new URL(dest, url));
 }

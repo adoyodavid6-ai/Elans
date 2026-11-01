@@ -36,7 +36,7 @@ export default async function Partners({ searchParams }: Props) {
           {shown.map((p) => (
             <Panel key={p.id} title={<span className="flex flex-wrap items-center gap-2">{p.name} <Badge tone="brand">{p.programme === "white_label" ? "white-label" : "referral"}</Badge></span>} actions={<Badge tone={st(p.status).tone}>{st(p.status).label}</Badge>}>
               <p className="text-sm text-muted">{p.contact_email ?? "No contact email"} · applied {relTime(p.created_at)}{p.updated_at > p.created_at ? ` · updated ${relTime(p.updated_at)}` : ""}</p>
-              {p.partner_tenant_id && <p className="mt-2 text-sm"><Badge tone="good">Workspace created</Badge> <Link href={`/ops/clients/${p.partner_tenant_id}`} className="text-copper-ink hover:underline">Open workspace</Link></p>}
+              {p.partner_tenant_id && <p className="mt-2 text-sm"><Badge tone="good">Workspace created</Badge> <Link href={`/ops/clients/${p.partner_tenant_id}`} className="text-copper-ink underline">Open workspace</Link></p>}
               {canEdit ? (
                 <form action={updatePartner.bind(null, p.id)} className="mt-4 space-y-3">
                   <div className="text-sm"><label htmlFor={`ps-${p.id}`} className="mb-1 block font-medium">Status</label>

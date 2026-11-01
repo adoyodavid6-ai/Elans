@@ -12,7 +12,7 @@ export default async function Pipeline() {
   return (
     <>
       <PageTitle title="Pipeline" description="Opportunities by Elans Method stage. Move a card with its stage menu." />
-      <div className="flex gap-4 overflow-x-auto pb-4">
+      <div className="flex gap-4 overflow-x-auto pb-4" tabIndex={0} role="region" aria-label="Pipeline board (scroll sideways for more stages)">
         {OPP_STAGES.map((s) => {
           const list = opps.filter((o) => o.stage === s.key);
           const total = list.reduce((a, o) => a + Number(o.value), 0);

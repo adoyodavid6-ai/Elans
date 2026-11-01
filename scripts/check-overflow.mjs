@@ -4,7 +4,11 @@
  *   node scripts/check-overflow.mjs [baseUrl]        (dev server must be running)
  * Exits 1 if anything spills. Closed <details> content is ignored (laid out but not painted).
  */
-import { chromium } from "playwright";
+import { createRequire } from "node:module";
+
+// Resolve Playwright from the project or a global install (NODE_PATH), which plain ESM imports ignore.
+const require = createRequire(import.meta.url);
+const { chromium } = require("playwright");
 
 const base = (process.argv[2] ?? "http://localhost:3000").replace(/\/$/, "");
 const xml = await (await fetch(`${base}/sitemap.xml`)).text();

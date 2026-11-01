@@ -4,7 +4,7 @@ import Link from "next/link";
 import { getCatalogue } from "@/lib/content";
 import { Container, Section } from "@/components/ui/primitives";
 import { PageHeader } from "@/components/site/PageHeader";
-import { CatalogueBrowser, type CatalogueItem } from "@/components/site/CatalogueBrowser";
+import { CatalogueBrowser, CatalogueBrowserStatic, type CatalogueItem } from "@/components/site/CatalogueBrowser";
 import { priceLabel } from "@/components/site/Price";
 import { FinalCta } from "@/components/site/FinalCta";
 
@@ -38,6 +38,12 @@ export default async function SolutionsPage() {
       search: [s.name, s.summary, s.problem, c?.name, ...s.keywords, ...s.capabilities].join(" ").toLowerCase(),
     };
   });
+  const browserProps = {
+    items,
+    categories: cat.categories.map((c) => ({ value: c.slug, label: c.name })),
+    industries: cat.industries.map((i) => ({ value: i.slug, label: i.short })),
+    divisions: cat.divisions.filter((d) => cat.solutions.some((s) => s.division === d.key)).map((d) => ({ value: d.key, label: d.name })),
+  };
   return (
     <>
       <PageHeader
@@ -48,13 +54,8 @@ export default async function SolutionsPage() {
       />
       <Section className="pt-10 sm:pt-12">
         <Container>
-          <Suspense fallback={<p className="text-muted">Loading catalogue…</p>}>
-            <CatalogueBrowser
-              items={items}
-              categories={cat.categories.map((c) => ({ value: c.slug, label: c.name }))}
-              industries={cat.industries.map((i) => ({ value: i.slug, label: i.short }))}
-              divisions={cat.divisions.filter((d) => cat.solutions.some((s) => s.division === d.key)).map((d) => ({ value: d.key, label: d.name }))}
-            />
+          <Suspense fallback={<CatalogueBrowserStatic {...browserProps} />}>
+            <CatalogueBrowser {...browserProps} />
           </Suspense>
         </Container>
       </Section>
