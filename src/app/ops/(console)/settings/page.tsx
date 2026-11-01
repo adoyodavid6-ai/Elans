@@ -34,8 +34,8 @@ export default async function Settings() {
             <label className="text-sm sm:col-span-2"><span className="mb-1 block text-muted">Market scope statement</span><input name="marketScope" defaultValue={s.marketScope} disabled={!admin} className={field} /></label>
             <label className="text-sm"><span className="mb-1 block text-muted">Gross margin floor (%)</span><input name="marginFloor" type="number" defaultValue={Math.round(s.marginFloor * 100)} disabled={!admin} className={field} /></label>
             <label className="text-sm"><span className="mb-1 block text-muted">Minimum term (months)</span><input name="minTermMonths" type="number" defaultValue={s.minTermMonths} disabled={!admin} className={field} /></label>
-            <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="discoveryCallFree" defaultChecked={s.discoveryCallFree} disabled={!admin} className="h-4 w-4 accent-[#6B4936]" /> Discovery Call is free</label>
-            <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="supportHoursConfirmed" defaultChecked={s.supportHoursConfirmed} disabled={!admin} className="h-4 w-4 accent-[#6B4936]" /> Support hours confirmed</label>
+            <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="discoveryCallFree" defaultChecked={s.discoveryCallFree} disabled={!admin} className="h-4 w-4 accent-brown" /> Discovery Call is free</label>
+            <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="supportHoursConfirmed" defaultChecked={s.supportHoursConfirmed} disabled={!admin} className="h-4 w-4 accent-brown" /> Support hours confirmed</label>
             {admin && <button className="rounded-lg bg-brown px-5 py-2 text-sm font-semibold text-white sm:col-span-2 sm:justify-self-start">Save settings</button>}
           </form>
         </Panel>

@@ -42,6 +42,8 @@ accreditation exist. **Needs credentials** = code path exists, switched off unti
 | Billing across clients: issue, mark paid, void, reopen | Working | Invoice numbers ELN-YYYY-#### |
 | Partner workflow, notes, partner workspace creation | Working | |
 | Audit log (admins) and Help & guides | Working | |
+| Document templates: quotation, contract, receipt (branding, company, payment, numbering, VAT, editable/reorderable sections with fill-in fields, live preview, revisions, multiple templates per type) | Working | Standard contract wording needs legal review before use |
+| Documents: create blank or from quote, lead, quotation, contract or paid invoice; drafts; issue with sequential numbering; print/PDF; client link with online acceptance; void, duplicate, email | Working | Email is logged until a provider is configured; PDF via the browser's print dialog |
 
 ## Client portal (`/portal`)
 

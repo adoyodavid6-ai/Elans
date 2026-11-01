@@ -12,7 +12,7 @@ export default async function Contracts() {
   }));
   return (
     <>
-      <PageTitle title="Quotes & contracts" />
+      <PageTitle title="Quotes & contracts" description="Quotes built in the pipeline and contracts created when clients accept them. To produce a formatted quotation, contract or receipt document, use Documents." actions={<a href="/ops/documents" className="inline-flex h-10 items-center rounded-lg bg-brown px-4 text-sm font-semibold text-white hover:bg-brown-hover">Documents & templates</a>} />
       <div className="space-y-6">
         <Panel title="Contracts">
           {d.contracts.length === 0 ? <p className="text-sm text-muted">No signed contracts yet. A contract is created when a client accepts a proposal.</p> : (

@@ -21,7 +21,7 @@ export default async function Prices() {
                     <td className="py-2.5"><p className="font-medium">{r.label}</p><p className="font-mono text-xs text-muted">{r.key}</p></td>
                     <td className="font-mono text-xs text-muted">{r.token}</td>
                     <td><div className="flex items-center gap-2"><span className="text-xs text-muted">{r.currency}</span><input name={`amount:${r.key}`} defaultValue={r.amount ?? ""} placeholder="Quoted" disabled={!admin} aria-label={`${r.label} amount`} className="h-9 w-32 rounded-lg border border-line bg-surface px-2" /></div></td>
-                    <td><label className="flex items-center gap-2"><input type="checkbox" name={`confirmed:${r.key}`} defaultChecked={r.confirmed} disabled={!admin} className="h-4 w-4 accent-[#6B4936]" />{r.confirmed ? <Badge tone="good">confirmed</Badge> : <Badge tone="warn">indicative</Badge>}</label></td>
+                    <td><label className="flex items-center gap-2"><input type="checkbox" name={`confirmed:${r.key}`} defaultChecked={r.confirmed} disabled={!admin} className="h-4 w-4 accent-brown" />{r.confirmed ? <Badge tone="good">confirmed</Badge> : <Badge tone="warn">indicative</Badge>}</label></td>
                   </tr>
                 ))}
               </tbody>

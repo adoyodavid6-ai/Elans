@@ -98,6 +98,12 @@ export default async function LeadDetail({ params }: Props) {
               <button className="w-full rounded-lg bg-brown py-2 font-semibold text-white">Save</button>
             </form>
           </Panel>
+          <Panel title="Documents">
+            <div className="flex flex-col gap-2 text-sm">
+              <a href={`/ops/documents/new?kind=quotation&from=lead:${id}`} className="font-semibold text-copper-ink hover:underline">New quotation for this lead</a>
+              <a href={`/ops/documents/new?kind=contract&from=lead:${id}`} className="font-semibold text-copper-ink hover:underline">New contract for this lead</a>
+            </div>
+          </Panel>
           <Panel title="Opportunities">
             <ul className="mb-3 space-y-2 text-sm">
               {d.opps.map((o) => <li key={o.id}><Link href={`/ops/opportunities/${o.id}`} className="font-medium hover:underline">{o.name}</Link> <Badge>{o.stage}</Badge></li>)}

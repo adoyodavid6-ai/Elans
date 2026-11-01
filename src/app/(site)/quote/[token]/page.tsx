@@ -56,7 +56,7 @@ export default async function QuoteView({ params, searchParams }: Props) {
                 <label className="text-sm"><span className="mb-1 block font-semibold">Job title</span><input name="title" className="h-11 w-full rounded-xl border border-line px-3" /></label>
                 <label className="text-sm sm:col-span-2"><span className="mb-1 block font-semibold">Portal administrator email</span><input name="adminEmail" type="email" defaultValue={q.o?.email ?? ""} required className="h-11 w-full rounded-xl border border-line px-3" /></label>
               </div>
-              <label className="flex items-start gap-2 text-sm"><input type="checkbox" name="agree" className="mt-0.5 h-5 w-5 accent-[#6B4936]" /> <span>I am authorised to accept on behalf of my organisation and agree to the Elans terms and data processing terms.</span></label>
+              <label className="flex items-start gap-2 text-sm"><input type="checkbox" name="agree" className="mt-0.5 h-5 w-5 accent-brown" /> <span>I am authorised to accept on behalf of my organisation and agree to the Elans terms and data processing terms.</span></label>
               <button className="h-12 rounded-full bg-brown px-6 font-semibold text-white">Accept proposal</button>
             </form>
           )}

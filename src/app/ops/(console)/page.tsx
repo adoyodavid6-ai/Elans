@@ -83,6 +83,7 @@ export default async function OpsDashboard({ searchParams }: { searchParams: Pro
         {canSell && <QuickAction href="/ops/leads/new" icon="plus" label="Add a lead" />}
         {canBill && <QuickAction href="/ops/clients/new" icon="building" label="New client" />}
         {canBill && <QuickAction href="/ops/billing#new" icon="money" label="Issue an invoice" />}
+        {canBill && <QuickAction href="/ops/documents/new?kind=quotation" icon="doc" label="New quotation" />}
         <QuickAction href="/ops/content" icon="doc" label="Edit website content" />
       </div>
 

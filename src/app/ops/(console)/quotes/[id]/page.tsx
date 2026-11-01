@@ -30,7 +30,7 @@ export default async function QuotePage({ params }: Props) {
   ];
   return (
     <>
-      <PageTitle crumbs={[{ href: "/ops/pipeline", label: "Pipeline" }, { href: `/ops/opportunities/${q.opportunity_id}`, label: q.opp?.name ?? "Opportunity" }]} title={`Quote ${q.number}`} description="Prices default to the catalogue. Costs are Elans' internal delivery estimates and never shown to the client." />
+      <PageTitle crumbs={[{ href: "/ops/pipeline", label: "Pipeline" }, { href: `/ops/opportunities/${q.opportunity_id}`, label: q.opp?.name ?? "Opportunity" }]} title={`Quote ${q.number}`} description="Prices default to the catalogue. Costs are Elans' internal delivery estimates and never shown to the client." actions={<span className="flex flex-wrap gap-2"><a href={`/ops/documents/new?kind=quotation&from=quote:${id}`} className="inline-flex h-10 items-center rounded-lg px-3 text-sm font-semibold ring-1 ring-line hover:bg-surface-2">Create quotation document</a><a href={`/ops/documents/new?kind=contract&from=quote:${id}`} className="inline-flex h-10 items-center rounded-lg px-3 text-sm font-semibold ring-1 ring-line hover:bg-surface-2">Create contract</a></span>} />
       <QuoteBuilder
         id={q.id}
         status={q.status}

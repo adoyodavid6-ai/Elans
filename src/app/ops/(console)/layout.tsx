@@ -24,6 +24,7 @@ export default async function ConsoleLayout({ children }: { children: React.Reac
         { href: "/ops/bookings", label: "Sessions", icon: "calendar", badge: c.bookings },
         { href: "/ops/inbox", label: "Live chat inbox", icon: "chat", badge: c.handoffs },
         { href: "/ops/contracts", label: "Quotes & contracts", icon: "doc" },
+        { href: "/ops/documents", label: "Documents & templates", icon: "layers" },
       ],
     },
     {
@@ -62,6 +63,10 @@ export default async function ConsoleLayout({ children }: { children: React.Reac
       { group: "Actions", label: "New client", href: "/ops/clients/new", keywords: "create tenant workspace onboard" },
       { group: "Actions", label: "Issue an invoice", href: "/ops/billing#new", keywords: "bill charge payment" },
       { group: "Actions", label: "Export leads (CSV)", href: "/ops/leads-export", keywords: "download spreadsheet" },
+      { group: "Actions", label: "New quotation document", href: "/ops/documents/new?kind=quotation", keywords: "quote price proposal pdf" },
+      { group: "Actions", label: "New contract", href: "/ops/documents/new?kind=contract", keywords: "agreement sign pdf" },
+      { group: "Actions", label: "New receipt", href: "/ops/documents/new?kind=receipt", keywords: "payment received pdf" },
+      { group: "Actions", label: "Edit document templates", href: "/ops/documents/templates", keywords: "design branding layout quotation contract receipt" },
     ] : []),
     { group: "Actions", label: "Leads due a follow-up", href: "/ops", keywords: "today tasks reminders" },
     ...nav.flatMap((s) => s.items.map((i) => ({ group: "Pages", label: i.label, href: i.href }))),
