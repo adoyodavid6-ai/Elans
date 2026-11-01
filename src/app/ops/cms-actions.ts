@@ -8,6 +8,7 @@ import { withDb, INTERNAL_TENANT_ID } from "@/lib/db";
 import { invalidateContent, CONTENT_TYPES } from "@/lib/content";
 import { CRITERIA } from "@/lib/core/scoring";
 import { audit } from "@/lib/audit";
+import { flash } from "@/lib/flash";
 
 const EDITORS = ["admin", "content_editor"] as const;
 const STATUS = z.enum(["live", "pilot", "planned", "custom"]);
@@ -68,7 +69,10 @@ export async function saveContentItem(type: string, slug: string, _: unknown, fd
 export async function duplicateContentItem(type: string, slug: string, fd: FormData) {
   const u = await requireStaff([...EDITORS]);
   const newSlug = String(fd.get("newSlug") ?? "").trim().toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-|-$/g, "");
-  if (newSlug.length < 3) throw new Error("Slug too short");
+  if (newSlug.length < 3) {
+    await flash("Choose a slug of at least 3 letters.", "error");
+    redirect(`/ops/content/${type}/${slug}`);
+  }
   await withDb(staffCtx(u), async (tx) => {
     const [cur] = await tx<{ data: Record<string, unknown> }[]>`select data from content_items where type = ${type} and slug = ${slug}`;
     const idKey = "slug" in cur.data ? "slug" : "key";
@@ -76,6 +80,7 @@ export async function duplicateContentItem(type: string, slug: string, fd: FormD
     await tx`insert into content_items (type, slug, data, publish_state, edited, updated_by) values (${type}, ${newSlug}, ${tx.json(data as never)}, 'draft', true, ${u.email})`;
   });
   refresh();
+  await flash("Copy created as a draft");
   redirect(`/ops/content/${type}/${newSlug}`);
 }
 
@@ -89,6 +94,7 @@ export async function restoreRevision(type: string, slug: string, revisionId: nu
     await tx`update content_items set data = ${tx.json(rev.data as never)}, version = version + 1, edited = true, updated_at = now(), updated_by = ${u.email} where type = ${type} and slug = ${slug}`;
   });
   refresh();
+  await flash("Earlier version restored");
   revalidatePath(`/ops/content/${type}/${slug}`);
 }
 
@@ -106,6 +112,7 @@ export async function savePrices(fd: FormData) {
     await audit(tx, { tenantId: INTERNAL_TENANT_ID, actorId: u.id, actorLabel: u.email, action: "prices.updated" });
   });
   refresh();
+  await flash("Prices saved. The public site updates within a minute.");
   revalidatePath("/ops/content/prices");
 }
 
@@ -119,6 +126,7 @@ export async function saveWeights(fd: FormData) {
     await audit(tx, { tenantId: INTERNAL_TENANT_ID, actorId: u.id, actorLabel: u.email, action: "weights.new_version", meta: weights });
   });
   refresh();
+  await flash("New weights version saved and activated");
   revalidatePath("/ops/content/weights");
 }
 
@@ -128,6 +136,7 @@ export async function activateWeights(id: number) {
     await tx`update score_weight_versions set active = (id = ${id})`;
   });
   refresh();
+  await flash("Weights version activated");
   revalidatePath("/ops/content/weights");
 }
 
@@ -135,6 +144,7 @@ export async function saveSource(id: string, fd: FormData) {
   const u = await requireStaff([...EDITORS]);
   const state = String(fd.get("state"));
   if (!["unverified", "verified", "vendor_estimate"].includes(state)) return;
+  await flash("Source updated");
   await withDb(staffCtx(u), (tx) => tx`update sources set state = ${state}, accessed_on = ${String(fd.get("accessed_on") ?? "") || null}, notes = ${String(fd.get("notes") ?? "").slice(0, 1000)} where id = ${id}`);
   revalidatePath("/ops/content/sources");
 }
@@ -163,5 +173,6 @@ export async function saveSettings(fd: FormData) {
     await audit(tx, { tenantId: INTERNAL_TENANT_ID, actorId: u.id, actorLabel: u.email, action: "settings.updated" });
   });
   refresh();
+  await flash("Settings saved");
   revalidatePath("/ops/settings");
 }

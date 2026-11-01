@@ -22,15 +22,15 @@ export function ContentEditor({ type, slug, data, publishState, canEdit }: { typ
         {has("title") && <label className="text-sm sm:col-span-2"><span className="mb-1 block text-muted">Title</span><input name="f_title" defaultValue={String(data.title)} className={field} disabled={!canEdit} /></label>}
         {has("summary") && <label className="text-sm sm:col-span-2"><span className="mb-1 block text-muted">Summary</span><textarea name="f_summary" defaultValue={String(data.summary)} className={`${field} h-20 py-2`} disabled={!canEdit} /></label>}
         {has("status") && (
-          <label className="text-sm"><span className="mb-1 block text-muted">Status</span>
-            <select name="f_status" defaultValue={String(data.status)} className={field} disabled={!canEdit}>
+          <div className="text-sm"><label htmlFor="ce-status" className="mb-1 block text-muted">Status</label>
+            <select id="ce-status" name="f_status" defaultValue={String(data.status)} className={field} disabled={!canEdit}>
               {(type === "integration" ? ["supported", "planned", "custom_assessment"] : ["live", "pilot", "planned", "custom"]).map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
-          </label>
+          </div>
         )}
-        <label className="text-sm"><span className="mb-1 block text-muted">Publishing</span>
-          <select name="publish_state" defaultValue={publishState} className={field} disabled={!canEdit}><option value="published">Published</option><option value="draft">Draft (hidden from site)</option></select>
-        </label>
+        <div className="text-sm"><label htmlFor="ce-publish" className="mb-1 block text-muted">Publishing</label>
+          <select id="ce-publish" name="publish_state" defaultValue={publishState} className={field} disabled={!canEdit}><option value="published">Published</option><option value="draft">Draft (hidden from site)</option></select>
+        </div>
       </div>
       <div>
         <label htmlFor="json" className="mb-1 flex items-center justify-between text-sm text-muted"><span>All fields (JSON)</span>{jsonError ? <span className="text-danger">Invalid JSON: {jsonError}</span> : <span className="text-success">Valid JSON</span>}</label>

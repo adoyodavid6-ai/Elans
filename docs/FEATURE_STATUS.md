@@ -34,6 +34,14 @@ accreditation exist. **Needs credentials** = code path exists, switched off unti
 | Operations: review queue, tickets, incidents (PII-free cross-tenant queues) | Working | |
 | Content CMS with revisions, prices, score weights, sources, site settings | Working | |
 | Team & roles, analytics, message log (outbox) | Working | |
+| Today dashboard (new leads, follow-ups, chats, sessions, reviews near SLA, urgent tickets, stale quotes, overdue invoices) and quick actions | Working | |
+| Command palette (Ctrl/⌘K or /): records and pages | Working | Searches internal records and client names only |
+| Toast confirmations and progress buttons on every console and portal action | Working | |
+| Add a lead manually, follow-ups with due dates, CSV export (audited) | Working | |
+| New client without a quote; client team invites, automation pause/kill switch, invoices | Working | Client data still needs a 4-hour audited access grant |
+| Billing across clients: issue, mark paid, void, reopen | Working | Invoice numbers ELN-YYYY-#### |
+| Partner workflow, notes, partner workspace creation | Working | |
+| Audit log (admins) and Help & guides | Working | |
 
 ## Client portal (`/portal`)
 

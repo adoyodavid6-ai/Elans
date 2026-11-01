@@ -3,15 +3,16 @@ import { requireStaff } from "@/lib/auth";
 import { asStaff } from "@/lib/ops/data";
 import { formatMoney } from "@/lib/core/money";
 import { Badge, PageTitle, Panel, Table } from "@/components/app/AppShell";
+import { Icon } from "@/components/ui/Icon";
 
 export default async function Clients() {
   const u = await requireStaff();
   const rows = await asStaff(u, (tx) => tx<{ tenant_id: string; tenant_name: string; kind: string; active_instances: number; runs_7d: number; failed_7d: number; open_reviews: number; pending_approvals: number; open_incidents: number; mrr: number }[]>`select * from ops_portfolio_metrics() order by kind, tenant_name`);
   return (
     <>
-      <PageTitle title="Clients" description="Portfolio metrics contain no personal data. Opening a client requires a stated reason and creates a 4-hour, audited access grant." />
+      <PageTitle title="Clients" description="Portfolio metrics contain no personal data. Opening a client's workspace requires a stated reason and creates a 4-hour, audited access grant." actions={u.staffRole === "admin" || u.staffRole === "consultant" ? <Link href="/ops/clients/new" className="inline-flex h-10 items-center gap-2 rounded-lg bg-brown px-4 text-sm font-semibold text-white hover:bg-brown-hover"><Icon name="plus" size={16} /> New client</Link> : undefined} />
       <Panel>
-        <Table head={["Client", "Type", "Automations", "Runs (7d)", "Failed", "Open reviews", "Approvals", "Incidents", "MRR"]}>
+        <Table head={["Client", "Type", "Automations", "Runs (7d)", "Failed", "Open reviews", "Approvals", "Incidents", "MRR"]} empty="No clients yet.">
           {rows.map((r) => (
             <tr key={r.tenant_id} className="hover:bg-surface-2">
               <td className="px-3 py-2.5"><Link href={`/ops/clients/${r.tenant_id}`} className="font-medium hover:underline">{r.tenant_name}</Link></td>

@@ -6,9 +6,14 @@ import { Icon } from "@/components/ui/Icon";
 import { ThemeToggle } from "./ThemeToggle";
 import { NavLinks, type NavItem } from "./NavLinks";
 import { MobileNav } from "./MobileNav";
+import { Toast } from "./Toast";
+import { CommandPalette, SearchButton, type PaletteAction } from "./CommandPalette";
+import { readFlash } from "@/lib/flash";
+import { consoleSearch } from "@/app/ops/search-actions";
 
-export async function AppShell({ area, nav, user, tenantLabel, banner, children, signOut }: { area: "ops" | "portal"; nav: { section?: string; items: NavItem[] }[]; user: { name: string; email: string; role: string }; tenantLabel?: ReactNode; banner?: ReactNode; children: ReactNode; signOut: () => Promise<void> }) {
+export async function AppShell({ area, nav, user, tenantLabel, banner, children, signOut, commands }: { area: "ops" | "portal"; nav: { section?: string; items: NavItem[] }[]; user: { name: string; email: string; role: string }; tenantLabel?: ReactNode; banner?: ReactNode; children: ReactNode; signOut: () => Promise<void>; commands?: PaletteAction[] }) {
   const theme = (await cookies()).get("elans_theme")?.value;
+  const flash = await readFlash();
   return (
     <div data-theme={theme === "dark" ? "dark" : undefined} className="min-h-dvh bg-bg text-text">
       <a href="#app-main" className="skip-link">Skip to content</a>
@@ -21,6 +26,7 @@ export async function AppShell({ area, nav, user, tenantLabel, banner, children,
           </div>
         </div>
         {tenantLabel && <div className="border-b border-line px-5 py-3 text-sm">{tenantLabel}</div>}
+        {commands && <div className="px-3 pt-4"><SearchButton /></div>}
         <nav aria-label={area === "ops" ? "Console" : "Portal"} className="flex-1 overflow-y-auto px-3 py-4">
           <NavLinks nav={nav} />
         </nav>
@@ -42,11 +48,13 @@ export async function AppShell({ area, nav, user, tenantLabel, banner, children,
           <MobileNav nav={nav} area={area} />
           <TreeMark size={26} />
           <span className="font-display font-bold text-heading">{area === "ops" ? "Console" : "Portal"}</span>
-          <div className="ml-auto"><ThemeToggle current={theme === "dark" ? "dark" : "light"} /></div>
+          <div className="ml-auto flex items-center gap-1">{commands && <SearchButton compact />}<ThemeToggle current={theme === "dark" ? "dark" : "light"} /></div>
         </header>
         {banner}
         <main id="app-main" className="mx-auto max-w-[90rem] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">{children}</main>
       </div>
+      <Toast flash={flash} />
+      {commands && <CommandPalette actions={commands} search={consoleSearch} />}
     </div>
   );
 }

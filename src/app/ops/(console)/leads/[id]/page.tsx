@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { requireStaff } from "@/lib/auth";
 import { asStaff, LEAD_STAGES, relTime } from "@/lib/ops/data";
 import { addLeadNote, createOpportunity, updateLead } from "@/app/ops/actions";
+import { setNextAction } from "@/app/ops/console-actions";
+import { Input, SubmitButton } from "@/components/app/Form";
 import { Badge, PageTitle, Panel } from "@/components/app/AppShell";
 import { Icon } from "@/components/ui/Icon";
 
@@ -12,7 +14,7 @@ export default async function LeadDetail({ params }: Props) {
   const { id } = await params;
   const u = await requireStaff();
   const d = await asStaff(u, async (tx) => {
-    const [lead] = await tx<{ id: string; contact_id: string; source: string; source_detail: string | null; industry: string | null; score: number; stage: string; message: string | null; owner_id: string | null; utm: Record<string, string>; created_at: Date; lost_reason: string | null }[]>`select * from leads where id = ${id}`;
+    const [lead] = await tx<{ next_action: string | null; due_text: string | null; id: string; contact_id: string; source: string; source_detail: string | null; industry: string | null; score: number; stage: string; message: string | null; owner_id: string | null; utm: Record<string, string>; created_at: Date; lost_reason: string | null }[]>`select *, next_action_due::text as due_text from leads where id = ${id}`;
     if (!lead) return null;
     const [contact] = await tx<{ name: string; email: string; phone: string | null; organisation: string | null; role_title: string | null }[]>`select name, email, phone, organisation, role_title from contacts where id = ${lead.contact_id}`;
     const consents = await tx<{ purpose: string; granted: boolean; notice_version: string; source: string; created_at: Date }[]>`select purpose, granted, notice_version, source, created_at from consents where contact_id = ${lead.contact_id} order by created_at desc`;
@@ -70,14 +72,28 @@ export default async function LeadDetail({ params }: Props) {
           </Panel>
         </div>
         <div className="space-y-6">
+          <Panel title="Next step">
+            {lead.next_action && (
+              <div className="mb-3 rounded-xl bg-teal-50 p-3 text-sm">
+                <p className="font-medium text-heading">{lead.next_action}</p>
+                {lead.due_text && <p className={`text-xs ${lead.due_text < new Date().toLocaleDateString("en-CA", { timeZone: "Africa/Nairobi" }) ? "font-semibold text-danger" : "text-muted"}`}>Due {lead.due_text}</p>}
+                <form action={setNextAction.bind(null, id)} className="mt-2"><input type="hidden" name="done" value="1" /><SubmitButton tone="success" className="h-8 px-3 text-xs" pendingText="Saving…">Mark done</SubmitButton></form>
+              </div>
+            )}
+            <form action={setNextAction.bind(null, id)} className="space-y-2 text-sm">
+              <label className="block"><span className="mb-1 block text-muted">{lead.next_action ? "Change follow-up" : "Follow-up"}</span><Input name="nextAction" defaultValue={lead.next_action ?? ""} placeholder="e.g. Send proposal draft" /></label>
+              <label className="block"><span className="mb-1 block text-muted">Due</span><Input name="nextActionDue" type="date" defaultValue={lead.due_text ?? ""} /></label>
+              <SubmitButton tone="secondary" className="w-full">Save follow-up</SubmitButton>
+            </form>
+          </Panel>
           <Panel title="Stage & owner">
             <form action={updateLead.bind(null, id)} className="space-y-3 text-sm">
-              <label className="block"><span className="mb-1 block text-muted">Stage</span>
-                <select name="stage" defaultValue={lead.stage} className="h-10 w-full rounded-lg border border-line bg-surface px-2 capitalize">{LEAD_STAGES.map((s) => <option key={s} value={s}>{s}</option>)}</select>
-              </label>
-              <label className="block"><span className="mb-1 block text-muted">Owner</span>
-                <select name="owner" defaultValue={lead.owner_id ?? ""} className="h-10 w-full rounded-lg border border-line bg-surface px-2"><option value="">Unassigned</option>{d.staff.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}</select>
-              </label>
+              <div className="block"><label htmlFor="lead-stage" className="mb-1 block text-muted">Stage</label>
+                <select id="lead-stage" name="stage" defaultValue={lead.stage} className="h-10 w-full rounded-lg border border-line bg-surface px-2 capitalize">{LEAD_STAGES.map((s) => <option key={s} value={s}>{s}</option>)}</select>
+              </div>
+              <div className="block"><label htmlFor="lead-owner" className="mb-1 block text-muted">Owner</label>
+                <select id="lead-owner" name="owner" defaultValue={lead.owner_id ?? ""} className="h-10 w-full rounded-lg border border-line bg-surface px-2"><option value="">Unassigned</option>{d.staff.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}</select>
+              </div>
               <label className="block"><span className="mb-1 block text-muted">Lost reason (if lost)</span><input name="lostReason" defaultValue={lead.lost_reason ?? ""} className="h-10 w-full rounded-lg border border-line bg-surface px-2" /></label>
               <button className="w-full rounded-lg bg-brown py-2 font-semibold text-white">Save</button>
             </form>

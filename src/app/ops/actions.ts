@@ -12,6 +12,7 @@ import { evaluateQuote, type QuoteLine } from "@/lib/core/quote";
 import { getCatalogue } from "@/lib/content";
 import { randomToken } from "@/lib/security";
 import { queueMessage } from "@/lib/outbox";
+import { flash } from "@/lib/flash";
 
 const siteUrl = () => process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -26,6 +27,7 @@ export async function updateLead(leadId: string, fd: FormData) {
     await tx`update leads set stage = ${stage}, owner_id = ${owner || null}, lost_reason = ${stage === "lost" ? lostReason : null}, updated_at = now() where id = ${leadId}`;
     await audit(tx, { tenantId: INTERNAL_TENANT_ID, actorId: u.id, actorLabel: u.email, action: "lead.updated", entity: "lead", entityId: leadId, meta: { stage } });
   });
+  await flash("Lead updated");
   revalidatePath(`/ops/leads/${leadId}`);
 }
 
@@ -34,6 +36,7 @@ export async function addLeadNote(leadId: string, fd: FormData) {
   const body = String(fd.get("body") ?? "").trim().slice(0, 4000);
   if (!body) return;
   await asStaff(u, (tx) => tx`insert into lead_notes (tenant_id, lead_id, author_label, body) values (app_tenant(), ${leadId}, ${u.name}, ${body})`);
+  await flash("Note added");
   revalidatePath(`/ops/leads/${leadId}`);
 }
 
@@ -46,6 +49,7 @@ export async function createOpportunity(leadId: string, fd: FormData) {
     await audit(tx, { tenantId: INTERNAL_TENANT_ID, actorId: u.id, actorLabel: u.email, action: "opportunity.created", entity: "opportunity", entityId: o.id });
     return o.id;
   });
+  await flash("Opportunity created");
   redirect(`/ops/opportunities/${id}`);
 }
 
@@ -57,6 +61,7 @@ export async function moveOpportunity(id: string, stage: string) {
     await tx`update opportunities set stage = ${stage}, updated_at = now() where id = ${id}`;
     await audit(tx, { tenantId: INTERNAL_TENANT_ID, actorId: u.id, actorLabel: u.email, action: "opportunity.stage", entity: "opportunity", entityId: id, meta: { stage } });
   });
+  await flash("Moved to " + (OPP_STAGES.find((x) => x.key === stage)?.label ?? stage));
   revalidatePath("/ops/pipeline");
   revalidatePath(`/ops/opportunities/${id}`);
 }
@@ -85,6 +90,7 @@ export async function saveDiagnostic(id: string, fd: FormData) {
       diagnostic = ${tx.json({ ownerMetric: d.ownerMetric, baselineValue: d.baselineValue, baselineNote: d.baselineNote, monthlyVolume: d.monthlyVolume, minutesPerTask: d.minutesPerTask, errorRatePct: d.errorRatePct, dataReadiness: d.dataReadiness, value90: d.value90, risks: d.risks, capturedBy: u.name, capturedAt: new Date().toISOString() })},
       updated_at = now() where id = ${id}`;
   });
+  await flash("Diagnostic saved");
   revalidatePath(`/ops/opportunities/${id}`);
 }
 
@@ -104,6 +110,7 @@ export async function createQuote(opportunityId: string) {
     await tx`update opportunities set stage = 'proposal', updated_at = now() where id = ${opportunityId} and stage in ('discovery','diagnostic','design')`;
     return q.id;
   });
+  await flash("Draft quote created");
   redirect(`/ops/quotes/${id}`);
 }
 
@@ -130,17 +137,20 @@ export async function sendQuote(id: string, fd: FormData) {
   const u = await requireStaff();
   const email = String(fd.get("email") ?? "").trim();
   const cat = await getCatalogue();
-  await asStaff(u, async (tx) => {
+  const result = await asStaff(u, async (tx) => {
     const [q] = await tx<{ status: string; lines: QuoteLine[]; term_months: number; split_setup: boolean; totals: { discountPct?: number }; opportunity_id: string; number: string }[]>`select * from quotes where id = ${id}`;
     if (!q || q.status !== "draft") return;
     const [o] = await tx<{ diagnostic: { value90?: number } }[]>`select diagnostic from opportunities where id = ${q.opportunity_id}`;
     const ev = evaluateQuote({ lines: q.lines, termMonths: q.term_months, discountPct: q.totals?.discountPct ?? 0, splitSetup: q.split_setup, projected90DayValue: Number(o?.diagnostic?.value90 ?? 0), marginFloor: cat.settings.marginFloor, minTermMonths: cat.settings.minTermMonths });
-    if (!ev.canSend) throw new Error("This quote breaks a commercial rule (see checks) and cannot be sent.");
+    if (!ev.canSend) return "blocked";
     const token = randomToken(18);
     await tx`update quotes set status = 'sent', sent_at = now(), public_token = ${token} where id = ${id}`;
     if (email) await queueMessage(tx, { channel: "email", to: email, subject: `Your Elans proposal ${q.number}`, body: `Your proposal is ready to review and accept:\n${siteUrl()}/quote/${token}` });
     await audit(tx, { tenantId: INTERNAL_TENANT_ID, actorId: u.id, actorLabel: u.email, action: "quote.sent", entity: "quote", entityId: id });
+    return "sent";
   });
+  if (result === "blocked") await flash("Not sent: this quote breaks a commercial rule. Fix the items flagged in the checks.", "error");
+  else if (result === "sent") await flash(email ? `Quote sent to ${email}` : "Quote marked as sent; share the client link");
   revalidatePath(`/ops/quotes/${id}`);
 }
 
@@ -154,12 +164,14 @@ export async function replyToConversation(conversationId: string, fd: FormData) 
     await tx`update conversations set status = 'handed_off', assigned_to = ${u.id}, updated_at = now() where id = ${conversationId}`;
     await tx`update handoffs set accepted_by = ${u.id}, accepted_at = coalesce(accepted_at, now()) where conversation_id = ${conversationId}`;
   });
+  await flash("Reply sent");
   revalidatePath(`/ops/inbox/${conversationId}`);
 }
 
 export async function closeConversation(conversationId: string, resolution: "resolved" | "abandoned") {
   const u = await requireStaff();
   await asStaff(u, (tx) => tx`update conversations set status = 'closed', resolution = ${resolution}, updated_at = now() where id = ${conversationId}`);
+  await flash(resolution === "resolved" ? "Conversation closed as resolved" : "Conversation closed");
   revalidatePath("/ops/inbox");
   redirect("/ops/inbox");
 }
@@ -167,6 +179,7 @@ export async function closeConversation(conversationId: string, resolution: "res
 export async function returnToAgent(conversationId: string) {
   const u = await requireStaff();
   await asStaff(u, (tx) => tx`update conversations set status = 'open', updated_at = now() where id = ${conversationId}`);
+  await flash("Handed back to the AI agent");
   revalidatePath(`/ops/inbox/${conversationId}`);
 }
 
@@ -177,6 +190,7 @@ export async function setBookingStatus(id: string, status: "completed" | "no_sho
     await tx`update bookings set status = ${status} where id = ${id}`;
     await audit(tx, { tenantId: INTERNAL_TENANT_ID, actorId: u.id, actorLabel: u.email, action: `booking.${status}`, entity: "booking", entityId: id });
   });
+  await flash(`Session marked ${status.replace("_", "-")}`);
   revalidatePath("/ops/bookings");
 }
 
@@ -185,6 +199,7 @@ export async function reviewAssessment(id: string, fd: FormData) {
   const u = await requireStaff();
   const notes = String(fd.get("notes") ?? "").slice(0, 4000);
   await asStaff(u, (tx) => tx`update assessments set state = 'reviewed', reviewed_by = ${u.id}, review_notes = ${notes || null} where id = ${id}`);
+  await flash("Assessment marked as reviewed");
   revalidatePath(`/ops/assessments/${id}`);
 }
 
@@ -193,8 +208,12 @@ export async function requestAccess(tenantId: string, fd: FormData) {
   const u = await requireStaff();
   const reason = String(fd.get("reason") ?? "").trim();
   const next = String(fd.get("next") ?? `/ops/clients/${tenantId}`);
-  if (reason.length < 8) throw new Error("Please give a reason of at least 8 characters.");
+  if (reason.length < 8) {
+    await flash("Please give a reason of at least 8 characters.", "error");
+    redirect(`/ops/clients/${tenantId}`);
+  }
   await createGrant(u, tenantId, reason);
+  await flash("Access granted for 4 hours (recorded in the client's audit log)");
   redirect(next.startsWith("/ops/") ? next : `/ops/clients/${tenantId}`);
 }
 
@@ -204,6 +223,7 @@ export async function decideReview(tenantId: string, itemId: string, fd: FormDat
   const correction = String(fd.get("correction") ?? "");
   const { applyReviewDecision } = await import("@/lib/runtime/review");
   await withClientAccess(u, tenantId, "write:review.decided", (tx) => applyReviewDecision(tx, itemId, { decision: decision as "accept" | "correct" | "reject", correction, by: `Elans: ${u.name}` }));
+  await flash(decision === "reject" ? "Item rejected" : decision === "correct" ? "Correction applied" : "Item accepted");
   revalidatePath(`/ops/clients/${tenantId}`);
 }
 
@@ -215,12 +235,14 @@ export async function replyTicket(tenantId: string, ticketId: string, fd: FormDa
     if (body) await tx`insert into ticket_messages (tenant_id, ticket_id, author_label, is_staff, body) values (${tenantId}, ${ticketId}, ${`Elans · ${u.name}`}, true, ${body})`;
     await tx`update tickets set status = ${status}, updated_at = now() where id = ${ticketId}`;
   });
+  await flash(body ? "Reply sent to the client" : "Ticket updated");
   revalidatePath(`/ops/clients/${tenantId}`);
 }
 
 export async function resolveIncident(tenantId: string, incidentId: string) {
   const u = await requireStaff();
   await withClientAccess(u, tenantId, "write:incident.resolved", (tx) => tx`update incidents set status = 'resolved', resolved_at = now() where id = ${incidentId}`);
+  await flash("Incident resolved");
   revalidatePath(`/ops/clients/${tenantId}`);
   revalidatePath("/ops/operations");
 }

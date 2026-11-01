@@ -18,6 +18,7 @@ import { normaliseMsisdn } from "@/lib/integrations/mpesa";
 import { requestMpesaPayment } from "@/lib/payments";
 import { clientIp } from "@/lib/request";
 import { rateLimit } from "@/lib/security";
+import { flash } from "@/lib/flash";
 
 const label = (c: { user: { name: string }; isDemo: boolean }) => `${c.user.name}${c.isDemo ? " (demo)" : ""}`;
 
@@ -60,6 +61,7 @@ export async function uploadInvoices(instanceId: string, fd: FormData) {
       else if (["image/png", "image/jpeg", "image/webp"].includes(mime)) await processInvoice(tx, inst, { ...base, image: { mediaType: mime as "image/png", data: buf.toString("base64") } });
     });
   }
+  await flash(files.length ? `${files.length} file${files.length === 1 ? "" : "s"} received and processed` : "Choose at least one file");
   revalidatePath(`/portal/automations/${instanceId}`);
 }
 
@@ -79,6 +81,7 @@ export async function simulateInvoiceIntake(instanceId: string, fd: FormData) {
     const sample = invoices[(n + 7) % invoices.length];
     await processInvoice(tx, inst, { source: "whatsapp", filename: `${sample.id}.txt (synthetic)`, text: sample.text });
   });
+  await flash("Invoice received and checked");
   revalidatePath(`/portal/automations/${instanceId}`);
 }
 
@@ -99,6 +102,7 @@ export async function importStatementCsv(instanceId: string, fd: FormData) {
     const inst = await loadInstance(tx, instanceId);
     if (inst) await importStatement(tx, inst, rows, "csv");
   });
+  await flash("Statement imported and matched");
   revalidatePath(`/portal/automations/${instanceId}`);
 }
 
@@ -110,6 +114,7 @@ export async function setKillSwitch(instanceId: string, on: boolean) {
     await tx`update engine_instances set kill_switch = ${on} where id = ${instanceId}`;
     await audit(tx, { tenantId: c.tenantId, actorId: c.user.id, actorLabel: label(c), action: on ? "automation.kill_switch_on" : "automation.kill_switch_off", entity: "engine_instance", entityId: instanceId });
   });
+  await flash(on ? "Kill switch on: this automation has stopped" : "Kill switch off: automation resumed");
   revalidatePath(`/portal/automations/${instanceId}`);
   revalidatePath("/portal/automations");
 }
@@ -121,6 +126,7 @@ export async function setAutonomy(instanceId: string, actionType: string, value:
     await tx`update engine_instances set autonomy = autonomy || ${tx.json({ [actionType]: value })} where id = ${instanceId}`;
     await audit(tx, { tenantId: c.tenantId, actorId: c.user.id, actorLabel: label(c), action: "automation.autonomy_changed", entity: "engine_instance", entityId: instanceId, meta: { actionType, value } });
   });
+  await flash(value === "auto" ? "Set to do it automatically" : "Set to ask you first");
   revalidatePath(`/portal/automations/${instanceId}`);
 }
 
@@ -131,6 +137,7 @@ export async function setAccountKillSwitch(on: boolean) {
     await tx`select set_tenant_kill_switch(${on})`;
     await audit(tx, { tenantId: c.tenantId, actorId: c.user.id, actorLabel: label(c), action: on ? "account.kill_switch_on" : "account.kill_switch_off" });
   });
+  await flash(on ? "All automations stopped" : "Automations resumed");
   revalidatePath("/portal", "layout");
 }
 
@@ -143,6 +150,7 @@ export async function decideApproval(approvalId: string, approve: boolean, fd: F
     await applyApprovalDecision(tx, approvalId, { approve, by: label(c), editedMessage: edited || undefined });
     await audit(tx, { tenantId: c.tenantId, actorId: c.user.id, actorLabel: label(c), action: approve ? "approval.approved" : "approval.rejected", entity: "approval", entityId: approvalId });
   });
+  await flash(approve ? "Approved and sent" : "Rejected");
   revalidatePath("/portal/approvals");
   revalidatePath("/portal");
 }
@@ -156,6 +164,7 @@ export async function decideClientReview(itemId: string, fd: FormData) {
     await applyReviewDecision(tx, itemId, { decision, correction: receivableId ? JSON.stringify({ receivableId }) : undefined, by: label(c) });
     await audit(tx, { tenantId: c.tenantId, actorId: c.user.id, actorLabel: label(c), action: "review.decided", entity: "review_item", entityId: itemId, meta: { decision } });
   });
+  await flash("Payment decision saved");
   revalidatePath("/portal/approvals");
 }
 
@@ -167,6 +176,7 @@ export async function decideContent(itemId: string, approve: boolean, fd: FormDa
     await tx`update studio_items set status = ${approve ? "approved" : "changes_requested"}, feedback = ${feedback || null} where id = ${itemId} and status = 'awaiting_client'`;
     await audit(tx, { tenantId: c.tenantId, actorId: c.user.id, actorLabel: label(c), action: approve ? "content.approved" : "content.changes_requested", entity: "studio_item", entityId: itemId });
   });
+  await flash(approve ? "Content approved" : "Changes requested");
   revalidatePath("/portal/approvals");
   revalidatePath("/portal/campaigns");
 }
@@ -218,12 +228,14 @@ export async function staffReply(conversationId: string, fd: FormData) {
     await tx`insert into messages (tenant_id, conversation_id, direction, author, body, meta) values (${c.tenantId}, ${conversationId}, 'out', 'human', ${body}, ${tx.json({ staff: c.user.name })})`;
     await tx`update conversations set status = 'handed_off', assigned_to = ${c.user.id}, updated_at = now() where id = ${conversationId}`;
   });
+  await flash("Reply sent");
   revalidatePath("/portal/conversations");
 }
 
 export async function releaseConversation(conversationId: string) {
   const c = await portal();
   await c.db((tx) => tx`update conversations set status = 'open', updated_at = now() where id = ${conversationId}`);
+  await flash("Handed back to the agent");
   revalidatePath("/portal/conversations");
 }
 
@@ -231,6 +243,7 @@ export async function releaseConversation(conversationId: string) {
 export async function toggleTask(taskId: string) {
   const c = await portal();
   await c.db((tx) => tx`update onboarding_tasks set status = case when status = 'done' then 'todo' else 'done' end where id = ${taskId} and owner = 'client'`);
+  await flash("Checklist updated");
   revalidatePath("/portal/projects");
 }
 
@@ -245,6 +258,7 @@ export async function createTicket(fd: FormData) {
     const [t] = await tx<{ id: string }[]>`insert into tickets (tenant_id, subject, priority, sla_due_at, created_by, created_label) values (${c.tenantId}, ${subject}, ${priority}, now() + ${`${hours} hours`}::interval, ${c.user.id}, ${label(c)}) returning id`;
     await tx`insert into ticket_messages (tenant_id, ticket_id, author_label, body) values (${c.tenantId}, ${t.id}, ${label(c)}, ${body})`;
   });
+  await flash("Ticket raised. We will reply here.");
   revalidatePath("/portal/support");
 }
 
@@ -256,6 +270,7 @@ export async function replyToTicket(ticketId: string, fd: FormData) {
     await tx`insert into ticket_messages (tenant_id, ticket_id, author_label, body) values (${c.tenantId}, ${ticketId}, ${label(c)}, ${body})`;
     await tx`update tickets set status = 'open', updated_at = now() where id = ${ticketId}`;
   });
+  await flash("Reply added");
   revalidatePath("/portal/support");
 }
 
@@ -269,6 +284,7 @@ export async function uploadDocument(fd: FormData) {
     const [d] = await tx<{ id: string }[]>`insert into documents (tenant_id, name, kind, mime, size_bytes, content, uploaded_by) values (${c.tenantId}, ${file.name.slice(0, 200)}, ${kind}, ${file.type || "application/octet-stream"}, ${file.size}, ${buf}, ${label(c)}) returning id`;
     await audit(tx, { tenantId: c.tenantId, actorId: c.user.id, actorLabel: label(c), action: "document.uploaded", entity: "document", entityId: d.id });
   });
+  await flash("Document uploaded");
   revalidatePath("/portal/documents");
 }
 
@@ -285,6 +301,7 @@ export async function inviteMember(fd: FormData) {
     await queueMessage(tx, { channel: "email", to: email, subject: `${c.user.name} invited you to ${c.tenantName} on Elans`, body: `Accept your invitation: ${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/portal/invite/${token}` });
     await audit(tx, { tenantId: c.tenantId, actorId: c.user.id, actorLabel: label(c), action: "member.invited", meta: { email, role } });
   });
+  await flash("Invitation sent");
   revalidatePath("/portal/team");
 }
 
@@ -298,6 +315,7 @@ export async function createDpaRequest(fd: FormData) {
     await tx`insert into dpa_requests (tenant_id, subject_ref, type, due_at, notes) values (${c.tenantId}, ${subject}, ${type}, now() + ${type === "access" ? "7 days" : "14 days"}::interval, ${String(fd.get("notes") ?? "").slice(0, 1000) || null})`;
     await audit(tx, { tenantId: c.tenantId, actorId: c.user.id, actorLabel: label(c), action: "dpa_request.created", meta: { type } });
   });
+  await flash("Request logged");
   revalidatePath("/portal/privacy");
 }
 
@@ -305,17 +323,20 @@ export async function payInvoice(invoiceId: string, fd: FormData) {
   const c = await portal();
   const phone = normaliseMsisdn(String(fd.get("phone") ?? ""));
   if (!phone) return;
+  let mock = false;
   await c.db(async (tx) => {
     const [inv] = await tx<{ id: string; amount: number; number: string; status: string }[]>`select id, amount, number, status from invoices where id = ${invoiceId}`;
     if (!inv || inv.status === "paid") return;
     const r = await requestMpesaPayment(tx, { purpose: `invoice:${inv.number}`, reference: inv.number, amount: Number(inv.amount), phone, idempotencyKey: `invoice:${inv.id}:${Date.now()}` });
     await tx`update invoices set lines = lines || ${tx.json([{ paymentId: r.paymentId }] as never)} where id = ${inv.id}`;
     if (r.mode === "mock") {
+      mock = true;
       // Test mode: the demo settles immediately so the flow can be seen end to end.
       await tx`update invoices set status = 'paid', paid_at = now() where id = ${inv.id}`;
       await tx`update payments set status = 'succeeded', provider_ref = ${`TEST${Date.now().toString(36).toUpperCase()}`}, updated_at = now() where id = ${r.paymentId}`;
     }
   });
+  await flash(mock ? "Test payment completed: invoice marked paid (no money moved)" : "Payment request sent. Check your phone to approve it.");
   revalidatePath("/portal/billing");
 }
 
@@ -324,5 +345,6 @@ export async function updateProfile(fd: FormData) {
   const name = String(fd.get("name") ?? "").trim().slice(0, 120);
   if (name.length < 2 || c.isDemo) return;
   await withDb({ tenantId: c.tenantId, userId: c.user.id }, (tx) => tx`update users set name = ${name} where id = ${c.user.id}`);
+  await flash("Profile saved");
   revalidatePath("/portal/settings");
 }
