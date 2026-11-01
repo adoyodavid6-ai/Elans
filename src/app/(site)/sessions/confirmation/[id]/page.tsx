@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { bookingStatus } from "@/app/actions/booking";
 import { SESSION_TYPES, type SessionType } from "@/lib/booking";
-import { mpesaMode } from "@/lib/integrations/mpesa";
 import { ButtonLink, Callout, Container, Section } from "@/components/ui/primitives";
 import { Icon } from "@/components/ui/Icon";
 import { PaymentPoller } from "@/components/sessions/PaymentPoller";
+import { refreshPayment } from "@/lib/payments";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Booking confirmation", robots: { index: false, follow: false } };
@@ -13,8 +13,13 @@ type Props = { params: Promise<{ id: string }> };
 
 export default async function Confirmation({ params }: Props) {
   const { id } = await params;
-  const b = await bookingStatus(id);
+  let b = await bookingStatus(id);
   if (!b) notFound();
+  // If the provider's confirmation hasn't arrived after 20 seconds, ask the provider directly.
+  if (b.payment_id && b.payment_status === "pending" && b.payment_created && Date.now() - b.payment_created.getTime() > 20_000) {
+    await refreshPayment(b.payment_id).catch(() => null);
+    b = (await bookingStatus(id)) ?? b;
+  }
   const meta = SESSION_TYPES[b.type as SessionType];
   const when = b.starts_at.toLocaleString("en-GB", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit", timeZone: "Africa/Nairobi" });
   const confirmed = b.status === "confirmed";
@@ -31,8 +36,10 @@ export default async function Confirmation({ params }: Props) {
           </p>
           {!confirmed && b.status === "pending_payment" && (
             <div className="mt-6 text-left">
-              {b.payment_status ? (
-                <PaymentPoller bookingId={b.id} testMode={mpesaMode() === "mock" || b.provider === "mock"} message={b.message ?? "Check your phone and enter your M-Pesa PIN to approve the payment."} />
+              {b.payment_status === "failed" ? (
+                <Callout tone="danger" title="Payment not completed">{b.failure ? `${b.failure}. ` : ""}Your slot is not confirmed. Please book again and try another payment method, or contact us.</Callout>
+              ) : b.payment_status ? (
+                <PaymentPoller bookingId={b.id} testMode={b.provider === "mock"} message={b.provider === "paystack" ? "Confirming your payment with Paystack…" : b.message ?? "Check your phone and enter your M-Pesa PIN to approve the payment."} />
               ) : (
                 <Callout tone="info">We will email an invoice to your organisation. Your slot is held for 48 hours.</Callout>
               )}

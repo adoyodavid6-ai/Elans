@@ -6,7 +6,8 @@ import { captureLead } from "@/lib/leads";
 import { SESSION_TYPES, availableSlots, type SessionType } from "@/lib/booking";
 import { getCatalogue } from "@/lib/content";
 import { normaliseMsisdn } from "@/lib/integrations/mpesa";
-import { requestMpesaPayment } from "@/lib/payments";
+import { requestMpesaPayment, requestPaystackPayment } from "@/lib/payments";
+import { paystackMode } from "@/lib/integrations/paystack";
 import { clientIp } from "@/lib/request";
 import { rateLimit, verifyTurnstile } from "@/lib/security";
 import { queueMessage } from "@/lib/outbox";
@@ -19,14 +20,14 @@ const schema = z.object({
   phone: z.string().trim().max(30).optional().default(""),
   organisation: z.string().trim().min(1).max(160),
   topic: z.string().trim().max(1000).optional().default(""),
-  payWith: z.enum(["mpesa", "invoice"]).optional().default("mpesa"),
+  payWith: z.enum(["mpesa", "card", "invoice"]).optional().default("mpesa"),
   consentContact: z.literal(true),
   consentMarketing: z.boolean().default(false),
   turnstile: z.string().optional(),
   honeypot: z.string().optional(),
 });
 
-export type BookingResult = { ok: true; bookingId: string } | { ok: false; message: string; field?: string };
+export type BookingResult = { ok: true; bookingId: string; redirectUrl?: string } | { ok: false; message: string; field?: string };
 
 export async function createBooking(input: unknown): Promise<BookingResult> {
   const p = schema.safeParse(input);
@@ -47,6 +48,7 @@ export async function createBooking(input: unknown): Promise<BookingResult> {
   const meta = SESSION_TYPES[d.type as SessionType];
   const price = cat.pricePoints.find((x) => x.key === meta.priceKey);
   const amount = d.type === "discovery" && cat.settings.discoveryCallFree ? 0 : (price?.amount ?? 0);
+  if (amount > 0 && d.payWith === "card" && paystackMode() === "off") return { ok: false, message: "Card payments aren't available yet. Please choose M-Pesa or an invoice.", field: "payWith" };
   let msisdn: string | null = null;
   if (amount > 0 && d.payWith === "mpesa") {
     msisdn = normaliseMsisdn(d.phone);
@@ -54,6 +56,7 @@ export async function createBooking(input: unknown): Promise<BookingResult> {
   }
 
   try {
+    let redirectUrl: string | undefined;
     const bookingId = await internal(async (tx) => {
       const { leadId, contactId } = await captureLead({ name: d.name, email: d.email, phone: d.phone, organisation: d.organisation, source: "booking", sourceDetail: meta.name, message: d.topic, consentContact: true, consentMarketing: d.consentMarketing, consentPurpose: "booking" }, tx);
       const start = new Date(d.slot);
@@ -64,6 +67,11 @@ export async function createBooking(input: unknown): Promise<BookingResult> {
       if (amount > 0 && d.payWith === "mpesa" && msisdn) {
         const pay = await requestMpesaPayment(tx, { purpose: `booking:${d.type}`, reference: `ELANS-${b.id.slice(0, 6).toUpperCase()}`, amount, phone: msisdn, idempotencyKey: `booking:${b.id}` });
         await tx`update bookings set payment_id = ${pay.paymentId} where id = ${b.id}`;
+      } else if (amount > 0 && d.payWith === "card") {
+        const pay = await requestPaystackPayment(tx, { purpose: `booking:${d.type}`, reference: `ELANS-${b.id.slice(0, 6).toUpperCase()}`, amount, email: d.email, idempotencyKey: `booking:${b.id}`, returnPath: `/sessions/confirmation/${b.id}`, description: meta.name });
+        await tx`update bookings set payment_id = ${pay.paymentId} where id = ${b.id}`;
+        if (!pay.ok || !pay.url) throw new Error(`paystack:${pay.message}`);
+        redirectUrl = pay.url;
       } else if (amount > 0 && d.payWith === "invoice") {
         await queueMessage(tx, { channel: "email", to: "team@elans", subject: `Invoice requested for ${meta.name}`, body: `${d.organisation} (${d.email}) requested an invoice for booking ${b.id}.` });
       } else {
@@ -71,10 +79,11 @@ export async function createBooking(input: unknown): Promise<BookingResult> {
       }
       return b.id;
     });
-    return { ok: true, bookingId };
+    return { ok: true, bookingId, redirectUrl };
   } catch (e) {
     const msg = String((e as Error).message);
     if (msg.includes("bookings_slot_unique")) return { ok: false, message: "Someone has just taken that slot. Please pick another.", field: "slot" };
+    if (msg.startsWith("paystack:")) return { ok: false, message: `Card payment couldn't start: ${msg.slice(9)} Please try M-Pesa or request an invoice.` };
     console.error(e);
     return { ok: false, message: "We could not complete the booking right now. Please try again." };
   }
@@ -83,8 +92,9 @@ export async function createBooking(input: unknown): Promise<BookingResult> {
 export async function bookingStatus(id: string) {
   if (!/^[0-9a-f-]{36}$/.test(id)) return null;
   return internal(async (tx) => {
-    const [b] = await tx<{ id: string; type: string; starts_at: Date; ends_at: Date; status: string; payment_status: string | null; amount: number | null; provider: string | null; message: string | null }[]>`
-      select b.id, b.type, b.starts_at, b.ends_at, b.status, p.status as payment_status, p.amount, p.provider, p.raw->'request'->>'message' as message
+    const [b] = await tx<{ id: string; type: string; starts_at: Date; ends_at: Date; status: string; payment_id: string | null; payment_status: string | null; payment_created: Date | null; amount: number | null; provider: string | null; message: string | null; failure: string | null }[]>`
+      select b.id, b.type, b.starts_at, b.ends_at, b.status, b.payment_id, p.status as payment_status, p.created_at as payment_created, p.amount, p.provider, p.raw->'request'->>'message' as message,
+        coalesce(p.raw->'callback'->>'resultDesc', p.raw->'callback'->>'detail', p.raw->'callback'->>'gatewayResponse') as failure
       from bookings b left join payments p on p.id = b.payment_id where b.id = ${id}`;
     return b ?? null;
   }).catch(() => null);

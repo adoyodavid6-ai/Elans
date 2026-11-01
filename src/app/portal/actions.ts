@@ -15,7 +15,7 @@ import { generateInvoices } from "@/lib/solutions/etims/samples";
 import { importStatement, type StatementRow } from "@/lib/solutions/recon/workflow";
 import { converseRespond } from "@/lib/solutions/converse/agent";
 import { normaliseMsisdn } from "@/lib/integrations/mpesa";
-import { requestMpesaPayment } from "@/lib/payments";
+import { requestMpesaPayment, requestPaystackPayment } from "@/lib/payments";
 import { clientIp } from "@/lib/request";
 import { rateLimit } from "@/lib/security";
 import { flash } from "@/lib/flash";
@@ -322,22 +322,49 @@ export async function createDpaRequest(fd: FormData) {
 export async function payInvoice(invoiceId: string, fd: FormData) {
   const c = await portal();
   const phone = normaliseMsisdn(String(fd.get("phone") ?? ""));
-  if (!phone) return;
+  if (!phone) {
+    await flash("Enter the M-Pesa number to charge, e.g. 0712 345 678.", "error");
+    revalidatePath("/portal/billing");
+    return;
+  }
   let mock = false;
+  let failed: string | null = null;
   await c.db(async (tx) => {
     const [inv] = await tx<{ id: string; amount: number; number: string; status: string }[]>`select id, amount, number, status from invoices where id = ${invoiceId}`;
     if (!inv || inv.status === "paid") return;
     const r = await requestMpesaPayment(tx, { purpose: `invoice:${inv.number}`, reference: inv.number, amount: Number(inv.amount), phone, idempotencyKey: `invoice:${inv.id}:${Date.now()}` });
     await tx`update invoices set lines = lines || ${tx.json([{ paymentId: r.paymentId }] as never)} where id = ${inv.id}`;
-    if (r.mode === "mock") {
+    if (!r.ok) failed = r.message;
+    else if (r.mode === "mock") {
       mock = true;
       // Test mode: the demo settles immediately so the flow can be seen end to end.
       await tx`update invoices set status = 'paid', paid_at = now() where id = ${inv.id}`;
       await tx`update payments set status = 'succeeded', provider_ref = ${`TEST${Date.now().toString(36).toUpperCase()}`}, updated_at = now() where id = ${r.paymentId}`;
     }
   });
-  await flash(mock ? "Test payment completed: invoice marked paid (no money moved)" : "Payment request sent. Check your phone to approve it.");
+  await flash(failed ? `M-Pesa request failed: ${failed}` : mock ? "Test payment completed: invoice marked paid (no money moved)" : "Payment request sent. Check your phone and enter your M-Pesa PIN.", failed ? "error" : "success");
   revalidatePath("/portal/billing");
+}
+
+/** Pay an invoice by card (or another Paystack channel): redirects to Paystack's hosted checkout. */
+export async function payInvoiceCard(invoiceId: string) {
+  const c = await portal();
+  const r = await c.db(async (tx) => {
+    const [inv] = await tx<{ id: string; amount: number; number: string; status: string }[]>`select id, amount, number, status from invoices where id = ${invoiceId}`;
+    if (!inv || inv.status === "paid" || inv.status === "void") return null;
+    const p = await requestPaystackPayment(tx, { purpose: `invoice:${inv.number}`, reference: inv.number, amount: Number(inv.amount), email: c.user.email, idempotencyKey: `invoice:${inv.id}`, returnPath: "/portal/billing", description: `Invoice ${inv.number}` });
+    await tx`update invoices set lines = lines || ${tx.json([{ paymentId: p.paymentId }] as never)} where id = ${inv.id}`;
+    return p;
+  });
+  if (!r) {
+    await flash("This invoice can't be paid.", "error");
+    redirect("/portal/billing");
+  }
+  if (!r.ok || !r.url) {
+    await flash(`Card payment couldn't start: ${r.message}`, "error");
+    redirect("/portal/billing");
+  }
+  redirect(r.url);
 }
 
 export async function updateProfile(fd: FormData) {

@@ -16,7 +16,7 @@ accreditation exist. **Needs credentials** = code path exists, switched off unti
 | ROI calculators (master + 8 specialist, low/base/high, capacity vs cash) | Working | |
 | AI Visibility Check | Working (rules) / Needs credentials (live web search) | Uses Claude web search when `ANTHROPIC_API_KEY` is set |
 | Contact, partner forms, lead capture with consent records | Working | Turnstile needs keys; disabled in dev |
-| Session booking with M-Pesa payment and calendar file | Mock / test mode | Daraja sandbox/production via `MPESA_ENV` + credentials |
+| Session booking with M-Pesa or card payment and calendar file | Test mode until keys are added | M-Pesa via `MPESA_*` (Daraja), cards via `PAYSTACK_SECRET_KEY`; see console → Payments |
 | Website chat agent (FAQs, solutions, booking, handover to inbox) | Working | English + Swahili detection; AI answers only with a key |
 | Quote acceptance → client provisioning | Working | Creates tenant, project, onboarding tasks, subscription, invite |
 | SEO/GEO: metadata, JSON-LD, sitemap.xml, robots.txt, llms.txt | Working | Set `NEXT_PUBLIC_SITE_URL` in production |
@@ -59,7 +59,7 @@ accreditation exist. **Needs credentials** = code path exists, switched off unti
 | Approvals with editable messages; autonomy per action type; kill switches (automation and account) | Working | |
 | Workflow health, run step ledger (audit trail) | Working | |
 | Campaigns & Studio content sign-off | Working | Content generation itself is done by the Elans team |
-| Projects/onboarding, monthly report (printable), billing with M-Pesa | Working / Mock payments | |
+| Projects/onboarding, monthly report (printable), billing with M-Pesa and card (Paystack) | Working / test mode until keys are added | Pending payments are re-checked with the provider automatically |
 | Support tickets, documents, integrations, team, data export, DPA requests, audit log | Working | Files stored in Postgres in dev (B-009) |
 
 ## Platform
@@ -72,4 +72,5 @@ accreditation exist. **Needs credentials** = code path exists, switched off unti
 | eTIMS evaluation (`npm run eval:etims`) | Working (synthetic) | D-030: not evidence of real-world accuracy |
 | Outbound email / WhatsApp / SMS delivery | Logged only | Outbox records every message; provider worker is B-010 |
 | CI (typecheck, migrate + seed, tests incl. RLS, eval, build) | Configured | `.github/workflows/ci.yml` |
+| Payments: M-Pesa STK push + status query + paybill/till (C2B) confirmations matched to invoices; Paystack checkout + signed webhook + verification; console Payments page | Built; needs credentials | Live calls could not be made from the build environment; verified with unit tests and simulated signed callbacks |
 | Certifications (ISO 27001, SOC 2, etc.) | None claimed | The Trust page says so |

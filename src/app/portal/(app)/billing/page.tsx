@@ -1,12 +1,18 @@
 import { portal } from "@/lib/portal";
-import { payInvoice } from "@/app/portal/actions";
+import { payInvoice, payInvoiceCard } from "@/app/portal/actions";
+import { refreshPayment, paymentOptions } from "@/lib/payments";
 import { Badge, Kpi, PageTitle, Panel, Table } from "@/components/app/AppShell";
 import { formatMoney, formatNumber } from "@/lib/core/money";
 
 const METER_FOR: Record<string, string> = { document_pages: "doc_page", wa_conversations: "wa_conversation", transactions: "txn_reconciled", etims_checks: "etims_check" };
 
-export default async function Billing() {
+export default async function Billing({ searchParams }: { searchParams: Promise<{ payment?: string }> }) {
+  const { payment } = await searchParams;
   const c = await portal();
+  const opts = paymentOptions();
+  // Re-check payments still pending after 20 seconds (in case a provider confirmation was lost).
+  const pending = await c.db((tx) => tx<{ id: string }[]>`select id from payments where status = 'pending' and created_at < now() - interval '20 seconds' and created_at > now() - interval '2 days' and provider in ('mpesa','paystack') limit 5`);
+  for (const p of pending) await refreshPayment(p.id).catch(() => null);
   const d = await c.db(async (tx) => ({
     sub: (await tx<{ package_key: string; status: string; monthly_amount: number; currency: string; allowances: Record<string, number>; started_at: string }[]>`select package_key, status, monthly_amount, currency, allowances, started_at::text from subscriptions where status = 'active' limit 1`)[0],
     usage: await tx<{ meter: string; q: number; cost: number }[]>`select meter, sum(quantity)::float as q, sum(cost)::float as cost from usage_events where created_at > date_trunc('month', now()) group by meter order by meter`,
@@ -15,7 +21,10 @@ export default async function Billing() {
   const due = d.invoices.filter((i) => i.status === "issued" || i.status === "overdue").reduce((s, i) => s + Number(i.amount), 0);
   return (
     <>
-      <PageTitle title="Usage & Billing" description="Your package, what you have used this month against allowances, and your invoices. Pay by M-Pesa from here." />
+      <PageTitle title="Usage & Billing" description={`Your package, what you have used this month against allowances, and your invoices. Pay by M-Pesa${opts.paystack !== "off" ? " or card" : ""} from here.`} />
+      {payment === "success" && <p role="status" className="mb-4 rounded-xl bg-success-bg p-3 text-sm text-success">Payment received. Thank you: the invoice is marked paid.</p>}
+      {payment === "failed" && <p role="status" className="mb-4 rounded-xl bg-danger-bg p-3 text-sm text-danger">The payment didn&apos;t go through. No money was taken; you can try again below.</p>}
+      {payment === "pending" && <p role="status" className="mb-4 rounded-xl bg-warning-bg p-3 text-sm text-warning">We&apos;re waiting for the payment provider to confirm. This page updates when it does.</p>}
       <div className="mb-6 grid gap-3 sm:grid-cols-3">
         <Kpi label="Package" value={d.sub ? d.sub.package_key.replace(/^\w/, (x) => x.toUpperCase()) : "None"} hint={d.sub ? `since ${d.sub.started_at}` : undefined} />
         <Kpi label="Monthly retainer" value={d.sub ? formatMoney(Number(d.sub.monthly_amount)) : "—"} />
@@ -52,7 +61,12 @@ export default async function Billing() {
                     <form action={payInvoice.bind(null, i.id)} className="flex gap-1">
                       <label htmlFor={`p-${i.id}`} className="sr-only">M-Pesa phone number</label>
                       <input id={`p-${i.id}`} name="phone" inputMode="tel" required placeholder="07XX XXX XXX" className="w-32 rounded-lg border border-line bg-surface px-2 py-1 text-xs" />
-                      <button className="rounded-lg bg-[#1f7a54] px-3 py-1 text-xs font-semibold text-white">Pay</button>
+                      <button className="rounded-lg bg-[#1f7a54] px-3 py-1 text-xs font-semibold text-white">M-Pesa</button>
+                    </form>
+                  )}
+                  {i.status !== "paid" && i.status !== "void" && opts.paystack !== "off" && (
+                    <form action={payInvoiceCard.bind(null, i.id)} className="mt-1">
+                      <button className="rounded-lg px-3 py-1 text-xs font-semibold ring-1 ring-line hover:bg-surface-2">Pay by card</button>
                     </form>
                   )}
                   {i.paid_at && <p className="text-xs text-muted">paid {i.paid_at.toLocaleDateString("en-GB")}</p>}
@@ -60,7 +74,7 @@ export default async function Billing() {
               </tr>
             ))}
           </Table>
-          <p className="mt-3 text-xs text-muted">M-Pesa runs in test mode until live Daraja credentials are configured: a test payment completes immediately and no money moves.</p>
+          {opts.mpesa === "mock" && <p className="mt-3 text-xs text-muted">M-Pesa runs in test mode until live Daraja credentials are configured: a test payment completes immediately and no money moves.</p>}
         </Panel>
       </div>
     </>

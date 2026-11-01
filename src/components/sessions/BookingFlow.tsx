@@ -21,7 +21,7 @@ const fmtDay = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { week
 const fmtTime = (iso: string) => new Date(iso).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Nairobi" });
 const input = "h-11 w-full rounded-xl border border-line bg-white px-3 text-[0.95rem] focus:border-brown focus:outline-none focus:ring-2 focus:ring-copper/40";
 
-export function BookingFlow({ types, initialType, mpesaMode }: { types: TypeOpt[]; initialType: string; mpesaMode: string }) {
+export function BookingFlow({ types, initialType, mpesaMode, cardEnabled = false }: { types: TypeOpt[]; initialType: string; mpesaMode: string; cardEnabled?: boolean }) {
   const router = useRouter();
   const [typeKey, setTypeKey] = useState(types.find((t) => t.key === initialType)?.key ?? types[0].key);
   const type = types.find((t) => t.key === typeKey)!;
@@ -58,7 +58,8 @@ export function BookingFlow({ types, initialType, mpesaMode }: { types: TypeOpt[
           setErr(null);
           start(async () => {
             const r = await createBooking({ type: typeKey, slot, name: f.name, email: f.email, phone: f.phone, organisation: f.organisation, topic: f.topic, payWith: f.payWith, consentContact: f.consent, consentMarketing: f.marketing, turnstile: fd.get("cf-turnstile-response") ?? undefined, honeypot: fd.get("company_website") ?? "" });
-            if (r.ok) router.push(`/sessions/confirmation/${r.bookingId}`);
+            if (r.ok && r.redirectUrl) window.location.assign(r.redirectUrl);
+            else if (r.ok) router.push(`/sessions/confirmation/${r.bookingId}`);
             else setErr({ message: r.message, field: r.field });
           });
         }}
@@ -111,6 +112,7 @@ export function BookingFlow({ types, initialType, mpesaMode }: { types: TypeOpt[
             <div className="mt-2 grid gap-2 sm:grid-cols-2">
               {[
                 ["mpesa", "M-Pesa (STK push to your phone)"],
+                ...(cardEnabled ? [["card", "Card or other method (Paystack)"]] : []),
                 ["invoice", "Send my organisation an invoice"],
               ].map(([v, l]) => (
                 <label key={v} className={cx("flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-3 text-sm", f.payWith === v ? "border-brown ring-1 ring-brown" : "border-line")}>
@@ -118,7 +120,7 @@ export function BookingFlow({ types, initialType, mpesaMode }: { types: TypeOpt[
                 </label>
               ))}
             </div>
-            <p className="mt-2 text-xs text-muted">Card payments will be added once our card gateway is live.{mpesaMode === "mock" && " Payments are currently in TEST MODE: no money will be taken."}</p>
+            <p className="mt-2 text-xs text-muted">{cardEnabled ? "Card payments are handled securely by Paystack; you return here afterwards. " : ""}{mpesaMode === "mock" && "M-Pesa is currently in TEST MODE: no money will be taken."}</p>
           </fieldset>
         )}
 
@@ -129,7 +131,7 @@ export function BookingFlow({ types, initialType, mpesaMode }: { types: TypeOpt[
         <Turnstile />
         {err && <p role="alert" className="rounded-xl bg-danger-bg p-3 text-sm text-danger">{err.message}</p>}
         <button disabled={pending} className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-brown px-6 font-semibold text-white disabled:opacity-60 sm:w-auto">
-          {pending ? "Booking…" : type.free ? "Confirm booking" : f.payWith === "mpesa" ? `Book and pay ${type.price}` : "Book and request invoice"}
+          {pending ? "Booking…" : type.free ? "Confirm booking" : f.payWith === "mpesa" ? `Book and pay ${type.price}` : f.payWith === "card" ? `Book and pay ${type.price} by card` : "Book and request invoice"}
           {!pending && <Icon name="arrow-right" size={18} />}
         </button>
       </form>

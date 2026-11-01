@@ -78,6 +78,13 @@ Every later deploy re-applies pending migrations and rebuilds the demo data (edi
 are kept). Connect the database to **Production only** (or give Preview its own branch database),
 otherwise preview deployments run migrations against production.
 
+## Payments (M-Pesa and Paystack)
+
+Both stay off or in test mode until you add keys as Vercel environment variables (listed in `.env.example`). Console → **Payments** shows what is set, tests the connection, and gives the URLs to register.
+
+- **M-Pesa (Daraja):** set `MPESA_ENV=sandbox` (or `production` after Go-Live), `MPESA_CONSUMER_KEY`, `MPESA_CONSUMER_SECRET`, `MPESA_SHORTCODE`, `MPESA_PASSKEY`, and `MPESA_TILL_NUMBER` only for Buy Goods. Then press **Register paybill/till confirmation URLs** so payments made from the phone menu are recorded and matched to invoices by account number.
+- **Paystack:** set `PAYSTACK_SECRET_KEY` (`sk_test_…` first) and paste the webhook URL shown on the Payments page into the Paystack dashboard. Card buttons then appear on the booking page and in the client portal.
+
 ## Commands
 
 | Command | What it does |
