@@ -7,6 +7,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import { NavLinks, type NavItem } from "./NavLinks";
 import { MobileNav } from "./MobileNav";
 import { Toast } from "./Toast";
+import { ActionSafetyNet } from "./ActionSafetyNet";
 import { CommandPalette, SearchButton, type PaletteAction } from "./CommandPalette";
 import { readFlash } from "@/lib/flash";
 import { consoleSearch } from "@/app/ops/search-actions";
@@ -54,6 +55,7 @@ export async function AppShell({ area, nav, user, tenantLabel, banner, children,
         <main id="app-main" className="mx-auto max-w-[90rem] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">{children}</main>
       </div>
       <Toast flash={flash} />
+      <ActionSafetyNet />
       {commands && <CommandPalette actions={commands} search={consoleSearch} />}
     </div>
   );

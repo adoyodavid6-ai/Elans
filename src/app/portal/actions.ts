@@ -15,7 +15,7 @@ import { generateInvoices } from "@/lib/solutions/etims/samples";
 import { importStatement, type StatementRow } from "@/lib/solutions/recon/workflow";
 import { converseRespond } from "@/lib/solutions/converse/agent";
 import { normaliseMsisdn } from "@/lib/integrations/mpesa";
-import { requestMpesaPayment, requestPaystackPayment } from "@/lib/payments";
+import { requestMpesaPayment, requestPaystackPayment, settlePayment } from "@/lib/payments";
 import { clientIp } from "@/lib/request";
 import { rateLimit } from "@/lib/security";
 import { flash } from "@/lib/flash";
@@ -329,6 +329,7 @@ export async function payInvoice(invoiceId: string, fd: FormData) {
   }
   let mock = false;
   let failed: string | null = null;
+  let mockPaymentId: string | null = null;
   await c.db(async (tx) => {
     const [inv] = await tx<{ id: string; amount: number; number: string; status: string }[]>`select id, amount, number, status from invoices where id = ${invoiceId}`;
     if (!inv || inv.status === "paid") return;
@@ -337,11 +338,11 @@ export async function payInvoice(invoiceId: string, fd: FormData) {
     if (!r.ok) failed = r.message;
     else if (r.mode === "mock") {
       mock = true;
-      // Test mode: the demo settles immediately so the flow can be seen end to end.
-      await tx`update invoices set status = 'paid', paid_at = now() where id = ${inv.id}`;
-      await tx`update payments set status = 'succeeded', provider_ref = ${`TEST${Date.now().toString(36).toUpperCase()}`}, updated_at = now() where id = ${r.paymentId}`;
+      mockPaymentId = r.paymentId;
     }
   });
+  // Test mode: settle straight away through the normal path (invoice paid, audit, automatic receipt) so the flow can be seen end to end.
+  if (mockPaymentId) await settlePayment(mockPaymentId, { success: true, receipt: `TEST${Date.now().toString(36).toUpperCase()}`, detail: "Simulated payment (test mode)", channel: "mpesa" });
   await flash(failed ? `M-Pesa request failed: ${failed}` : mock ? "Test payment completed: invoice marked paid (no money moved)" : "Payment request sent. Check your phone and enter your M-Pesa PIN.", failed ? "error" : "success");
   revalidatePath("/portal/billing");
 }

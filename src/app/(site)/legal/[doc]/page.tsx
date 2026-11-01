@@ -11,10 +11,16 @@ export function generateStaticParams() {
   return Object.keys(LEGAL).map((doc) => ({ doc }));
 }
 type Props = { params: Promise<{ doc: string }> };
+const LEGAL_DESC: Record<string, string> = {
+  privacy: "How Elans collects, uses, stores and protects personal data under Kenya's Data Protection Act, and how to exercise your rights.",
+  terms: "The terms that apply when you use the Elans website and services.",
+  cookies: "Which cookies the Elans website uses, why, and how to change your choices.",
+  dpa: "The data processing agreement that governs how Elans handles personal data on behalf of its clients.",
+};
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { doc } = await params;
   const d = LEGAL[doc];
-  return d ? { title: d.title, alternates: { canonical: `/legal/${doc}` } } : {};
+  return d ? { title: d.title, description: `${LEGAL_DESC[doc] ?? `${d.title} for Elans.`} Last updated ${d.updated}.`, alternates: { canonical: `/legal/${doc}` } } : {};
 }
 
 export default async function LegalPage({ params }: Props) {

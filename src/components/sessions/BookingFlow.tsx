@@ -101,7 +101,7 @@ export function BookingFlow({ types, initialType, mpesaMode, cardEnabled = false
             <label className="text-sm"><span className="mb-1 block font-medium">Name *</span><input required autoComplete="name" value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} className={input} /></label>
             <label className="text-sm"><span className="mb-1 block font-medium">Work email *</span><input required type="email" autoComplete="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} className={input} /></label>
             <label className="text-sm"><span className="mb-1 block font-medium">Organisation *</span><input required autoComplete="organization" value={f.organisation} onChange={(e) => setF({ ...f, organisation: e.target.value })} className={input} /></label>
-            <label className="text-sm"><span className="mb-1 block font-medium">Phone / M-Pesa number{!type.free && f.payWith === "mpesa" ? " *" : ""}</span><input type="tel" autoComplete="tel" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} className={cx(input, err?.field === "phone" && "border-danger")} placeholder="07XX XXX XXX" /></label>
+            <label className="text-sm"><span className="mb-1 block font-medium">Phone / M-Pesa number{!type.free && f.payWith === "mpesa" ? " *" : ""}</span><input type="tel" autoComplete="tel" required={!type.free && f.payWith === "mpesa"} value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} className={cx(input, err?.field === "phone" && "border-danger")} placeholder="07XX XXX XXX" /></label>
           </div>
           <label className="block text-sm"><span className="mb-1 block font-medium">What would you like to cover? (optional)</span><textarea value={f.topic} onChange={(e) => setF({ ...f, topic: e.target.value })} className={cx(input, "h-auto min-h-24 py-2")} /></label>
         </fieldset>
@@ -125,7 +125,7 @@ export function BookingFlow({ types, initialType, mpesaMode, cardEnabled = false
         )}
 
         <div className="space-y-2 text-sm">
-          <label className="flex items-start gap-2"><input type="checkbox" checked={f.consent} onChange={(e) => setF({ ...f, consent: e.target.checked })} className="mt-0.5 h-5 w-5 accent-brown" /><span>Elans may use these details to arrange this session (see the <a href="/legal/privacy" className="underline" target="_blank">privacy notice</a>). *</span></label>
+          <label className="flex items-start gap-2"><input type="checkbox" required checked={f.consent} onChange={(e) => setF({ ...f, consent: e.target.checked })} className="mt-0.5 h-5 w-5 accent-brown" /><span>Elans may use these details to arrange this session (see the <a href="/legal/privacy" className="underline" target="_blank">privacy notice</a>). *</span></label>
           <label className="flex items-start gap-2"><input type="checkbox" checked={f.marketing} onChange={(e) => setF({ ...f, marketing: e.target.checked })} className="mt-0.5 h-5 w-5 accent-brown" /><span>Send me occasional insights (optional).</span></label>
         </div>
         <Turnstile />

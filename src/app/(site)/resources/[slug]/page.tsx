@@ -17,7 +17,7 @@ type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const r = (await getCatalogue()).resources.find((x) => x.slug === slug);
-  return r ? { title: r.title, description: r.summary, alternates: { canonical: `/resources/${r.slug}` }, openGraph: { type: "article", publishedTime: r.published } } : {};
+  return r ? { title: r.title, description: r.summary, alternates: { canonical: `/resources/${r.slug}` }, openGraph: { type: "article", publishedTime: r.published, title: r.title, description: r.summary, images: [{ url: "/og.png", width: 1200, height: 630, alt: "Elans: Intelligent Systems. Measurable Results." }] } } : {};
 }
 
 export default async function ResourcePage({ params }: Props) {

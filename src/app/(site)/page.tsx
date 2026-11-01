@@ -1,4 +1,7 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 import { getCatalogue } from "@/lib/content";
 import { ButtonLink, Card, Container, Eyebrow, Faqs, Heading, Lead, Section, TextLink, CheckList, cx } from "@/components/ui/primitives";
 import { Icon } from "@/components/ui/Icon";

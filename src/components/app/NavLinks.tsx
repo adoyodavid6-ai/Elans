@@ -25,7 +25,7 @@ export function NavLinks({ nav, onNavigate }: { nav: { section?: string; items: 
               const active = it.exact ? pathname === it.href : pathname === it.href || pathname.startsWith(`${it.href}/`);
               return (
                 <li key={it.href}>
-                  <Link href={it.href} onClick={onNavigate} aria-current={active ? "page" : undefined} className={cx("flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition", active ? "bg-brown text-white" : "text-text hover:bg-surface-2")}>
+                  <Link href={it.href} prefetch={false} onClick={onNavigate} aria-current={active ? "page" : undefined} className={cx("flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition", active ? "bg-brown text-white" : "text-text hover:bg-surface-2")}>
                     <Icon name={it.icon} size={17} />
                     <span className="flex-1">{it.label}</span>
                     {it.badge ? <span className={cx("rounded-full px-1.5 text-xs font-semibold", active ? "bg-white/20" : "bg-copper/20 text-copper-ink")}>{it.badge}</span> : null}

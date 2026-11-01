@@ -16,7 +16,7 @@ type Props = { params: Promise<{ template: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { template } = await params;
   const t = (await getCatalogue()).templates.find((x) => x.slug === template);
-  return t ? { title: `${t.name} template`, description: t.problem } : {};
+  return t ? { title: `${t.name} template`, description: t.problem, alternates: { canonical: `/templates/${t.slug}` } } : {};
 }
 
 export default async function TemplatePage({ params }: Props) {

@@ -16,7 +16,7 @@ type Props = { params: Promise<{ package: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { package: key } = await params;
   const p = (await getCatalogue()).packages.find((x) => x.key === key);
-  return p ? { title: `${p.name} package`, description: p.summary } : {};
+  return p ? { title: `${p.name} package`, description: p.summary, alternates: { canonical: `/pricing/${p.key}` } } : {};
 }
 
 export default async function PackagePage({ params }: Props) {

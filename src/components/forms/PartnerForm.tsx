@@ -12,9 +12,9 @@ export function PartnerForm() {
   return (
     <form action={action} className="relative mt-6 space-y-5" noValidate>
       <Honeypot />
-      <Field label="Your name" name="name" required error={e.name}><Input name="name" autoComplete="name" error={e.name} /></Field>
-      <Field label="Work email" name="email" required error={e.email}><Input name="email" type="email" autoComplete="email" error={e.email} /></Field>
-      <Field label="Firm or agency" name="organisation" required error={e.organisation}><Input name="organisation" autoComplete="organization" error={e.organisation} /></Field>
+      <Field label="Your name" name="name" required error={e.name}><Input name="name" autoComplete="name" required minLength={2} error={e.name} /></Field>
+      <Field label="Work email" name="email" required error={e.email}><Input name="email" type="email" autoComplete="email" required error={e.email} /></Field>
+      <Field label="Firm or agency" name="organisation" required error={e.organisation}><Input name="organisation" autoComplete="organization" required minLength={2} error={e.organisation} /></Field>
       <Field label="Programme" name="programme" required>
         <Select name="programme" defaultValue="referral">
           <option value="referral">Referral</option>
