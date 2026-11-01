@@ -4,7 +4,8 @@ import { sign } from "@/lib/security";
 import { stkPush, stkQuery, mpesaMode, type StkCallback } from "@/lib/integrations/mpesa";
 import { initializeTransaction, paystackMode, verifyTransaction, toSubunit } from "@/lib/integrations/paystack";
 import { audit } from "@/lib/audit";
-import { queueMessage } from "@/lib/outbox";
+import { deliverSoon, queueMessage } from "@/lib/outbox";
+import { autoReceipt } from "@/lib/receipts";
 
 /**
  * Payments across providers: M-Pesa STK push, Paystack hosted checkout, and the test-mode simulator.
@@ -53,7 +54,7 @@ async function locate(paymentId: string) {
 export async function settlePayment(paymentId: string, outcome: { success: boolean; receipt?: string; detail: string; channel?: string; raw?: unknown }) {
   const loc = await locate(paymentId);
   if (!loc) return { changed: false };
-  return withDb({ tenantId: loc.tenant_id }, async (tx) => {
+  const result = await withDb({ tenantId: loc.tenant_id }, async (tx) => {
     const [p] = await tx<{ id: string; status: string; reference: string; purpose: string; amount: number }[]>`select id, status, reference, purpose, amount from payments where id = ${paymentId} for update`;
     if (!p || p.status !== "pending") return { changed: false };
     await tx`update payments set status = ${outcome.success ? "succeeded" : "failed"}, provider_ref = coalesce(${outcome.receipt ?? null}, provider_ref), channel = coalesce(${outcome.channel ?? null}, channel),
@@ -62,7 +63,8 @@ export async function settlePayment(paymentId: string, outcome: { success: boole
       const [b] = await tx<{ id: string; contact_id: string; starts_at: Date; type: string }[]>`update bookings set status = 'confirmed' where payment_id = ${paymentId} and status = 'pending_payment' returning id, contact_id, starts_at, type`;
       if (b) {
         const [c] = await tx<{ email: string; name: string }[]>`select email, name from contacts where id = ${b.contact_id}`;
-        if (c) await queueMessage(tx, { channel: "email", to: c.email, subject: "Your Elans session is confirmed", body: `Hello ${c.name},\n\nYour ${b.type} session on ${b.starts_at.toUTCString()} is confirmed. Receipt: ${outcome.receipt ?? "n/a"}.\n\nThe Elans team` });
+        const when = b.starts_at.toLocaleString("en-GB", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit", timeZone: "Africa/Nairobi" });
+        if (c) await queueMessage(tx, { channel: "email", to: c.email, subject: "Your Elans session is confirmed", body: `Hello ${c.name},\n\nYour payment is confirmed and your session on ${when} (EAT) is booked. Your receipt follows in a separate email.\n\nWe'll remind you 45 minutes before it starts.\n\nThe Elans team` });
       }
       if (p.purpose.startsWith("invoice:")) {
         await tx`update invoices set status = 'paid', paid_at = now() where number = ${p.purpose.slice(8)} and status in ('issued','overdue')`;
@@ -71,12 +73,22 @@ export async function settlePayment(paymentId: string, outcome: { success: boole
     await audit(tx, { tenantId: loc.tenant_id, actorLabel: "payment-provider", action: outcome.success ? "payment.succeeded" : "payment.failed", entity: "payment", entityId: paymentId, meta: { detail: outcome.detail, receipt: outcome.receipt } });
     return { changed: true };
   });
+  if (result.changed) {
+    // Receipt straight after a confirmed payment, then deliver the queued emails.
+    if (outcome.success) await autoReceipt(paymentId);
+    await deliverSoon();
+  }
+  return result;
 }
 
 export async function settleFromCallback(paymentId: string, cb: StkCallback) {
   // Bind the callback to the payment we created: the CheckoutRequestID must match.
   const loc = await locate(paymentId);
   if (!loc || loc.provider_ref !== cb.checkoutRequestId) return { changed: false, reason: "mismatch" };
+  // Genuine payments only: the amount M-Pesa reports must be the amount we asked for.
+  if (cb.resultCode === 0 && cb.amount !== undefined && Math.abs(cb.amount - Number(loc.amount)) >= 1) {
+    return settlePayment(paymentId, { success: false, detail: `Amount mismatch: M-Pesa reported ${cb.amount}, expected ${loc.amount}. Check before confirming by hand.`, channel: "mpesa", raw: cb });
+  }
   return settlePayment(paymentId, { success: cb.resultCode === 0, receipt: cb.receipt, detail: cb.resultDesc, channel: "mpesa", raw: cb });
 }
 

@@ -1,8 +1,9 @@
+import Link from "next/link";
 import { isSuper, requireSuper } from "@/lib/auth";
 import { asStaff, relTime } from "@/lib/ops/data";
 import { mpesaConfigStatus } from "@/lib/integrations/mpesa";
 import { paystackConfigStatus } from "@/lib/integrations/paystack";
-import { c2bUrls, checkPayment, registerMpesaC2b, testProvider } from "@/app/ops/payment-actions";
+import { c2bUrls, checkPayment, issueReceipt, registerMpesaC2b, testProvider } from "@/app/ops/payment-actions";
 import { formatMoney } from "@/lib/core/money";
 import { Badge, PageTitle, Panel, Table } from "@/components/app/AppShell";
 import { SubmitButton } from "@/components/app/Form";
@@ -20,6 +21,7 @@ export default async function Payments() {
   const ps = paystackConfigStatus();
   const urls = isAdmin ? await c2bUrls() : null;
   const rows = await asStaff(u, (tx) => tx<{ id: string; tenant_name: string; provider: string; purpose: string; reference: string; amount: number; currency: string; status: string; provider_ref: string | null; created_at: Date }[]>`select id, tenant_name, provider, purpose, reference, amount, currency, status, provider_ref, created_at from ops_payment_queue(100)`);
+  const receipts = new Map((await asStaff(u, (tx) => tx<{ id: string; number: string; source_ref: string; emailed_to: string | null }[]>`select id, number, source_ref, emailed_to from issued_documents where kind = 'receipt' and source_ref like 'payment:%'`)).map((r) => [r.source_ref.slice(8), r]));
   const Vars = ({ vars }: { vars: { key: string; set: boolean; optional: boolean }[] }) => (
     <ul className="mt-3 grid gap-1 text-sm sm:grid-cols-2">
       {vars.map((v) => <li key={v.key} className="flex items-center gap-2"><Icon name={v.set ? "check" : "x"} size={15} className={v.set ? "text-success" : v.optional ? "text-muted" : "text-danger"} /><code className="text-xs">{v.key}</code>{v.optional && <span className="text-xs text-muted">optional</span>}</li>)}
@@ -70,7 +72,7 @@ export default async function Payments() {
       </div>
 
       <Panel title={`Recent payments (${rows.length})`} className="mt-6">
-        <Table head={["When", "Account", "For", "Method", "Amount", "Status", "Provider ref", ""]} empty="No payments yet." label="Recent payments">
+        <Table head={["When", "Account", "For", "Method", "Amount", "Status", "Provider ref", "Receipt", ""]} empty="No payments yet." label="Recent payments">
           {rows.map((p) => (
             <tr key={p.id} className="hover:bg-surface-2">
               <td className="whitespace-nowrap px-3 py-2 text-xs text-muted">{relTime(p.created_at)}</td>
@@ -80,6 +82,7 @@ export default async function Payments() {
               <td className="whitespace-nowrap px-3 py-2">{formatMoney(Number(p.amount), p.currency)}</td>
               <td className="px-3 py-2"><Badge tone={p.status === "succeeded" ? "good" : p.status === "failed" ? "bad" : "warn"}>{p.status}</Badge></td>
               <td className="px-3 py-2 font-mono text-[0.7rem] text-muted">{p.provider_ref?.slice(0, 18)}</td>
+              <td className="px-3 py-2 text-xs">{receipts.get(p.id) ? <><Link href={`/ops/documents/${receipts.get(p.id)!.id}`} className="font-semibold text-copper-ink underline">{receipts.get(p.id)!.number}</Link><p className="text-muted">{receipts.get(p.id)!.emailed_to ? "emailed" : "no client email"}</p></> : p.status === "succeeded" ? <form action={issueReceipt.bind(null, p.id)}><SubmitButton tone="secondary" className="h-7 px-2 text-xs" pendingText="…">Issue receipt</SubmitButton></form> : <span className="text-muted">—</span>}</td>
               <td className="px-3 py-2">{p.status === "pending" && p.provider !== "mock" && <form action={checkPayment.bind(null, p.id)}><SubmitButton tone="secondary" className="h-7 px-2 text-xs" pendingText="…">Check status</SubmitButton></form>}</td>
             </tr>
           ))}

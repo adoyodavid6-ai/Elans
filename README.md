@@ -98,6 +98,8 @@ Both stay off or in test mode until you add keys as Vercel environment variables
 - **M-Pesa (Daraja):** set `MPESA_ENV=sandbox` (or `production` after Go-Live), `MPESA_CONSUMER_KEY`, `MPESA_CONSUMER_SECRET`, `MPESA_SHORTCODE`, `MPESA_PASSKEY`, and `MPESA_TILL_NUMBER` only for Buy Goods. Then press **Register paybill/till confirmation URLs** so payments made from the phone menu are recorded and matched to invoices by account number.
 - **Paystack:** set `PAYSTACK_SECRET_KEY` (`sk_test_…` first) and paste the webhook URL shown on the Payments page into the Paystack dashboard. Card buttons then appear on the booking page and in the client portal.
 
+**Receipts are automatic.** As soon as a payment is confirmed by M-Pesa or Paystack (amount checked), the system issues a numbered receipt and emails the client a link to it, usually within seconds. Receipts appear under Documents and next to each payment on the Payments page. For emails to reach clients, set up email delivery (see "Email, SMS and session reminders").
+
 ## Commands
 
 | Command | What it does |

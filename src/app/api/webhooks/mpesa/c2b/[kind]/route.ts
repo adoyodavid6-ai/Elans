@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { withDb } from "@/lib/db";
 import { unsign } from "@/lib/security";
 import { parseC2b } from "@/lib/integrations/mpesa";
+import { autoReceipt } from "@/lib/receipts";
 
 /**
  * M-Pesa C2B (customer paid the paybill or till from their phone). Daraja doesn't sign these requests, so the
@@ -18,6 +19,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ kind: s
   const c = parseC2b(body);
   if (!c) return NextResponse.json({ ResultCode: "1", ResultDesc: "Malformed" }, { status: 400 });
   const raw = { TransID: c.transId, TransAmount: c.amount, BillRefNumber: c.billRef, payer: c.payer, TransTime: (body as Record<string, unknown>)?.TransTime ?? null, TransactionType: (body as Record<string, unknown>)?.TransactionType ?? null };
-  await withDb({}, (tx) => tx`select mpesa_c2b_confirm(${c.transId}, ${c.amount}, ${c.billRef}, ${c.payer}, ${tx.json(raw as never)})`).catch((e) => console.error("[mpesa c2b]", e));
+  const outcome = await withDb({}, async (tx) => (await tx<{ r: string }[]>`select mpesa_c2b_confirm(${c.transId}, ${c.amount}, ${c.billRef}, ${c.payer}, ${tx.json(raw as never)}) as r`)[0]?.r ?? "").catch((e) => { console.error("[mpesa c2b]", e); return ""; });
+  // Matched to an open invoice (account number and amount): issue the receipt and email the client now.
+  // Unmatched payments are recorded for the team; there is no client email to send a receipt to.
+  if (outcome.startsWith("matched:")) await autoReceipt(outcome.split(":")[2] ?? "");
   return NextResponse.json({ ResultCode: "0", ResultDesc: "Accepted" });
 }

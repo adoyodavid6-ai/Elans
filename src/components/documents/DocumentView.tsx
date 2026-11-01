@@ -124,7 +124,7 @@ export function DocumentView({ kind, cfg, client, data, number, status = "previe
                     <div className="h-12 border-b border-[#9a9a9a]" />
                     <p className="mt-1 text-[0.78rem] font-semibold">{fill(sg.label)}</p>
                     <p className="text-[0.78rem] text-[#5c5c5c]">Name: {filled?.name || "______________________"}{filled?.title ? `, ${filled.title}` : ""}</p>
-                    <p className="text-[0.78rem] text-[#5c5c5c]">Date: ______________</p>
+                    <p className="text-[0.78rem] text-[#5c5c5c]">Date: {kind === "receipt" && filled?.name ? formatDate(data.date) : "______________"}</p>
                   </div>
                 );
               })}

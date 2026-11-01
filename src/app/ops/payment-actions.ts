@@ -44,3 +44,12 @@ export async function checkPayment(paymentId: string) {
   await flash(status === "pending" ? "Still waiting for the provider to confirm." : status ? `Payment is ${status}.` : "Checked.", status?.startsWith("error") ? "error" : "info");
   revalidatePath("/ops/payments");
 }
+
+/** Issues the receipt for a confirmed payment that has none yet (for example a paybill payment with no matching invoice). */
+export async function issueReceipt(paymentId: string) {
+  await requireSuper();
+  const { autoReceipt } = await import("@/lib/receipts");
+  const r = await autoReceipt(paymentId);
+  await flash(r.status === "issued" ? `Receipt ${r.number} issued${r.emailedTo ? ` and emailed to ${r.emailedTo}` : " (no client email on file: send it from the document page)"}` : r.status === "exists" ? "A receipt already exists for this payment." : `No receipt issued: ${r.reason}`, r.status === "skipped" ? "error" : "success");
+  revalidatePath("/ops/payments");
+}
