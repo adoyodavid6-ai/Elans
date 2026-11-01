@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { requireStaff } from "@/lib/auth";
+import { requireStaff, requireSuper } from "@/lib/auth";
 import { asStaff } from "@/lib/ops/data";
 import { withClientAccess } from "@/lib/ops/access";
 import { provisionClient } from "@/lib/ops/provision";
@@ -33,7 +33,7 @@ const leadSchema = z.object({
 
 /** A lead entered by staff (phone call, walk-in, referral, event). Marketing consent can only come from the contact. */
 export async function createLead(fd: FormData) {
-  const u = await requireStaff(["admin", "consultant", "support"]);
+  const u = await requireStaff();
   const p = leadSchema.safeParse({
     name: text(fd, "name", 120), email: text(fd, "email", 200), phone: text(fd, "phone", 40), organisation: text(fd, "organisation", 160),
     industry: text(fd, "industry", 80), channel: text(fd, "channel", 20) || "other", message: text(fd, "message", 4000),
@@ -83,7 +83,7 @@ export async function setNextAction(leadId: string, fd: FormData) {
 
 // ───────────── Clients ─────────────
 export async function createClient(fd: FormData) {
-  const u = await requireStaff(["admin", "consultant"]);
+  const u = await requireSuper();
   const name = text(fd, "name", 160);
   const adminEmail = text(fd, "adminEmail", 200).toLowerCase();
   const packageKey = ["launch", "growth", "scale", "enterprise"].includes(text(fd, "package")) ? text(fd, "package") : "launch";
@@ -100,7 +100,7 @@ export async function createClient(fd: FormData) {
 }
 
 export async function inviteClientMember(tenantId: string, fd: FormData) {
-  const u = await requireStaff(["admin", "consultant", "engineer", "support"]);
+  const u = await requireStaff();
   const email = text(fd, "email", 200).toLowerCase();
   const role = ["owner", "admin", "approver", "member", "viewer"].includes(text(fd, "role")) ? text(fd, "role") : "member";
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -118,7 +118,8 @@ export async function inviteClientMember(tenantId: string, fd: FormData) {
 }
 
 export async function setAutomationState(tenantId: string, instanceId: string, change: "pause" | "resume" | "kill" | "unkill") {
-  const u = await requireStaff(["admin", "engineer"]);
+  // Admins can stop things (pause, kill switch); turning them back on is for the Super Admin.
+  const u = change === "resume" || change === "unkill" ? await requireSuper() : await requireStaff();
   const ok = await withClientAccess(u, tenantId, `write:automation.${change}_by_elans`, async (tx) => {
     if (change === "pause") await tx`update engine_instances set status = 'paused' where id = ${instanceId}`;
     if (change === "resume") await tx`update engine_instances set status = 'live' where id = ${instanceId} and status = 'paused'`;
@@ -131,7 +132,7 @@ export async function setAutomationState(tenantId: string, instanceId: string, c
 
 // ───────────── Billing ─────────────
 export async function createInvoice(fd: FormData) {
-  const u = await requireStaff(["admin", "consultant"]);
+  const u = await requireStaff();
   const tenantId = text(fd, "tenantId", 40);
   const amount = Number(text(fd, "amount"));
   const description = text(fd, "description", 300);
@@ -152,7 +153,7 @@ export async function createInvoice(fd: FormData) {
 }
 
 export async function setInvoiceStatus(invoiceId: string, status: "paid" | "void" | "issued") {
-  const u = await requireStaff(["admin", "consultant"]);
+  const u = await requireSuper();
   try {
     await asStaff(u, (tx) => tx`select ops_set_invoice_status(${invoiceId}, ${status}, ${`Elans · ${u.name}`})`);
     await flash({ paid: "Invoice marked as paid", void: "Invoice voided", issued: "Invoice reopened" }[status]);
@@ -166,7 +167,7 @@ export async function setInvoiceStatus(invoiceId: string, status: "paid" | "void
 const PARTNER_STATUSES = ["applied", "in_review", "approved", "active", "paused", "rejected"] as const;
 
 export async function updatePartner(partnerId: string, fd: FormData) {
-  const u = await requireStaff(["admin", "consultant"]);
+  const u = await requireStaff();
   const status = text(fd, "status");
   const notes = text(fd, "notes", 4000);
   if (!PARTNER_STATUSES.includes(status as never)) return;
@@ -180,7 +181,7 @@ export async function updatePartner(partnerId: string, fd: FormData) {
 
 /** Creates the partner's own workspace (a partner tenant) and invites their contact as owner. */
 export async function createPartnerWorkspace(partnerId: string) {
-  const u = await requireStaff(["admin"]);
+  const u = await requireSuper();
   const p = await asStaff(u, async (tx) => (await tx<{ name: string; contact_email: string | null; partner_tenant_id: string | null }[]>`select name, contact_email, partner_tenant_id from partners where id = ${partnerId}`)[0]);
   if (!p || p.partner_tenant_id || !p.contact_email) {
     await flash(!p?.contact_email ? "This partner has no contact email." : "A workspace already exists.", "error");

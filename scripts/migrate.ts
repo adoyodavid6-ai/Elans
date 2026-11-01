@@ -74,6 +74,14 @@ async function main() {
     grant execute on all functions in schema public to "${appRole}";
     revoke all on schema_migrations from "${appRole}";
   `);
+  // Console levels: exactly one super admin, set from ELANS_SUPER_ADMIN_EMAIL (default: the owner's address).
+  const superEmail = (process.env.ELANS_SUPER_ADMIN_EMAIL || "adoyodavid6@gmail.com").trim().toLowerCase();
+  const [{ n }] = await db<{ n: number }[]>`select count(*)::int as n from information_schema.columns where table_name = 'users' and column_name = 'staff_role'`;
+  if (n) {
+    const promoted = await db`update users set staff_role = 'super_admin' where lower(email) = ${superEmail} and staff_role is distinct from 'super_admin' returning id`;
+    await db`update users set staff_role = 'admin' where staff_role = 'super_admin' and lower(email) <> ${superEmail}`;
+    if (promoted.length) console.log(`super admin: ${superEmail}`);
+  }
   await db.end();
   console.log("migrations complete");
 }

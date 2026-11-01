@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { requireStaff } from "@/lib/auth";
+import { requireStaff, isSuper } from "@/lib/auth";
 import { asStaff, relTime } from "@/lib/ops/data";
 import { archiveTemplate, createTemplate, restoreTemplateRevision, setDefaultTemplate } from "@/app/ops/document-actions";
 import { TemplateEditor } from "@/components/documents/TemplateEditor";
@@ -13,7 +13,7 @@ export default async function EditTemplate({ params }: Props) {
   const { id } = await params;
   if (!/^[0-9a-f-]{36}$/.test(id)) notFound();
   const u = await requireStaff();
-  const canEdit = u.staffRole === "admin" || u.staffRole === "consultant";
+  const canEdit = isSuper(u); // templates are the house standard: Super Admin only
   const d = await asStaff(u, async (tx) => {
     const [t] = await tx<{ id: string; kind: DocKind; name: string; is_default: boolean; config: DocTemplateConfig; version: number; archived: boolean }[]>`select id, kind, name, is_default, config, version, archived from doc_templates where id = ${id}`;
     if (!t) return null;

@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { requireStaff } from "@/lib/auth";
+import { requireStaff, isSuper } from "@/lib/auth";
+import { AskSuper } from "@/components/app/AskSuper";
 import { asStaff, relTime } from "@/lib/ops/data";
 import { ensureDefaultTemplates, listTemplates } from "@/lib/documents/store";
 import { createTemplate, setDefaultTemplate } from "@/app/ops/document-actions";
@@ -9,11 +10,11 @@ import { SubmitButton } from "@/components/app/Form";
 
 export default async function Templates() {
   const u = await requireStaff();
-  const canEdit = u.staffRole === "admin" || u.staffRole === "consultant";
+  const canEdit = isSuper(u);
   const rows = await asStaff(u, async (tx) => { if (canEdit) await ensureDefaultTemplates(tx, u.email); return listTemplates(tx); });
   return (
     <>
-      <PageTitle crumbs={[{ href: "/ops/documents", label: "Documents" }]} title="Document templates" description="Design how your quotations, contracts and receipts look and read. Each type can have several templates (for example a short quote and a detailed proposal); the default is used unless you pick another." />
+      <PageTitle crumbs={[{ href: "/ops/documents", label: "Documents" }]} title="Document templates" description="Design how your quotations, contracts and receipts look and read. Each type can have several templates (for example a short quote and a detailed proposal); the default is used unless you pick another." actions={canEdit ? undefined : <AskSuper kind="template.change" title="Change a document template" link="/ops/documents/templates" label="Ask Super Admin for a change" />} />
       <div className="grid gap-6 xl:grid-cols-3">
         {DOC_KINDS.map((k) => (
           <Panel key={k.key} title={k.plural} actions={canEdit ? <form action={createTemplate.bind(null, k.key, null)}><SubmitButton tone="secondary" className="h-8 px-3 text-xs" pendingText="Creating…">+ New</SubmitButton></form> : undefined}>

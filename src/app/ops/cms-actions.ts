@@ -3,14 +3,17 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { requireStaff } from "@/lib/auth";
+import { isSuper, requireStaff, requireSuper } from "@/lib/auth";
+import { queueMessage } from "@/lib/outbox";
+import { superAdminEmail } from "@/lib/ops/super-actions";
+
+const siteUrl = () => process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 import { withDb, INTERNAL_TENANT_ID } from "@/lib/db";
 import { invalidateContent, CONTENT_TYPES } from "@/lib/content";
 import { CRITERIA } from "@/lib/core/scoring";
 import { audit } from "@/lib/audit";
 import { flash } from "@/lib/flash";
 
-const EDITORS = ["admin", "content_editor"] as const;
 const STATUS = z.enum(["live", "pilot", "planned", "custom"]);
 
 /** Minimal structural validation per content type, so a bad edit cannot break public pages. */
@@ -33,7 +36,7 @@ function refresh() {
 }
 
 export async function saveContentItem(type: string, slug: string, _: unknown, fd: FormData): Promise<{ ok: boolean; message: string }> {
-  const u = await requireStaff([...EDITORS]);
+  const u = await requireStaff();
   if (!(type in CONTENT_TYPES)) return { ok: false, message: "Unknown type" };
   let data: Record<string, unknown>;
   try {
@@ -54,20 +57,43 @@ export async function saveContentItem(type: string, slug: string, _: unknown, fd
     const r = schema.safeParse(data);
     if (!r.success) return { ok: false, message: `Missing or invalid: ${r.error.issues.slice(0, 4).map((i) => i.path.join(".")).join(", ")}` };
   }
-  const publish = fd.get("publish_state") === "draft" ? "draft" : "published";
+  const wanted = fd.get("publish_state") === "draft" ? "draft" : "published";
+  // Admins save drafts; publishing to the live site is the Super Admin's call (a request is raised automatically).
+  const publish = isSuper(u) ? wanted : "draft";
+  let proposed = false;
   await withDb(staffCtx(u), async (tx) => {
-    const [cur] = await tx<{ data: unknown; version: number }[]>`select data, version from content_items where type = ${type} and slug = ${slug}`;
+    const [cur] = await tx<{ data: unknown; version: number; publish_state: string }[]>`select data, version, publish_state from content_items where type = ${type} and slug = ${slug}`;
+    if (!isSuper(u) && cur?.publish_state === "published") {
+      // Never take a live page offline: an admin's edit to published content waits in a request until approved.
+      proposed = true;
+      const title = `Publish changes to ${type} "${String(data.name ?? data.title ?? slug)}"`;
+      await tx`delete from staff_requests where kind = 'content.publish' and status = 'pending' and requested_by = ${u.id} and payload->>'type' = ${type} and payload->>'slug' = ${slug}`;
+      await tx`insert into staff_requests (tenant_id, kind, title, payload, link, requested_by, requested_label) values (app_tenant(), 'content.publish', ${title}, ${tx.json({ type, slug, data } as never)}, ${`/ops/content/${type}/${slug}`}, ${u.id}, ${u.name})`;
+      await queueMessage(tx, { channel: "email", to: superAdminEmail(), subject: `Publish request from ${u.name}`, body: `${u.name} proposed changes to ${type} "${slug}".\n\nReview: ${siteUrl()}/ops/requests` });
+      await audit(tx, { tenantId: INTERNAL_TENANT_ID, actorId: u.id, actorLabel: u.email, action: "content.proposed", entity: type, entityId: slug });
+      return;
+    }
     if (cur) await tx`insert into content_revisions (type, slug, version, data, created_by) values (${type}, ${slug}, ${cur.version}, ${tx.json(cur.data as never)}, ${u.email})`;
     await tx`insert into content_items (type, slug, data, publish_state, edited, updated_by) values (${type}, ${slug}, ${tx.json(data as never)}, ${publish}, true, ${u.email})
       on conflict (type, slug) do update set data = excluded.data, publish_state = excluded.publish_state, edited = true, version = content_items.version + 1, updated_at = now(), updated_by = excluded.updated_by`;
     await audit(tx, { tenantId: INTERNAL_TENANT_ID, actorId: u.id, actorLabel: u.email, action: "content.saved", entity: type, entityId: slug, meta: { publish } });
+    if (wanted === "published" && publish === "draft") {
+      const title = `Publish ${type} "${String(data.name ?? data.title ?? slug)}"`;
+      const [dup] = await tx<{ id: string }[]>`select id from staff_requests where kind = 'content.publish' and payload->>'slug' = ${slug} and payload->>'type' = ${type} and status = 'pending'`;
+      if (!dup) {
+        await tx`insert into staff_requests (tenant_id, kind, title, payload, link, requested_by, requested_label) values (app_tenant(), 'content.publish', ${title}, ${tx.json({ type, slug })}, ${`/ops/content/${type}/${slug}`}, ${u.id}, ${u.name})`;
+        await queueMessage(tx, { channel: "email", to: superAdminEmail(), subject: `Publish request from ${u.name}`, body: `${u.name} saved a draft of ${type} "${slug}" and asked for it to be published.\n\nReview: ${siteUrl()}/ops/requests` });
+      }
+    }
   });
+  if (proposed) return { ok: true, message: "Your changes were sent to the Super Admin for approval. The live page stays as it is until they approve." };
   refresh();
+  if (wanted === "published" && publish === "draft") return { ok: true, message: "Saved as a draft and sent to the Super Admin to publish. You'll see the outcome under Requests." };
   return { ok: true, message: `Saved and ${publish === "published" ? "published" : "saved as draft"}. The public site updates within a minute.` };
 }
 
 export async function duplicateContentItem(type: string, slug: string, fd: FormData) {
-  const u = await requireStaff([...EDITORS]);
+  const u = await requireStaff();
   const newSlug = String(fd.get("newSlug") ?? "").trim().toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-|-$/g, "");
   if (newSlug.length < 3) {
     await flash("Choose a slug of at least 3 letters.", "error");
@@ -85,7 +111,7 @@ export async function duplicateContentItem(type: string, slug: string, fd: FormD
 }
 
 export async function restoreRevision(type: string, slug: string, revisionId: number) {
-  const u = await requireStaff([...EDITORS]);
+  const u = await requireSuper();
   await withDb(staffCtx(u), async (tx) => {
     const [rev] = await tx<{ data: unknown }[]>`select data from content_revisions where id = ${revisionId} and type = ${type} and slug = ${slug}`;
     if (!rev) return;
@@ -99,7 +125,7 @@ export async function restoreRevision(type: string, slug: string, revisionId: nu
 }
 
 export async function savePrices(fd: FormData) {
-  const u = await requireStaff(["admin"]);
+  const u = await requireSuper();
   await withDb(staffCtx(u), async (tx) => {
     const keys = [...new Set([...fd.keys()].filter((k) => k.startsWith("amount:")).map((k) => k.slice(7)))];
     for (const key of keys) {
@@ -117,7 +143,7 @@ export async function savePrices(fd: FormData) {
 }
 
 export async function saveWeights(fd: FormData) {
-  const u = await requireStaff(["admin"]);
+  const u = await requireSuper();
   const weights = Object.fromEntries(CRITERIA.map((c) => [c.key, Math.max(0, Math.min(50, Number(fd.get(c.key) ?? 0)))]));
   const note = String(fd.get("note") ?? "").slice(0, 300) || null;
   await withDb(staffCtx(u), async (tx) => {
@@ -131,7 +157,7 @@ export async function saveWeights(fd: FormData) {
 }
 
 export async function activateWeights(id: number) {
-  const u = await requireStaff(["admin"]);
+  const u = await requireSuper();
   await withDb(staffCtx(u), async (tx) => {
     await tx`update score_weight_versions set active = (id = ${id})`;
   });
@@ -141,7 +167,7 @@ export async function activateWeights(id: number) {
 }
 
 export async function saveSource(id: string, fd: FormData) {
-  const u = await requireStaff([...EDITORS]);
+  const u = await requireSuper();
   const state = String(fd.get("state"));
   if (!["unverified", "verified", "vendor_estimate"].includes(state)) return;
   await flash("Source updated");
@@ -150,7 +176,7 @@ export async function saveSource(id: string, fd: FormData) {
 }
 
 export async function saveSettings(fd: FormData) {
-  const u = await requireStaff(["admin"]);
+  const u = await requireSuper();
   const s = {
     legalEntity: String(fd.get("legalEntity") ?? "") || null,
     registrationNo: String(fd.get("registrationNo") ?? "") || null,

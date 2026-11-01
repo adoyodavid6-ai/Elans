@@ -1,11 +1,11 @@
-import { requireStaff } from "@/lib/auth";
+import { requireSuper } from "@/lib/auth";
 import { asStaff } from "@/lib/ops/data";
 import { audit } from "@/lib/audit";
 import { INTERNAL_TENANT_ID } from "@/lib/db";
 
 /** CSV export of leads (respecting the current stage filter). Audited, because it contains personal data. */
 export async function GET(req: Request) {
-  const u = await requireStaff(["admin", "consultant"]);
+  const u = await requireSuper();
   const stage = new URL(req.url).searchParams.get("stage");
   const rows = await asStaff(u, async (tx) => {
     const r = await tx<Record<string, unknown>[]>`

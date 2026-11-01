@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireStaff } from "@/lib/auth";
+import { isSuper, requireStaff } from "@/lib/auth";
 import { asStaff, relTime } from "@/lib/ops/data";
 import { formatMoney } from "@/lib/core/money";
 import { Badge, Kpi, PageTitle, Panel, Table } from "@/components/app/AppShell";
@@ -42,11 +42,16 @@ export default async function OpsDashboard({ searchParams }: { searchParams: Pro
       select q.id, q.number, q.sent_at, o.name as opp from quotes q join opportunities o on o.id = q.opportunity_id where q.status = 'sent' and q.sent_at < now() - interval '7 days' order by q.sent_at limit 5`;
     const invoices = await tx<{ id: string; tenant_name: string; number: string; amount: number; due_date: string }[]>`select id, tenant_name, number, amount, due_date::text from ops_invoice_queue() where status = 'overdue' limit 5`;
     const portfolio = await tx<{ tenant_id: string; tenant_name: string; kind: string; active_instances: number; runs_7d: number; failed_7d: number; open_reviews: number; pending_approvals: number; open_incidents: number; mrr: number }[]>`select * from ops_portfolio_metrics()`;
-    return { k, newLeads, newLeadCount, followUps, handoffs, sessions, assessments, reviews, tickets, quotes, invoices, portfolio };
+    const requests = isSuper(u)
+      ? await tx<{ id: string; title: string; requested_label: string | null; created_at: Date }[]>`select id, title, requested_label, created_at from staff_requests where status = 'pending' order by created_at limit 6`
+      : [];
+    return { requests, k, newLeads, newLeadCount, followUps, handoffs, sessions, assessments, reviews, tickets, quotes, invoices, portfolio };
   });
 
   const today = new Date().toLocaleDateString("en-CA", { timeZone: "Africa/Nairobi" });
   const groups: Group[] = [
+    ...(isSuper(u) ? [{ key: "requests", title: "Requests from admins", icon: "send", href: "/ops/requests", empty: "No requests waiting.", count: d.requests.length,
+      items: d.requests.map((r) => ({ label: r.title, hint: `${r.requested_label ?? "admin"} · ${relTime(r.created_at)}`, href: "/ops/requests", tone: "warn" as const })) }] : []),
     { key: "leads", title: "New leads to contact", icon: "users", href: "/ops/leads?stage=new", empty: "No new leads waiting.", count: d.newLeadCount,
       items: d.newLeads.map((l) => ({ label: l.organisation || l.name || "Unknown", hint: `${l.source} · waiting ${relTime(l.created_at).replace(" ago", "")}`, href: `/ops/leads/${l.id}`, tone: Date.now() - l.created_at.getTime() > 86400_000 ? "warn" : undefined })) },
     { key: "follow", title: "Follow-ups due", icon: "clock", href: "/ops/leads", empty: "No follow-ups due today or tomorrow.", count: d.followUps.length,
@@ -71,17 +76,18 @@ export default async function OpsDashboard({ searchParams }: { searchParams: Pro
   const mrr = d.portfolio.filter((p) => p.kind === "client").reduce((s, p) => s + Number(p.mrr), 0);
   const issues = d.portfolio.reduce((s, p) => s + Number(p.open_incidents), 0);
   const hour = Number(new Date().toLocaleString("en-GB", { hour: "2-digit", hour12: false, timeZone: "Africa/Nairobi" }));
-  const canSell = ["admin", "consultant", "support"].includes(u.staffRole ?? "");
-  const canBill = ["admin", "consultant"].includes(u.staffRole ?? "");
+  const canSell = true;
+  const canBill = true;
+  const sup = isSuper(u);
 
   return (
     <>
       <PageTitle title={`Good ${hour < 12 ? "morning" : hour < 17 ? "afternoon" : "evening"}, ${u.name.split(" ")[0]}`} description={active.length ? `${active.reduce((s, g) => s + g.count, 0)} things need attention across ${active.length} areas.` : "You're all caught up. Nothing needs attention right now."} />
-      {denied && <p className="mb-4 rounded-xl bg-warning-bg p-3 text-sm text-warning">Your role ({u.staffRole}) doesn&apos;t have access to that page. Ask an admin if you need it.</p>}
+      {denied && <p className="mb-4 rounded-xl bg-warning-bg p-3 text-sm text-warning">That page or action is for the Super Admin. Use <Link href="/ops/requests" className="font-semibold underline">Ask the Super Admin</Link> to pass it on.</p>}
 
       <div className="mb-6 flex flex-wrap items-center gap-2">
         {canSell && <QuickAction href="/ops/leads/new" icon="plus" label="Add a lead" />}
-        {canBill && <QuickAction href="/ops/clients/new" icon="building" label="New client" />}
+        {sup && <QuickAction href="/ops/clients/new" icon="building" label="New client" />}
         {canBill && <QuickAction href="/ops/billing#new" icon="money" label="Issue an invoice" />}
         {canBill && <QuickAction href="/ops/documents/new?kind=quotation" icon="doc" label="New quotation" />}
         <QuickAction href="/ops/content" icon="doc" label="Edit website content" />

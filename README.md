@@ -59,6 +59,7 @@ demo workspace (`/portal/demo`), the staff console and the forms need Postgres**
    | `SESSION_SECRET` | A long random string (`openssl rand -hex 32`). Keep it stable: it also derives the app's database password. |
    | `NEXT_PUBLIC_SITE_URL` | Your site URL, e.g. `https://lasselanselans.vercel.app` |
    | `ELANS_ADMIN_EMAIL`, `ELANS_ADMIN_PASSWORD` | Staff console admin (password 14+ characters) |
+   | `ELANS_SUPER_ADMIN_EMAIL` | Optional. The one Super Admin account (default `adoyodavid6@gmail.com`); every other staff account is an Admin |
 
 3. **Redeploy** (Deployments → ⋯ → Redeploy). The `vercel-build` script applies migrations, seeds
    content and the demo workspace, then builds.

@@ -5,7 +5,7 @@ import { saveContentItem } from "@/app/ops/cms-actions";
 
 const field = "h-10 w-full rounded-lg border border-line bg-surface px-3 text-sm";
 
-export function ContentEditor({ type, slug, data, publishState, canEdit }: { type: string; slug: string; data: Record<string, unknown>; publishState: string; canEdit: boolean }) {
+export function ContentEditor({ type, slug, data, publishState, canEdit, canPublish = true }: { type: string; slug: string; data: Record<string, unknown>; publishState: string; canEdit: boolean; canPublish?: boolean }) {
   const [state, action, pending] = useActionState(saveContentItem.bind(null, type, slug), null as null | { ok: boolean; message: string });
   const [json, setJson] = useState(() => JSON.stringify(data, null, 2));
   let jsonError: string | null = null;
@@ -29,7 +29,8 @@ export function ContentEditor({ type, slug, data, publishState, canEdit }: { typ
           </div>
         )}
         <div className="text-sm"><label htmlFor="ce-publish" className="mb-1 block text-muted">Publishing</label>
-          <select id="ce-publish" name="publish_state" defaultValue={publishState} className={field} disabled={!canEdit}><option value="published">Published</option><option value="draft">Draft (hidden from site)</option></select>
+          <select id="ce-publish" name="publish_state" defaultValue={publishState} className={field} disabled={!canEdit}><option value="published">{canPublish ? "Published" : "Ask Super Admin to publish"}</option><option value="draft">Draft (hidden from site)</option></select>
+          {!canPublish && <span className="mt-1 block text-xs text-muted">Your changes are saved as a draft. Choosing publish sends a request to the Super Admin.</span>}
         </div>
       </div>
       <div>
@@ -38,7 +39,7 @@ export function ContentEditor({ type, slug, data, publishState, canEdit }: { typ
         <p className="mt-1 text-xs text-muted">Fields above override the JSON. Flow steps use kinds: input, manual, wait, ai, rule, approval, action, outcome, risk. Statistics must come from a verified source.</p>
       </div>
       {state && <p role="status" className={`rounded-lg p-3 text-sm ${state.ok ? "bg-success-bg text-success" : "bg-danger-bg text-danger"}`}>{state.message}</p>}
-      {canEdit ? <button disabled={pending || Boolean(jsonError)} className="rounded-lg bg-brown px-5 py-2 text-sm font-semibold text-white disabled:opacity-50">{pending ? "Saving…" : "Save"}</button> : <p className="text-sm text-muted">Your role can view but not edit content.</p>}
+      {canEdit ? <button disabled={pending || Boolean(jsonError)} className="rounded-lg bg-brown px-5 py-2 text-sm font-semibold text-white disabled:opacity-50">{pending ? "Saving…" : canPublish ? "Save" : "Save draft"}</button> : <p className="text-sm text-muted">Your role can view but not edit content.</p>}
     </form>
   );
 }

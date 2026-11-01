@@ -1,4 +1,4 @@
-import { requireStaff } from "@/lib/auth";
+import { requireStaff, requireSuper } from "@/lib/auth";
 import { asStaff, relTime } from "@/lib/ops/data";
 import { PageTitle, Panel, Table, Badge } from "@/components/app/AppShell";
 import { Input, Select } from "@/components/app/Form";
@@ -7,7 +7,7 @@ type Props = { searchParams: Promise<{ actor?: string; action?: string; days?: s
 
 export default async function AuditLog({ searchParams }: Props) {
   const sp = await searchParams;
-  const u = await requireStaff(["admin"]);
+  const u = await requireSuper();
   const days = [1, 7, 30, 90].includes(Number(sp.days)) ? Number(sp.days) : 30;
   const actor = (sp.actor ?? "").slice(0, 80);
   const action = (sp.action ?? "").slice(0, 60);

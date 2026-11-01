@@ -1,17 +1,19 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireStaff } from "@/lib/auth";
+import { requireSuper } from "@/lib/auth";
+import { superAdminEmail } from "@/lib/ops/super-actions";
 import { withDb, INTERNAL_TENANT_ID } from "@/lib/db";
 import { hashPassword, randomToken } from "@/lib/security";
 import { audit } from "@/lib/audit";
 
 export async function addStaff(_: unknown, fd: FormData): Promise<{ ok: boolean; message: string }> {
-  const u = await requireStaff(["admin"]);
+  const u = await requireSuper();
   const name = String(fd.get("name") ?? "").trim();
   const email = String(fd.get("email") ?? "").trim().toLowerCase();
-  const role = String(fd.get("role") ?? "consultant");
-  if (name.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !["admin", "content_editor", "consultant", "engineer", "support"].includes(role)) return { ok: false, message: "Enter a name, a valid email and a role." };
+  // Everyone added here is an Admin; Super Admin is reserved for the configured owner account.
+  const role = email === superAdminEmail() ? "super_admin" : "admin";
+  if (name.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false, message: "Enter a name and a valid email." };
   const temp = randomToken(12);
   try {
     await withDb({ system: true }, async (tx) => {

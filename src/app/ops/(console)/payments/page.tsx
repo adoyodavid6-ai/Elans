@@ -1,4 +1,4 @@
-import { requireStaff } from "@/lib/auth";
+import { isSuper, requireSuper } from "@/lib/auth";
 import { asStaff, relTime } from "@/lib/ops/data";
 import { mpesaConfigStatus } from "@/lib/integrations/mpesa";
 import { paystackConfigStatus } from "@/lib/integrations/paystack";
@@ -14,8 +14,8 @@ const MODE_TONE: Record<string, string> = { mock: "warn", sandbox: "info", produ
 const MODE_LABEL: Record<string, string> = { mock: "Test mode (no money moves)", sandbox: "Sandbox", production: "Live", off: "Not set up", test: "Test keys", live: "Live" };
 
 export default async function Payments() {
-  const u = await requireStaff(["admin", "consultant"]);
-  const isAdmin = u.staffRole === "admin";
+  const u = await requireSuper();
+  const isAdmin = isSuper(u);
   const m = mpesaConfigStatus();
   const ps = paystackConfigStatus();
   const urls = isAdmin ? await c2bUrls() : null;

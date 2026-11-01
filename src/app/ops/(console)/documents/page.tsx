@@ -16,7 +16,7 @@ export default async function Documents({ searchParams }: Props) {
   const kind = DOC_KINDS.some((k) => k.key === sp.kind) ? (sp.kind as DocKind) : null;
   const status = ["draft", "issued", "accepted", "void"].includes(sp.status ?? "") ? sp.status! : null;
   const q = (sp.q ?? "").slice(0, 80);
-  const canEdit = u.staffRole === "admin" || u.staffRole === "consultant";
+  const canEdit = true;
   const d = await asStaff(u, async (tx) => {
     if (canEdit) await ensureDefaultTemplates(tx, u.email);
     return {

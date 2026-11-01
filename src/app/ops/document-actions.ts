@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { requireStaff } from "@/lib/auth";
+import { requireStaff, requireSuper } from "@/lib/auth";
 import { asStaff } from "@/lib/ops/data";
 import { audit } from "@/lib/audit";
 import { flash } from "@/lib/flash";
@@ -15,13 +15,12 @@ import { computeTotals } from "@/lib/documents/compute";
 import { nextNumber, templateSchema } from "@/lib/documents/store";
 import type { DocKind, DocTemplateConfig } from "@/lib/documents/types";
 
-const EDITORS = ["admin", "consultant"] as const;
 const KIND = z.enum(["quotation", "contract", "receipt"]);
 const siteUrl = () => process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 // ───────────── Templates ─────────────
 export async function saveTemplate(id: string, name: string, config: unknown): Promise<{ ok: boolean; message: string }> {
-  const u = await requireStaff([...EDITORS]);
+  const u = await requireSuper();
   const p = templateSchema.safeParse(config);
   if (!p.success) return { ok: false, message: `Not saved: ${p.error.issues[0]?.path.join(" › ")} ${p.error.issues[0]?.message}` };
   const nm = name.trim().slice(0, 80);
@@ -38,7 +37,7 @@ export async function saveTemplate(id: string, name: string, config: unknown): P
 }
 
 export async function createTemplate(kind: string, fromId: string | null) {
-  const u = await requireStaff([...EDITORS]);
+  const u = await requireSuper();
   const k = KIND.parse(kind);
   const id = await asStaff(u, async (tx) => {
     let cfg: DocTemplateConfig = defaultTemplate(k);
@@ -58,7 +57,7 @@ export async function createTemplate(kind: string, fromId: string | null) {
 }
 
 export async function setDefaultTemplate(id: string) {
-  const u = await requireStaff([...EDITORS]);
+  const u = await requireSuper();
   await asStaff(u, async (tx) => {
     const [t] = await tx<{ kind: string }[]>`select kind from doc_templates where id = ${id} and not archived`;
     if (!t) return;
@@ -70,7 +69,7 @@ export async function setDefaultTemplate(id: string) {
 }
 
 export async function archiveTemplate(id: string) {
-  const u = await requireStaff([...EDITORS]);
+  const u = await requireSuper();
   const ok = await asStaff(u, async (tx) => {
     const [t] = await tx<{ is_default: boolean }[]>`select is_default from doc_templates where id = ${id}`;
     if (!t || t.is_default) return false;
@@ -83,7 +82,7 @@ export async function archiveTemplate(id: string) {
 }
 
 export async function restoreTemplateRevision(id: string, revisionId: number) {
-  const u = await requireStaff([...EDITORS]);
+  const u = await requireSuper();
   await asStaff(u, async (tx) => {
     const [rev] = await tx<{ config: unknown }[]>`select config from doc_template_revisions where id = ${revisionId} and template_id = ${id}`;
     const [cur] = await tx<{ config: unknown; version: number }[]>`select config, version from doc_templates where id = ${id}`;
@@ -111,7 +110,7 @@ const docSchema = z.object({
 });
 
 export async function saveDocument(id: string | null, payload: unknown): Promise<{ ok: boolean; message: string; id?: string }> {
-  const u = await requireStaff([...EDITORS]);
+  const u = await requireStaff();
   const p = docSchema.safeParse(payload);
   if (!p.success) return { ok: false, message: `Not saved: ${p.error.issues[0]?.path.join(" › ")} ${p.error.issues[0]?.message}` };
   const d = p.data;
@@ -137,7 +136,7 @@ export async function saveDocument(id: string | null, payload: unknown): Promise
 
 /** Issues a draft: assigns the next number, freezes the template, creates the private client link. */
 export async function issueDocument(id: string) {
-  const u = await requireStaff([...EDITORS]);
+  const u = await requireStaff();
   const res = await asStaff(u, async (tx) => {
     const [doc] = await tx<{ kind: DocKind; status: string; template_id: string | null; client: { organisation?: string; name?: string } }[]>`select kind, status, template_id, client from issued_documents where id = ${id} for update`;
     if (!doc || doc.status !== "draft") return { ok: false, message: "Only drafts can be issued." };
@@ -154,7 +153,7 @@ export async function issueDocument(id: string) {
 }
 
 export async function voidDocument(id: string) {
-  const u = await requireStaff([...EDITORS]);
+  const u = await requireSuper();
   await asStaff(u, async (tx) => {
     await tx`update issued_documents set status = 'void', updated_at = now() where id = ${id} and status in ('issued','accepted','draft')`;
     await audit(tx, { tenantId: INTERNAL_TENANT_ID, actorId: u.id, actorLabel: u.email, action: "document.voided", entity: "issued_document", entityId: id });
@@ -164,7 +163,7 @@ export async function voidDocument(id: string) {
 }
 
 export async function duplicateDocument(id: string) {
-  const u = await requireStaff([...EDITORS]);
+  const u = await requireStaff();
   const newId = await asStaff(u, async (tx) => {
     const [r] = await tx<{ id: string }[]>`insert into issued_documents (tenant_id, kind, template_id, title, client, data, totals, source_ref, created_by)
       select tenant_id, kind, template_id, title, client, data, totals, source_ref, ${u.email} from issued_documents where id = ${id} returning id`;
@@ -175,7 +174,7 @@ export async function duplicateDocument(id: string) {
 }
 
 export async function emailDocument(id: string, fd: FormData) {
-  const u = await requireStaff([...EDITORS]);
+  const u = await requireStaff();
   const to = String(fd.get("to") ?? "").trim();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
     await flash("Enter a valid email address.", "error");

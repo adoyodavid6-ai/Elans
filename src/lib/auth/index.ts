@@ -9,7 +9,7 @@ export const SESSION_COOKIE = "elans_session";
 export const TENANT_COOKIE = "elans_tenant";
 const SESSION_HOURS = 12;
 
-export type StaffRole = "admin" | "content_editor" | "consultant" | "engineer" | "support";
+export type StaffRole = "super_admin" | "admin";
 export type MemberRole = "owner" | "admin" | "approver" | "member" | "viewer";
 
 export interface SessionUser {
@@ -116,12 +116,31 @@ export async function setMfaSecret(userId: string, secretB32: string | null, ena
 
 // ── Guards ──
 /** Ops console: Elans staff with a completed MFA challenge. */
-export async function requireStaff(roles?: StaffRole[]): Promise<SessionUser> {
+/**
+ * Console access. Two levels: super_admin (everything) and admin (read and contribute).
+ * Pass no roles for any staff member; super admins always pass.
+ */
+export async function requireStaff(roles?: string[]): Promise<SessionUser> {
   const u = await currentUser();
   if (!u || !u.staffRole) redirect("/ops/login");
   if (!u.mfaPassed) redirect(u.mfaEnabled ? "/ops/login/mfa" : "/ops/login/enrol");
-  if (roles && !roles.includes(u.staffRole)) redirect("/ops?denied=1");
+  if (roles && u.staffRole !== "super_admin" && !roles.includes(u.staffRole)) redirect("/ops?denied=1");
   return u;
+}
+
+export const isSuper = (u: { staffRole: StaffRole | null } | null | undefined) => u?.staffRole === "super_admin";
+
+/** Super-admin-only pages and actions. Admins are sent back to the dashboard (the UI shows them "Ask Super Admin" instead). */
+export async function requireSuper(): Promise<SessionUser> {
+  const u = await requireStaff();
+  if (!isSuper(u)) redirect("/ops?denied=1");
+  return u;
+}
+
+/** For super-admin-only actions: returns the user, or null for admins (callers then point to "Ask Super Admin"). */
+export async function staffIfSuper(): Promise<SessionUser | null> {
+  const u = await requireStaff();
+  return isSuper(u) ? u : null;
 }
 
 /** Client portal: a member of a client (or demo) tenant. Owners/admins of real tenants must pass MFA. */

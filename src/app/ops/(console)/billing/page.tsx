@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { requireStaff } from "@/lib/auth";
+import { requireStaff, isSuper } from "@/lib/auth";
+import { AskSuper } from "@/components/app/AskSuper";
 import { asStaff } from "@/lib/ops/data";
 import { createInvoice, setInvoiceStatus } from "@/app/ops/console-actions";
 import { formatMoney } from "@/lib/core/money";
@@ -11,8 +12,9 @@ const STATUSES = ["issued", "overdue", "paid", "void"] as const;
 
 export default async function Billing({ searchParams }: Props) {
   const sp = await searchParams;
-  const u = await requireStaff(["admin", "consultant", "engineer", "support"]);
-  const canBill = u.staffRole === "admin" || u.staffRole === "consultant";
+  const u = await requireStaff();
+  const canBill = true; // both levels issue invoices
+  const sup = isSuper(u);
   const status = STATUSES.includes(sp.status as never) ? sp.status! : null;
   const d = await asStaff(u, async (tx) => ({
     invoices: await tx<{ id: string; tenant_id: string; tenant_name: string; number: string; status: string; amount: number; currency: string; description: string; issued_at: string; due_date: string; paid_at: Date | null }[]>`
@@ -58,10 +60,10 @@ export default async function Billing({ searchParams }: Props) {
                 <td className="px-3 py-2.5">
                   {canBill && (
                     <span className="flex gap-1">
-                      {(i.status === "issued" || i.status === "overdue") && <form action={setInvoiceStatus.bind(null, i.id, "paid")}><SubmitButton tone="secondary" className="h-7 px-2 text-xs" pendingText="…">Mark paid</SubmitButton></form>}
-                      {i.status !== "void" && i.status !== "paid" && <form action={setInvoiceStatus.bind(null, i.id, "void")}><SubmitButton tone="secondary" className="h-7 px-2 text-xs" pendingText="…">Void</SubmitButton></form>}
+                      {(i.status === "issued" || i.status === "overdue") && (sup ? <form action={setInvoiceStatus.bind(null, i.id, "paid")}><SubmitButton tone="secondary" className="h-7 px-2 text-xs" pendingText="…">Mark paid</SubmitButton></form> : <AskSuper compact kind="invoice.paid" title={`Mark invoice ${i.number} (${i.tenant_name}) as paid`} link="/ops/billing" payload={{ invoiceId: i.id }} label="Mark paid" />)}
+                      {i.status !== "void" && i.status !== "paid" && (sup ? <form action={setInvoiceStatus.bind(null, i.id, "void")}><SubmitButton tone="secondary" className="h-7 px-2 text-xs" pendingText="…">Void</SubmitButton></form> : <AskSuper compact kind="invoice.void" title={`Void invoice ${i.number} (${i.tenant_name})`} link="/ops/billing" payload={{ invoiceId: i.id }} label="Void" />)}
                       {i.status === "paid" && <a href={`/ops/documents/new?kind=receipt&from=invoice:${i.id}`} className="inline-flex h-7 items-center rounded-lg px-2 text-xs font-semibold ring-1 ring-line hover:bg-surface-2">Receipt</a>}
-                      {(i.status === "void" || i.status === "paid") && <form action={setInvoiceStatus.bind(null, i.id, "issued")}><SubmitButton tone="secondary" className="h-7 px-2 text-xs" pendingText="…">Reopen</SubmitButton></form>}
+                      {(i.status === "void" || i.status === "paid") && (sup ? <form action={setInvoiceStatus.bind(null, i.id, "issued")}><SubmitButton tone="secondary" className="h-7 px-2 text-xs" pendingText="…">Reopen</SubmitButton></form> : <AskSuper compact kind="invoice.issued" title={`Reopen invoice ${i.number} (${i.tenant_name})`} link="/ops/billing" payload={{ invoiceId: i.id }} label="Reopen" />)}
                     </span>
                   )}
                 </td>

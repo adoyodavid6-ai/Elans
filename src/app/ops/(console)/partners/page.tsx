@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { requireStaff } from "@/lib/auth";
+import { requireStaff, isSuper } from "@/lib/auth";
+import { AskSuper } from "@/components/app/AskSuper";
 import { asStaff, relTime } from "@/lib/ops/data";
 import { createPartnerWorkspace, updatePartner } from "@/app/ops/console-actions";
 import { Badge, PageTitle, Panel } from "@/components/app/AppShell";
@@ -19,7 +20,7 @@ const STATUSES = [
 export default async function Partners({ searchParams }: Props) {
   const { status } = await searchParams;
   const u = await requireStaff();
-  const canEdit = u.staffRole === "admin" || u.staffRole === "consultant";
+  const canEdit = true;
   const rows = await asStaff(u, (tx) => tx<{ id: string; name: string; programme: string; status: string; contact_email: string | null; notes: string | null; partner_tenant_id: string | null; created_at: Date; updated_at: Date }[]>`
     select id, name, programme, status, contact_email, notes, partner_tenant_id, created_at, updated_at from partners order by case status when 'applied' then 0 when 'in_review' then 1 else 2 end, created_at desc`);
   const shown = rows.filter((r) => !status || r.status === status);
@@ -38,6 +39,7 @@ export default async function Partners({ searchParams }: Props) {
               <p className="text-sm text-muted">{p.contact_email ?? "No contact email"} · applied {relTime(p.created_at)}{p.updated_at > p.created_at ? ` · updated ${relTime(p.updated_at)}` : ""}</p>
               {p.partner_tenant_id && <p className="mt-2 text-sm"><Badge tone="good">Workspace created</Badge> <Link href={`/ops/clients/${p.partner_tenant_id}`} className="text-copper-ink underline">Open workspace</Link></p>}
               {canEdit ? (
+                <>
                 <form action={updatePartner.bind(null, p.id)} className="mt-4 space-y-3">
                   <div className="text-sm"><label htmlFor={`ps-${p.id}`} className="mb-1 block font-medium">Status</label>
                     <Select id={`ps-${p.id}`} name="status" defaultValue={p.status}>{STATUSES.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}</Select>
@@ -45,9 +47,11 @@ export default async function Partners({ searchParams }: Props) {
                   <label className="block text-sm"><span className="mb-1 block font-medium">Notes</span><Textarea name="notes" defaultValue={p.notes ?? ""} placeholder="Due diligence, commercial terms, contacts…" /></label>
                   <div className="flex flex-wrap gap-2">
                     <SubmitButton>Save</SubmitButton>
-                    {p.programme === "white_label" && !p.partner_tenant_id && u.staffRole === "admin" && <SubmitButton formAction={createPartnerWorkspace.bind(null, p.id)} tone="secondary" pendingText="Creating…">Create partner workspace</SubmitButton>}
+                    {p.programme === "white_label" && !p.partner_tenant_id && isSuper(u) && <SubmitButton formAction={createPartnerWorkspace.bind(null, p.id)} tone="secondary" pendingText="Creating…">Create partner workspace</SubmitButton>}
                   </div>
                 </form>
+                {p.programme === "white_label" && !p.partner_tenant_id && !isSuper(u) && <div className="mt-2"><AskSuper kind="partner.workspace" title={`Create a partner workspace for ${p.name}`} link="/ops/partners" payload={{ partnerId: p.id }} label="Ask Super Admin to create workspace" /></div>}
+                </>
               ) : p.notes ? <p className="mt-3 whitespace-pre-line rounded-xl bg-surface-2 p-3 text-sm">{p.notes}</p> : null}
             </Panel>
           ))}

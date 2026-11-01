@@ -1,4 +1,5 @@
-import { requireStaff } from "@/lib/auth";
+import { isSuper, requireStaff } from "@/lib/auth";
+import { AskSuper } from "@/components/app/AskSuper";
 import { withDb, INTERNAL_TENANT_ID } from "@/lib/db";
 import { savePrices } from "@/app/ops/cms-actions";
 import { PageTitle, Panel, Badge } from "@/components/app/AppShell";
@@ -6,10 +7,10 @@ import { PageTitle, Panel, Badge } from "@/components/app/AppShell";
 export default async function Prices() {
   const u = await requireStaff();
   const rows = await withDb({ tenantId: INTERNAL_TENANT_ID, userId: u.id }, (tx) => tx<{ key: string; label: string; amount: number | null; currency: string; token: string; confirmed: boolean; updated_by: string | null }[]>`select key, label, amount, currency, token, confirmed, updated_by from price_points order by key`);
-  const admin = u.staffRole === "admin";
+  const admin = isSuper(u);
   return (
     <>
-      <PageTitle title="Prices" description="Every price on the site comes from here. Unconfirmed prices show an 'Indicative' tag. Tick 'Confirmed' once David approves a figure (and update PLACEHOLDERS.md)." />
+      <PageTitle title="Prices" description="Every price on the site comes from here. Unconfirmed prices show an 'Indicative' tag. Tick 'Confirmed' once David approves a figure (and update PLACEHOLDERS.md)." actions={admin ? undefined : <AskSuper kind="prices.change" title="Change a price" link="/ops/content/prices" label="Ask Super Admin" />} />
       <Panel>
         <form action={savePrices}>
           <div className="overflow-x-auto">
@@ -27,7 +28,7 @@ export default async function Prices() {
               </tbody>
             </table>
           </div>
-          {admin ? <button className="mt-4 rounded-lg bg-brown px-5 py-2 text-sm font-semibold text-white">Save prices</button> : <p className="mt-4 text-sm text-muted">Only admins can change prices.</p>}
+          {admin ? <button className="mt-4 rounded-lg bg-brown px-5 py-2 text-sm font-semibold text-white">Save prices</button> : <p className="mt-4 text-sm text-muted">Prices are set by the Super Admin.</p>}
         </form>
       </Panel>
     </>

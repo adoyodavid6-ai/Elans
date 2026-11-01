@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { requireStaff } from "@/lib/auth";
+import { requireStaff, isSuper } from "@/lib/auth";
+import { AskSuper } from "@/components/app/AskSuper";
 import { asStaff, relTime } from "@/lib/ops/data";
 import { listTemplates } from "@/lib/documents/store";
 import { duplicateDocument, emailDocument, issueDocument, voidDocument } from "@/app/ops/document-actions";
@@ -19,7 +20,8 @@ export default async function DocumentDetail({ params }: Props) {
   const { id } = await params;
   if (!/^[0-9a-f-]{36}$/.test(id)) notFound();
   const u = await requireStaff();
-  const canEdit = u.staffRole === "admin" || u.staffRole === "consultant";
+  const canEdit = true;
+  const sup = isSuper(u);
   const d = await asStaff(u, async (tx) => {
     const [doc] = await tx<{ id: string; kind: DocKind; number: string | null; status: "draft" | "issued" | "accepted" | "void"; title: string; template_id: string | null; client: DocClient; data: DocData; snapshot: DocTemplateConfig | null; source_ref: string | null; public_token: string | null; accepted_name: string | null; accepted_at: Date | null; issued_at: Date | null; created_by: string | null; created_at: Date }[]>`select * from issued_documents where id = ${id}`;
     if (!doc) return null;
@@ -58,7 +60,7 @@ export default async function DocumentDetail({ params }: Props) {
               {canEdit && <form action={duplicateDocument.bind(null, id)}><SubmitButton tone="secondary" className="w-full" pendingText="…">Duplicate as new draft</SubmitButton></form>}
               {canEdit && doc.kind === "quotation" && doc.status !== "void" && <Link href={`/ops/documents/new?kind=contract&from=doc:${doc.id}`} className="inline-flex h-10 items-center justify-center rounded-lg text-sm font-semibold ring-1 ring-line hover:bg-surface-2">Turn into a contract</Link>}
               {canEdit && doc.kind !== "receipt" && doc.status !== "void" && <Link href={`/ops/documents/new?kind=receipt&from=doc:${doc.id}`} className="inline-flex h-10 items-center justify-center rounded-lg text-sm font-semibold ring-1 ring-line hover:bg-surface-2">Issue a receipt</Link>}
-              {canEdit && doc.status !== "void" && <form action={voidDocument.bind(null, id)}><SubmitButton tone="secondary" className="w-full" pendingText="…">Void</SubmitButton></form>}
+              {doc.status !== "void" && (sup ? <form action={voidDocument.bind(null, id)}><SubmitButton tone="secondary" className="w-full" pendingText="…">Void</SubmitButton></form> : <AskSuper kind="document.void" title={`Void ${doc.number ?? "draft"} (${doc.kind})`} link={`/ops/documents/${id}`} payload={{ documentId: id }} label="Void (ask Super Admin)" className="w-full [&>button]:w-full [&>button]:justify-center" />)}
             </div>
           </Panel>
           {link && doc.status !== "void" && (

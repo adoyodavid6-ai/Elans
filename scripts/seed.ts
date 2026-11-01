@@ -89,7 +89,9 @@ async function main() {
         console.warn("skipped staff admin: set ELANS_ADMIN_EMAIL and ELANS_ADMIN_PASSWORD (14+ characters) to create one on a deployed environment");
       } else {
         const adminPassword = envPassword ?? "ElansAdmin!2026";
-        const [u] = await tx`insert into users (email, name, password_hash, staff_role) values (${adminEmail}, 'Elans Admin', ${hashPassword(adminPassword)}, 'admin') returning id`;
+        const superEmail = (process.env.ELANS_SUPER_ADMIN_EMAIL || "adoyodavid6@gmail.com").trim().toLowerCase();
+        const role = adminEmail.toLowerCase() === superEmail ? "super_admin" : "admin";
+        const [u] = await tx`insert into users (email, name, password_hash, staff_role) values (${adminEmail}, ${role === "super_admin" ? "Super Admin" : "Elans Admin"}, ${hashPassword(adminPassword)}, ${role}) returning id`;
         await tx`insert into memberships (tenant_id, user_id, role) values (${INTERNAL}, ${u.id}, 'owner')`;
         console.log(`created staff admin ${adminEmail}${envPassword ? "" : ` / ${adminPassword}`}  (MFA enrolment required at first login)`);
       }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { requireStaff } from "@/lib/auth";
+import { requireStaff, isSuper } from "@/lib/auth";
+import { AskSuper } from "@/components/app/AskSuper";
 import { asStaff, relTime } from "@/lib/ops/data";
 import { activeGrant, withClientAccess } from "@/lib/ops/access";
 import { decideReview, replyTicket, requestAccess, resolveIncident } from "@/app/ops/actions";
@@ -48,8 +49,9 @@ export default async function ClientDetail({ params }: Props) {
     invites: await tx<{ email: string; role: string; expires_at: Date }[]>`select email, role, expires_at from invites where accepted_at is null and expires_at > now() order by created_at desc`,
   }));
   const invoices = await asStaff(u, (tx) => tx<{ id: string; number: string; status: string; amount: number; currency: string; description: string; due_date: string; paid_at: Date | null }[]>`select id, number, status, amount, currency, description, due_date::text, paid_at from ops_invoice_queue() where tenant_id = ${id}`);
-  const canBill = u.staffRole === "admin" || u.staffRole === "consultant";
-  const canControl = u.staffRole === "admin" || u.staffRole === "engineer";
+  const canBill = true;
+  const canControl = true;
+  const sup = isSuper(u);
   const in30 = new Date(Date.now() + 14 * 86400_000).toISOString().slice(0, 10);
   if (!d) notFound();
   return (
@@ -100,9 +102,9 @@ export default async function ClientDetail({ params }: Props) {
                       {canControl && (
                         <>
                           {i.status === "paused"
-                            ? <form action={setAutomationState.bind(null, id, i.id, "resume")}><SubmitButton tone="secondary" className="h-7 px-2 text-xs" pendingText="…">Resume</SubmitButton></form>
+                            ? (sup ? <form action={setAutomationState.bind(null, id, i.id, "resume")}><SubmitButton tone="secondary" className="h-7 px-2 text-xs" pendingText="…">Resume</SubmitButton></form> : <AskSuper compact kind="automation.resume" title={`Resume ${i.name}`} link={`/ops/clients/${id}`} label="Resume" />)
                             : <form action={setAutomationState.bind(null, id, i.id, "pause")}><SubmitButton tone="secondary" className="h-7 px-2 text-xs" pendingText="…">Pause</SubmitButton></form>}
-                          <form action={setAutomationState.bind(null, id, i.id, i.kill_switch ? "unkill" : "kill")}><SubmitButton tone={i.kill_switch ? "success" : "danger"} className="h-7 px-2 text-xs" pendingText="…">{i.kill_switch ? "Kill switch off" : "Kill switch"}</SubmitButton></form>
+                          {i.kill_switch && !sup ? <AskSuper compact kind="automation.unkill" title={`Turn the kill switch off for ${i.name}`} link={`/ops/clients/${id}`} label="Kill switch off" /> : <form action={setAutomationState.bind(null, id, i.id, i.kill_switch ? "unkill" : "kill")}><SubmitButton tone={i.kill_switch ? "success" : "danger"} className="h-7 px-2 text-xs" pendingText="…">{i.kill_switch ? "Kill switch off" : "Kill switch"}</SubmitButton></form>}
                         </>
                       )}
                     </span>
@@ -110,7 +112,7 @@ export default async function ClientDetail({ params }: Props) {
                 ))}
               </ul>
             )}
-            <p className="mt-2 text-xs text-muted">Every change is recorded in the client&apos;s audit log. {canControl ? "" : "Engineers and admins can pause or stop automations."}</p>
+            <p className="mt-2 text-xs text-muted">Every change is recorded in the client&apos;s audit log. {sup ? "" : "You can pause or stop an automation at any time; turning it back on goes to the Super Admin."}</p>
           </Panel>
           <Panel title="Incidents">
             {d.incidents.length === 0 ? <p className="text-sm text-muted">No open incidents.</p> : d.incidents.map((i) => (
@@ -163,7 +165,7 @@ export default async function ClientDetail({ params }: Props) {
                 <td className="whitespace-nowrap px-3 py-2">{formatMoney(Number(i.amount), i.currency)}</td>
                 <td className="px-3 py-2 text-xs">{i.due_date}</td>
                 <td className="px-3 py-2"><Badge tone={i.status === "paid" ? "good" : i.status === "overdue" ? "bad" : i.status === "void" ? "neutral" : "warn"}>{i.status}</Badge></td>
-                <td className="px-3 py-2">{canBill && (i.status === "issued" || i.status === "overdue") && <form action={setInvoiceStatus.bind(null, i.id, "paid")}><SubmitButton tone="secondary" className="h-7 px-2 text-xs" pendingText="…">Mark paid</SubmitButton></form>}</td>
+                <td className="px-3 py-2">{(i.status === "issued" || i.status === "overdue") && (sup ? <form action={setInvoiceStatus.bind(null, i.id, "paid")}><SubmitButton tone="secondary" className="h-7 px-2 text-xs" pendingText="…">Mark paid</SubmitButton></form> : <AskSuper compact kind="invoice.paid" title={`Mark invoice ${i.number} as paid`} link={`/ops/clients/${id}?tab=billing`} payload={{ invoiceId: i.id }} label="Mark paid" />)}</td>
               </tr>
             ))}
           </Table>

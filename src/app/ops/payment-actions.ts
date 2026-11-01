@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireStaff } from "@/lib/auth";
+import { requireStaff, requireSuper } from "@/lib/auth";
 import { asStaff } from "@/lib/ops/data";
 import { audit } from "@/lib/audit";
 import { flash } from "@/lib/flash";
@@ -15,13 +15,13 @@ const publicBase = () => (process.env.MPESA_CALLBACK_URL || process.env.NEXT_PUB
 
 /** Addresses to give Safaricom for paybill/till (C2B) confirmations. They carry a token only this server can create. */
 export async function c2bUrls() {
-  await requireStaff(["admin"]);
+  await requireSuper();
   const t = encodeURIComponent(sign("mpesa-c2b"));
   return { confirmation: `${publicBase()}/api/webhooks/mpesa/c2b/confirmation?t=${t}`, validation: `${publicBase()}/api/webhooks/mpesa/c2b/validation?t=${t}` };
 }
 
 export async function testProvider(provider: "mpesa" | "paystack") {
-  const u = await requireStaff(["admin"]);
+  const u = await requireSuper();
   const r = provider === "mpesa" ? await testMpesaConnection() : await testPaystackConnection();
   await asStaff(u, (tx) => audit(tx, { tenantId: INTERNAL_TENANT_ID, actorId: u.id, actorLabel: u.email, action: `payments.${provider}.tested`, meta: { ok: r.ok } }));
   await flash(r.message, r.ok ? "success" : "error");
@@ -29,7 +29,7 @@ export async function testProvider(provider: "mpesa" | "paystack") {
 }
 
 export async function registerMpesaC2b() {
-  const u = await requireStaff(["admin"]);
+  const u = await requireSuper();
   const urls = await c2bUrls();
   const r = await registerC2bUrls(urls.confirmation, urls.validation);
   await asStaff(u, (tx) => audit(tx, { tenantId: INTERNAL_TENANT_ID, actorId: u.id, actorLabel: u.email, action: "payments.mpesa.c2b_registered", meta: { ok: r.ok } }));
@@ -38,7 +38,7 @@ export async function registerMpesaC2b() {
 }
 
 export async function checkPayment(paymentId: string) {
-  await requireStaff(["admin", "consultant"]);
+  await requireStaff();
   const r = await refreshPayment(paymentId).catch((e) => ({ status: `error: ${(e as Error).message}` }));
   const status = "status" in r ? r.status : undefined;
   await flash(status === "pending" ? "Still waiting for the provider to confirm." : status ? `Payment is ${status}.` : "Checked.", status?.startsWith("error") ? "error" : "info");

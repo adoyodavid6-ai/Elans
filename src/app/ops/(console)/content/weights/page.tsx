@@ -1,4 +1,5 @@
-import { requireStaff } from "@/lib/auth";
+import { isSuper, requireStaff } from "@/lib/auth";
+import { AskSuper } from "@/components/app/AskSuper";
 import { withDb, INTERNAL_TENANT_ID } from "@/lib/db";
 import { activateWeights, saveWeights } from "@/app/ops/cms-actions";
 import { CRITERIA, DEFAULT_WEIGHTS, type Weights } from "@/lib/core/scoring";
@@ -9,10 +10,10 @@ export default async function WeightsPage() {
   const u = await requireStaff();
   const versions = await withDb({ tenantId: INTERNAL_TENANT_ID, userId: u.id }, (tx) => tx<{ id: number; weights: Weights; note: string | null; active: boolean; created_at: Date; created_by: string | null }[]>`select * from score_weight_versions order by id desc`);
   const active = versions.find((v) => v.active)?.weights ?? DEFAULT_WEIGHTS;
-  const admin = u.staffRole === "admin";
+  const admin = isSuper(u);
   return (
     <>
-      <PageTitle title="Opportunity Score weights" description="Weights are versioned. Every assessment records the version it was scored with, so changing weights never rewrites past reports." />
+      <PageTitle title="Opportunity Score weights" description="Weights are versioned. Every assessment records the version it was scored with, so changing weights never rewrites past reports." actions={admin ? undefined : <AskSuper kind="weights.change" title="Change the scoring weights" link="/ops/content/weights" label="Ask Super Admin" />} />
       <div className="grid gap-6 xl:grid-cols-[1fr_1.2fr]">
         <Panel title="New version">
           <form action={saveWeights} className="space-y-3">

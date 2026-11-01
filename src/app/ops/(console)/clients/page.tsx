@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireStaff } from "@/lib/auth";
+import { requireStaff, isSuper } from "@/lib/auth";
 import { asStaff } from "@/lib/ops/data";
 import { formatMoney } from "@/lib/core/money";
 import { Badge, PageTitle, Panel, Table } from "@/components/app/AppShell";
@@ -10,7 +10,7 @@ export default async function Clients() {
   const rows = await asStaff(u, (tx) => tx<{ tenant_id: string; tenant_name: string; kind: string; active_instances: number; runs_7d: number; failed_7d: number; open_reviews: number; pending_approvals: number; open_incidents: number; mrr: number }[]>`select * from ops_portfolio_metrics() order by kind, tenant_name`);
   return (
     <>
-      <PageTitle title="Clients" description="Portfolio metrics contain no personal data. Opening a client's workspace requires a stated reason and creates a 4-hour, audited access grant." actions={u.staffRole === "admin" || u.staffRole === "consultant" ? <Link href="/ops/clients/new" className="inline-flex h-10 items-center gap-2 rounded-lg bg-brown px-4 text-sm font-semibold text-white hover:bg-brown-hover"><Icon name="plus" size={16} /> New client</Link> : undefined} />
+      <PageTitle title="Clients" description="Portfolio metrics contain no personal data. Opening a client's workspace requires a stated reason and creates a 4-hour, audited access grant." actions={isSuper(u) ? <Link href="/ops/clients/new" className="inline-flex h-10 items-center gap-2 rounded-lg bg-brown px-4 text-sm font-semibold text-white hover:bg-brown-hover"><Icon name="plus" size={16} /> New client</Link> : undefined} />
       <Panel>
         <Table head={["Client", "Type", "Automations", "Runs (7d)", "Failed", "Open reviews", "Approvals", "Incidents", "MRR"]} empty="No clients yet.">
           {rows.map((r) => (

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { requireStaff } from "@/lib/auth";
+import { requireStaff, isSuper } from "@/lib/auth";
 import { withDb, INTERNAL_TENANT_ID } from "@/lib/db";
 import { CONTENT_TYPES } from "@/lib/content";
 import { completeness } from "@/lib/content/completeness";
@@ -34,13 +34,14 @@ export default async function ContentEdit({ params }: Props) {
   });
   if (!d.item) notFound();
   const comp = type === "solution" ? completeness(d.item.data as unknown as Solution) : null;
-  const canEdit = u.staffRole === "admin" || u.staffRole === "content_editor";
+  const canEdit = true; // admins save drafts; publishing goes to the Super Admin
+  const sup = isSuper(u);
   const path = PUBLIC_PATH[type]?.(d.item.data);
   return (
     <>
       <PageTitle crumbs={[{ href: "/ops/content", label: "Content" }, { href: `/ops/content/${type}`, label: type }]} title={String(d.item.data.name ?? d.item.data.title ?? slug)} description={`v${d.item.version} · updated ${relTime(d.item.updated_at)}${d.item.updated_by ? ` by ${d.item.updated_by}` : ""}`} actions={path && d.item.publish_state === "published" ? <a href={path} target="_blank" className="rounded-lg bg-surface-2 px-3 py-2 text-sm font-semibold ring-1 ring-line">View on site</a> : undefined} />
       <div className="grid gap-6 xl:grid-cols-[1.6fr_1fr]">
-        <ContentEditor type={type} slug={slug} data={d.item.data} publishState={d.item.publish_state} canEdit={canEdit} />
+        <ContentEditor type={type} slug={slug} data={d.item.data} publishState={d.item.publish_state} canEdit={canEdit} canPublish={sup} />
         <div className="space-y-6">
           {comp && (
             <Panel title="Completeness gate">
@@ -60,7 +61,7 @@ export default async function ContentEdit({ params }: Props) {
                 {d.revisions.map((r) => (
                   <li key={r.id} className="flex items-center justify-between gap-2">
                     <span>v{r.version} · {relTime(r.created_at)} {r.created_by && `· ${r.created_by}`}</span>
-                    {canEdit && <form action={restoreRevision.bind(null, type, slug, r.id)}><button className="rounded-md bg-surface-2 px-2 py-1 text-xs ring-1 ring-line">Restore</button></form>}
+                    {sup && <form action={restoreRevision.bind(null, type, slug, r.id)}><button className="rounded-md bg-surface-2 px-2 py-1 text-xs ring-1 ring-line">Restore</button></form>}
                   </li>
                 ))}
               </ul>

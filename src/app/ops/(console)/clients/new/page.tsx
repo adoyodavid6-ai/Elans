@@ -1,11 +1,11 @@
-import { requireStaff } from "@/lib/auth";
+import { requireSuper } from "@/lib/auth";
 import { createClient } from "@/app/ops/console-actions";
 import { getCatalogue, price } from "@/lib/content";
 import { PageTitle, Panel } from "@/components/app/AppShell";
 import { Field, Input, Select, SubmitButton } from "@/components/app/Form";
 
 export default async function NewClient() {
-  await requireStaff(["admin", "consultant"]);
+  await requireSuper();
   const cat = await getCatalogue();
   const ready = cat.solutions.filter((s) => s.status === "live" || s.status === "pilot");
   const monthly = (k: string) => price(cat, `${k}.monthly`)?.amount ?? "";

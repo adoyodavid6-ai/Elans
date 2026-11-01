@@ -1,4 +1,5 @@
-import { requireStaff } from "@/lib/auth";
+import { isSuper, requireStaff } from "@/lib/auth";
+import { AskSuper } from "@/components/app/AskSuper";
 import { withDb, INTERNAL_TENANT_ID } from "@/lib/db";
 import { saveSource } from "@/app/ops/cms-actions";
 import { PageTitle, Panel, Badge } from "@/components/app/AppShell";
@@ -6,13 +7,29 @@ import { Callout } from "@/components/ui/primitives";
 
 export default async function Sources() {
   const u = await requireStaff();
+  const sup = isSuper(u);
   const rows = await withDb({ tenantId: INTERNAL_TENANT_ID, userId: u.id }, (tx) => tx<{ id: string; claim: string; url: string | null; source_type: string | null; accessed_on: Date | null; state: string; notes: string | null }[]>`select * from sources order by id`);
   return (
     <>
       <PageTitle title="Sources" description="The only permitted origin of statistics in public copy (zero-fabrication rule). Mark a source verified only after opening it and confirming the figure, wording and date." />
       <Callout tone="warning" className="mb-6">{rows.filter((r) => r.state === "unverified").length} of {rows.length} sources are unverified and must not be used in public copy.</Callout>
       <div className="space-y-3">
-        {rows.map((r) => (
+        {!sup && rows.map((r) => (
+          <Panel key={r.id}>
+            <div className="grid gap-3 lg:grid-cols-[1fr_auto]">
+              <div>
+                <p className="text-sm font-semibold">{r.id} · {r.claim}</p>
+                <p className="mt-1 break-all text-xs text-muted">{r.url} · {r.source_type}</p>
+                {r.notes && <p className="mt-1 text-xs">{r.notes}</p>}
+              </div>
+              <div className="flex items-start gap-2">
+                <Badge tone={r.state === "verified" ? "good" : r.state === "vendor_estimate" ? "info" : "warn"}>{r.state}</Badge>
+                <AskSuper compact kind="source.review" title={`Review source ${r.id}`} link="/ops/content/sources" label="Ask to change" />
+              </div>
+            </div>
+          </Panel>
+        ))}
+        {sup && rows.map((r) => (
           <Panel key={r.id}>
             <form action={saveSource.bind(null, r.id)} className="grid gap-3 lg:grid-cols-[1fr_auto]">
               <div>

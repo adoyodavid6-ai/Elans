@@ -5,7 +5,7 @@ import { Field, Input, Select, SubmitButton, Textarea } from "@/components/app/F
 import { getCatalogue } from "@/lib/content";
 
 export default async function NewLead() {
-  await requireStaff(["admin", "consultant", "support"]);
+  await requireStaff();
   const cat = await getCatalogue();
   return (
     <>

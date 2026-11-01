@@ -1,4 +1,5 @@
-import { requireStaff } from "@/lib/auth";
+import { isSuper, requireStaff } from "@/lib/auth";
+import { AskSuper } from "@/components/app/AskSuper";
 import { getCatalogue } from "@/lib/content";
 import { saveSettings } from "@/app/ops/cms-actions";
 import { mpesaMode } from "@/lib/integrations/mpesa";
@@ -10,10 +11,10 @@ const field = "h-10 w-full rounded-lg border border-line bg-surface px-3 text-sm
 export default async function Settings() {
   const u = await requireStaff();
   const s = (await getCatalogue({ includeDrafts: true })).settings;
-  const admin = u.staffRole === "admin";
+  const admin = isSuper(u);
   return (
     <>
-      <PageTitle title="Site settings" description="Company details, commercial rules and placeholders. Empty fields are hidden on the public site rather than shown as tokens." />
+      <PageTitle title="Site settings" description="Company details, commercial rules and placeholders. Empty fields are hidden on the public site rather than shown as tokens." actions={admin ? undefined : <AskSuper kind="settings.change" title="Change site settings" link="/ops/settings" label="Ask Super Admin" />} />
       <div className="grid gap-6 xl:grid-cols-[1.4fr_1fr]">
         <Panel title="Company & commercial">
           <form action={saveSettings} className="grid gap-4 sm:grid-cols-2">

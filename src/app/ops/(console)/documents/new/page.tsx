@@ -11,7 +11,7 @@ type Props = { searchParams: Promise<{ kind?: string; template?: string; from?: 
 
 export default async function NewDocument({ searchParams }: Props) {
   const sp = await searchParams;
-  const u = await requireStaff(["admin", "consultant"]);
+  const u = await requireStaff();
   const kind: DocKind = DOC_KINDS.some((k) => k.key === sp.kind) ? (sp.kind as DocKind) : "quotation";
   const d = await asStaff(u, async (tx) => {
     await ensureDefaultTemplates(tx, u.email);
