@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { requireStaff } from "@/lib/auth";
+import { requireStaff, requireSuper } from "@/lib/auth";
 import { asStaff, LEAD_STAGES, OPP_STAGES } from "@/lib/ops/data";
 import { audit } from "@/lib/audit";
 import { INTERNAL_TENANT_ID } from "@/lib/db";
@@ -185,12 +185,43 @@ export async function returnToAgent(conversationId: string) {
 
 // ───────────── Bookings ─────────────
 export async function setBookingStatus(id: string, status: "completed" | "no_show" | "cancelled" | "confirmed") {
-  const u = await requireStaff();
+  // Confirming an unpaid booking by hand is a payment decision: Super Admin only.
+  const u = status === "confirmed" ? await requireSuper() : await requireStaff();
   await asStaff(u, async (tx) => {
     await tx`update bookings set status = ${status} where id = ${id}`;
     await audit(tx, { tenantId: INTERNAL_TENANT_ID, actorId: u.id, actorLabel: u.email, action: `booking.${status}`, entity: "booking", entityId: id });
   });
   await flash(`Session marked ${status.replace("_", "-")}`);
+  revalidatePath("/ops/bookings");
+}
+
+/** Saves the meeting link that goes out in the confirmation and the 45-minute reminder. */
+export async function setMeetingLink(id: string, fd: FormData) {
+  const u = await requireStaff();
+  const link = String(fd.get("link") ?? "").trim().slice(0, 500);
+  if (link && !/^https:\/\/\S+$/.test(link)) { await flash("Enter a full https:// meeting link.", "error"); revalidatePath("/ops/bookings"); return; }
+  await asStaff(u, async (tx) => {
+    await tx`update bookings set meeting_link = ${link || null} where id = ${id}`;
+    await audit(tx, { tenantId: INTERNAL_TENANT_ID, actorId: u.id, actorLabel: u.email, action: "booking.link_set", entity: "booking", entityId: id });
+  });
+  await flash(link ? "Meeting link saved. It goes out with the reminder." : "Meeting link removed");
+  revalidatePath("/ops/bookings");
+}
+
+/** Sends the client their reminder now (for example after a late booking or a changed link). */
+export async function sendReminderNow(id: string) {
+  const u = await requireStaff();
+  const { deliverSoon } = await import("@/lib/outbox");
+  const sent = await asStaff(u, async (tx) => {
+    const [b] = await tx<{ type: string; starts_at: Date; meeting_link: string | null; name: string | null; email: string | null }[]>`select b.type, b.starts_at, b.meeting_link, c.name, c.email from bookings b left join contacts c on c.id = b.contact_id where b.id = ${id} and b.status = 'confirmed'`;
+    if (!b?.email) return false;
+    const when = b.starts_at.toLocaleString("en-GB", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit", timeZone: "Africa/Nairobi" });
+    await queueMessage(tx, { channel: "email", to: b.email, subject: `Reminder: your Elans session on ${when} (EAT)`, body: `Hello ${b.name ?? "there"},\n\nA reminder of your session with Elans on ${when} (EAT).\n\n${b.meeting_link ? `Join here: ${b.meeting_link}` : "We'll share the meeting link before the session."}\n\nThe Elans team`, meta: { kind: "session.reminder.manual", bookingId: id } });
+    await audit(tx, { tenantId: INTERNAL_TENANT_ID, actorId: u.id, actorLabel: u.email, action: "booking.reminder_sent", entity: "booking", entityId: id });
+    return true;
+  });
+  if (sent) await deliverSoon();
+  await flash(sent ? "Reminder sent to the client" : "No confirmed session with a client email to remind.", sent ? "success" : "error");
   revalidatePath("/ops/bookings");
 }
 

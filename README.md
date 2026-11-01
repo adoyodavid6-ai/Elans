@@ -79,6 +79,18 @@ Every later deploy re-applies pending migrations and rebuilds the demo data (edi
 are kept). Connect the database to **Production only** (or give Preview its own branch database),
 otherwise preview deployments run migrations against production.
 
+## Email, SMS and session reminders
+
+Every message (confirmations, receipts, reminders, requests to the Super Admin) is written to the outbox and shown in the console's **Message log**. Nothing reaches a real inbox until a provider is set:
+
+| Variable | Purpose |
+|---|---|
+| `EMAIL_PROVIDER=resend`, `RESEND_API_KEY`, `EMAIL_FROM` | Send email through [Resend](https://resend.com). `EMAIL_FROM` must use a domain you have verified in Resend, e.g. `Elans <hello@your-domain>` |
+| `SMS_PROVIDER=africastalking`, `AT_USERNAME`, `AT_API_KEY`, `AT_SENDER_ID` | Optional SMS reminders through Africa's Talking |
+| `CRON_SECRET` | Protects the scheduled job at `/api/cron/reminders` |
+
+**Reminders 45 minutes before each session** need the scheduled job to run every 5 minutes. Vercel's Hobby plan only allows daily cron jobs, so the repository includes a GitHub Actions schedule (`.github/workflows/reminders.yml`). To turn it on, add two repository secrets under *Settings → Secrets and variables → Actions*: `SITE_URL` (your live URL) and `CRON_SECRET` (the same value as in Vercel). On Vercel Pro you can instead add a Vercel cron for `/api/cron/reminders` every 5 minutes. While staff are signed in to the console, it also runs the job at most once a minute as a backup.
+
 ## Payments (M-Pesa and Paystack)
 
 Both stay off or in test mode until you add keys as Vercel environment variables (listed in `.env.example`). Console → **Payments** shows what is set, tests the connection, and gives the URLs to register.

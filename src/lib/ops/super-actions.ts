@@ -9,7 +9,7 @@ import { invalidateContent } from "@/lib/content";
 export const superAdminEmail = () => (process.env.ELANS_SUPER_ADMIN_EMAIL || "adoyodavid6@gmail.com").trim().toLowerCase();
 
 /** Super-admin actions that an admin's request can trigger with one "Approve & do it" click. */
-export const PERFORMABLE = ["invoice.paid", "invoice.void", "invoice.issued", "document.void", "content.publish", "partner.workspace"];
+export const PERFORMABLE = ["invoice.paid", "invoice.void", "invoice.issued", "document.void", "content.publish", "partner.workspace", "booking.confirm"];
 
 export async function performSuperAction(u: SessionUser, kind: string, p: Record<string, any>): Promise<{ ok: boolean; message: string }> {
   try {
@@ -39,6 +39,11 @@ export async function performSuperAction(u: SessionUser, kind: string, p: Record
       });
       invalidateContent();
       return { ok: true, message: "content published" };
+    }
+    if (kind === "booking.confirm") {
+      const { setBookingStatus } = await import("@/app/ops/actions");
+      await setBookingStatus(p.bookingId, "confirmed");
+      return { ok: true, message: "session confirmed" };
     }
     if (kind === "partner.workspace") {
       const { createPartnerWorkspace } = await import("@/app/ops/console-actions");

@@ -1,0 +1,24 @@
+# Runs the scheduled job every 5 minutes: session reminders 45 minutes before each session, plus email delivery.
+# Needed because Vercel's Hobby plan only allows daily cron jobs.
+# Set two repository secrets (Settings → Secrets and variables → Actions):
+#   SITE_URL     the live site, e.g. https://lasselanselans.vercel.app
+#   CRON_SECRET  the same value as the CRON_SECRET environment variable in Vercel
+# The job skips itself until both secrets exist. GitHub may start scheduled runs a few minutes late;
+# reminders still go out as long as the session has not started.
+name: Session reminders
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    env:
+      SITE_URL: ${{ secrets.SITE_URL }}
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+    steps:
+      - name: Call the reminders endpoint
+        if: ${{ env.SITE_URL != '' && env.CRON_SECRET != '' }}
+        run: |
+          curl -fsS --max-time 60 -H "Authorization: Bearer $CRON_SECRET" "${SITE_URL%/}/api/cron/reminders"

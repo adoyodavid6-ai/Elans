@@ -10,7 +10,7 @@ import { requestMpesaPayment, requestPaystackPayment } from "@/lib/payments";
 import { paystackMode } from "@/lib/integrations/paystack";
 import { clientIp } from "@/lib/request";
 import { rateLimit, verifyTurnstile } from "@/lib/security";
-import { queueMessage } from "@/lib/outbox";
+import { deliverSoon, queueMessage } from "@/lib/outbox";
 
 const schema = z.object({
   type: z.enum(["discovery", "strategy", "support"]),
@@ -79,6 +79,7 @@ export async function createBooking(input: unknown): Promise<BookingResult> {
       }
       return b.id;
     });
+    await deliverSoon();
     return { ok: true, bookingId, redirectUrl };
   } catch (e) {
     const msg = String((e as Error).message);
