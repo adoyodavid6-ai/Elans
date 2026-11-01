@@ -56,7 +56,7 @@ These terms are governed by the laws of Kenya.`,
 We use a small number of essential cookies to keep you signed in (client portal and console) and to remember your assessment progress. These do not require consent.
 
 ## Analytics
-We use privacy-respecting analytics only after you consent. You can change your choice at any time.
+We use privacy-respecting analytics (Plausible) only after you consent. It sets no cookies and collects no personal data; it counts page views, referrers and device type. To change your choice, clear this site's data in your browser and you will be asked again.
 
 ## Marketing cookies
 We do not use third-party advertising cookies on this website.`,

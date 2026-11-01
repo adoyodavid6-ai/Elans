@@ -1,6 +1,7 @@
 import { Header, type MegaMenu } from "@/components/site/Header";
 import { Footer, MobileCtaBar } from "@/components/site/Footer";
 import { ChatWidget } from "@/components/site/ChatWidget";
+import { Analytics } from "@/components/site/Analytics";
 import { getCatalogue } from "@/lib/content";
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
@@ -65,6 +66,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       <Footer settings={cat.settings} />
       <MobileCtaBar />
       <ChatWidget />
+      <Analytics domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN} src={process.env.NEXT_PUBLIC_PLAUSIBLE_SRC} />
     </>
   );
 }
