@@ -147,3 +147,14 @@ describe("database URL resolution: Vercel Postgres variable names", () => {
     expect(new URL(r.app!).username).toBe("elans_app");
   });
 });
+
+describe("session cookie security", () => {
+  const run = async (env: Record<string, string | undefined>) => {
+    const saved = { ...process.env };
+    Object.assign(process.env, env);
+    try { const { secureCookies } = await import("@/lib/auth"); return secureCookies(); } finally { process.env = saved; }
+  };
+  it("is Secure in production", async () => expect(await run({ NODE_ENV: "production", E2E_LOCAL_HTTP: undefined, NEXT_PUBLIC_SITE_URL: "https://elans.example" })).toBe(true));
+  it("stays Secure on an https deployment even if the test flag is set", async () => expect(await run({ NODE_ENV: "production", E2E_LOCAL_HTTP: "1", NEXT_PUBLIC_SITE_URL: "https://elans.example" })).toBe(true));
+  it("is relaxed only for the local http test run", async () => expect(await run({ NODE_ENV: "production", E2E_LOCAL_HTTP: "1", NEXT_PUBLIC_SITE_URL: "http://localhost:3000" })).toBe(false));
+});

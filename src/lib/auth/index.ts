@@ -6,6 +6,17 @@ import { withDb, DEMO_TENANT_ID, INTERNAL_TENANT_ID, type Tx } from "@/lib/db";
 import { randomToken, sha256, verifyPassword } from "@/lib/security";
 
 export const SESSION_COOKIE = "elans_session";
+
+/**
+ * Session cookies are Secure in production. The only exception is the end-to-end test run, which serves a
+ * production build over plain http://localhost (Safari refuses Secure cookies there): it must set
+ * E2E_LOCAL_HTTP=1 *and* use a localhost site URL, so a real (https) deployment always gets Secure cookies.
+ */
+export function secureCookies() {
+  if (process.env.NODE_ENV !== "production") return false;
+  const localTest = process.env.E2E_LOCAL_HTTP === "1" && /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?\/?$/.test(process.env.NEXT_PUBLIC_SITE_URL ?? "");
+  return !localTest;
+}
 export const TENANT_COOKIE = "elans_tenant";
 const SESSION_HOURS = 12;
 
@@ -46,7 +57,7 @@ export async function startSession(userId: string, mfaPassed: boolean, meta: { i
   jar.set(SESSION_COOKIE, token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: secureCookies(),
     path: "/",
     maxAge: SESSION_HOURS * 3600,
   });

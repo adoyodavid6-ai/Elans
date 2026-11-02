@@ -73,11 +73,13 @@ test.describe("staff console", () => {
     await expect(page.getByRole("heading", { name: "My requests" })).toBeVisible();
   });
 
-  test("saving a lead follow-up updates the page", async ({ page }, info) => {
+  test("adding a lead and saving its follow-up", async ({ page }, info) => {
     await signIn(page, await account("admin", `${info.project.name}-lead`));
-    await page.goto("/ops/leads");
-    const href = await page.locator('table a[href^="/ops/leads/"]').first().getAttribute("href");
-    await page.goto(href!);
+    await page.goto("/ops/leads/new");
+    await page.getByLabel("Contact name *").fill(`E2E Lead ${info.project.name}`);
+    await page.getByLabel("Email").fill(`e2e-lead-${info.project.name}@example.com`);
+    await page.getByRole("button", { name: "Add lead" }).click();
+    await page.waitForURL(/\/ops\/leads\/[0-9a-f-]{36}$/);
     await page.waitForLoadState("networkidle");
     const note = `E2E follow-up ${Date.now()}`;
     await page.locator("input[name=nextAction]").last().fill(note);

@@ -17,8 +17,13 @@ interface TypeOpt {
   slots: string[];
 }
 
-const fmtDay = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", timeZone: "Africa/Nairobi" });
-const fmtTime = (iso: string) => new Date(iso).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Nairobi" });
+// Formatted by hand in East Africa Time (UTC+3 all year) rather than with toLocale*: browsers' date formatting
+// differs slightly (Safari writes "Mon, 2 Nov"), which made the server and browser text disagree.
+const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const eat = (iso: string) => new Date(new Date(iso).getTime() + 3 * 3600_000);
+const fmtDay = (iso: string) => { const d = eat(iso); return `${WEEKDAYS[d.getUTCDay()]} ${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`; };
+const fmtTime = (iso: string) => { const d = eat(iso); return `${String(d.getUTCHours()).padStart(2, "0")}:${String(d.getUTCMinutes()).padStart(2, "0")}`; };
 const input = "h-11 w-full rounded-xl border border-line bg-white px-3 text-[0.95rem] focus:border-brown focus:outline-none focus:ring-2 focus:ring-copper/40";
 
 export function BookingFlow({ types, initialType, mpesaMode, cardEnabled = false }: { types: TypeOpt[]; initialType: string; mpesaMode: string; cardEnabled?: boolean }) {

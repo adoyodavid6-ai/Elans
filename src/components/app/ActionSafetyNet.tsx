@@ -10,6 +10,8 @@ import { useEffect } from "react";
  *     is showing. If it is still there shortly after the response arrived, refresh the page data, then reload.
  *  2. Actions that end by redirecting say where in the response (x-action-redirect). If the browser has not
  *     gone there shortly after, go there directly.
+ *  3. After any action, if the page's main area is left empty (the router updated the address but rendered
+ *     nothing), reload.
  * The action has already been saved in both cases; this only brings the result on screen.
  */
 export function ActionSafetyNet() {
@@ -40,6 +42,12 @@ export function ActionSafetyNet() {
       const res = await original(input, init);
       try {
         const headers = new Headers(init?.headers);
+        if (headers.has("next-action")) {
+          redirects.push(setTimeout(() => {
+            const main = document.getElementById("app-main");
+            if (main && !main.innerText.trim() && !main.querySelector("img,svg,input,textarea,select,button")) window.location.reload();
+          }, 2500));
+        }
         const target = headers.has("next-action") ? res.headers.get("x-action-redirect")?.split(";")[0] : null;
         if (target) {
           const want = new URL(target, window.location.href);

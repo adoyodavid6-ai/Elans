@@ -12,9 +12,14 @@ export function PaymentPoller({ bookingId, testMode, message }: { bookingId: str
   }, [router]);
   async function simulate(outcome: "success" | "fail") {
     setBusy(true);
-    await fetch(`/api/payments/mock/${bookingId}?outcome=${outcome}`, { method: "POST" });
-    router.refresh();
-    setBusy(false);
+    try {
+      await fetch(`/api/payments/mock/${bookingId}?outcome=${outcome}`, { method: "POST" });
+      router.refresh();
+    } catch {
+      // The request was interrupted (for example the page was left or reloaded); the status check above recovers.
+    } finally {
+      setBusy(false);
+    }
   }
   return (
     <div className="space-y-4">
