@@ -91,6 +91,13 @@ Every message (confirmations, receipts, reminders, requests to the Super Admin) 
 
 **Reminders 45 minutes before each session** need the scheduled job to run every 5 minutes. Vercel's Hobby plan only allows daily cron jobs, so the repository includes a GitHub Actions schedule (`.github/workflows/reminders.yml`). To turn it on, add two repository secrets under *Settings → Secrets and variables → Actions*: `SITE_URL` (your live URL) and `CRON_SECRET` (the same value as in Vercel). On Vercel Pro you can instead add a Vercel cron for `/api/cron/reminders` every 5 minutes. While staff are signed in to the console, it also runs the job at most once a minute as a backup.
 
+## Cross-browser tests
+
+`e2e/` holds Playwright tests that run in Chromium, Firefox and WebKit (Safari's engine) on desktop, and on iPhone (WebKit) and Android (Chromium) screen sizes. They cover the key public pages, menus, forms, booking with test payment, the assessment, chat, the client portal and the staff console (both access levels).
+
+- In GitHub Actions (`.github/workflows/browsers.yml`) they run on every push, on Linux for all browsers and on macOS for WebKit.
+- Locally: `npm run build`, then `npm run e2e` (or `npx playwright test --project=firefox`). Browsers are installed with `npx playwright install firefox webkit`.
+
 ## Payments (M-Pesa and Paystack)
 
 Both stay off or in test mode until you add keys as Vercel environment variables (listed in `.env.example`). Console → **Payments** shows what is set, tests the connection, and gives the URLs to register.

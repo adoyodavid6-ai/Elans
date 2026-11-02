@@ -30,6 +30,10 @@ const config: NextConfig = {
   poweredByHeader: false,
   distDir: process.env.NEXT_DIST_DIR || ".next",
   serverExternalPackages: ["postgres"],
+  // Send page metadata in the initial <head> for every visitor instead of streaming it in afterwards.
+  // Streamed metadata intermittently broke hydration in production (React error #418: the whole page was
+  // re-rendered in the browser, dropping the charset and viewport tags). Found by the cross-browser tests.
+  htmlLimitedBots: /.*/,
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
