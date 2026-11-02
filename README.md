@@ -97,6 +97,8 @@ Every message (confirmations, receipts, reminders, requests to the Super Admin) 
 
 - In GitHub Actions (`.github/workflows/browsers.yml`) they run on every push, on Linux for all browsers and on macOS for WebKit.
 - Locally: `npm run build`, then `npm run e2e` (or `npx playwright test --project=firefox`). Browsers are installed with `npx playwright install firefox webkit`.
+- Safari is covered through WebKit, Safari's engine, which is what Playwright can automate (on Linux and on a macOS runner). Real Safari on an iPhone or Mac is still worth a quick manual check before major launches.
+- A recovered hydration mismatch (React error #418) is reported as a test warning rather than a failure; see D-050. `e2e/hydration-diagnostic.spec.ts` (with `E2E_DIAGNOSE=1`) and `e2e/patch-next-for-diagnostic.cjs` help investigate one.
 
 ## Payments (M-Pesa and Paystack)
 
