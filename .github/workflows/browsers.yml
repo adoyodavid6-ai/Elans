@@ -58,15 +58,21 @@ jobs:
         run: npm run build
       - name: Install browsers
         run: npx playwright install --with-deps ${{ matrix.browsers }}
-      - name: Hydration diagnostic (Firefox and WebKit; informational)
-        continue-on-error: true
-        run: |
-          args=""; for p in ${{ matrix.projects }}; do case $p in firefox|webkit|mobile-safari) args="$args --project=$p";; esac; done
-          [ -n "$args" ] && E2E_DIAGNOSE=1 npx playwright test e2e/hydration-diagnostic.spec.ts $args --reporter=line | grep DIAG || true
       - name: Run end-to-end tests
         run: |
           args=""; for p in ${{ matrix.projects }}; do args="$args --project=$p"; done
           npx playwright test $args
+      - name: Hydration diagnostic (Firefox and WebKit; informational)
+        if: always()
+        continue-on-error: true
+        run: |
+          # A second, readable build that reports which component React found mismatched.
+          node e2e/patch-next-for-diagnostic.cjs
+          NEXT_DIST_DIR=.next-diag npx next build --no-mangling > /dev/null
+          (NEXT_DIST_DIR=.next-diag npx next start -p 3100 > /dev/null 2>&1 &)
+          for i in $(seq 1 60); do curl -s -o /dev/null http://localhost:3100/ && break; sleep 1; done
+          args=""; for p in ${{ matrix.projects }}; do case $p in firefox|webkit|mobile-safari) args="$args --project=$p";; esac; done
+          [ -n "$args" ] && E2E_DIAGNOSE=1 E2E_BASE_URL=http://localhost:3100 npx playwright test e2e/hydration-diagnostic.spec.ts $args --reporter=line | grep DIAG || true
       - name: Upload report
         if: failure()
         uses: actions/upload-artifact@v4

@@ -7,7 +7,7 @@ import { test } from "@playwright/test";
  */
 test.skip(!process.env.E2E_DIAGNOSE, "diagnostic only");
 
-const PAGES = ["/", "/resources", "/roi/master", "/solutions", "/pricing", "/portal/demo", "/portal", "/portal/automations", "/portal/conversations"];
+const PAGES = ["/", "/resources", "/roi/master", "/assessment", "/case-studies", "/growth/ai-visibility-check", "/solutions", "/pricing", "/portal", "/portal/automations", "/portal/conversations"];
 
 test("hydration mismatch diagnostic", async ({ page, context }) => {
   test.setTimeout(600_000);
@@ -15,12 +15,13 @@ test("hydration mismatch diagnostic", async ({ page, context }) => {
   await page.addInitScript(() => {
     (window as unknown as { __diag: unknown[] }).__diag = [];
     const rec = (msg: string) => (window as unknown as { __diag: unknown[] }).__diag.push({
-      msg: msg.slice(0, 120), readyState: document.readyState, bodyChildren: document.body?.children.length ?? -1,
+      msg: msg.slice(0, 3000), readyState: document.readyState, bodyChildren: document.body?.children.length ?? -1,
       headMetas: document.head?.querySelectorAll("meta").length ?? -1, scripts: document.scripts.length,
     });
     window.addEventListener("error", (e) => rec(String(e.message)));
     const orig = console.error; console.error = (...a: unknown[]) => { rec(a.map(String).join(" ")); orig(...a); };
   });
+  await page.goto("/portal/demo"); // sign in to the demo workspace before intercepting documents
   let html = "";
   await page.route("**/*", async (route) => {
     if (route.request().resourceType() !== "document") return route.continue();
@@ -48,7 +49,9 @@ test("hydration mismatch diagnostic", async ({ page, context }) => {
         return { serverCount: a.length, clientCount: b.length, firstDiffAt: i, server: a.slice(Math.max(0, i - 2), i + 5), client: b.slice(Math.max(0, i - 2), i + 5),
           head: { server: [...parsed.head.children].map((e) => e.tagName).join(","), client: [...document.head.children].map((e) => e.tagName).join(",") } };
       }, html);
-      console.log(`DIAG ${test.info().project.name} ${path} round ${round}: ${JSON.stringify({ events: diag.slice(0, 3), diff })}`);
+      const stack = diag.map((d) => d.msg).find((m) => m.includes("@@STACK@@"))?.split("@@STACK@@")[1] ?? "(no component stack)";
+      console.log(`DIAG ${test.info().project.name} ${path} round ${round}: STACK ${stack}`);
+      console.log(`DIAG ${test.info().project.name} ${path} round ${round}: ${JSON.stringify({ events: diag.slice(0, 3).map((d) => ({ ...d, msg: d.msg.slice(0, 100) })), diff })}`);
     }
   }
   console.log(`DIAG ${test.info().project.name}: ${found} mismatches found`);
