@@ -14,7 +14,12 @@ export const test = base.extend<{ errors: string[] }>({
     const errors: string[] = [];
     // console.error capture (development builds explain hydration mismatches here)
     page.on("console", (m) => { if (process.env.E2E_CONSOLE && m.type() === "error") console.log("CONSOLE", m.text().slice(0, 1500)); });
-    page.on("pageerror", (e) => errors.push(`${new URL(page.url()).pathname}${new URL(page.url()).search}: ${e.message}`));
+    page.on("pageerror", (e) => {
+      // A background prefetch cancelled because the test moved on is not a page error (Safari reports it as
+      // "...due to access control checks", Firefox as "NetworkError when attempting to fetch resource").
+      if (/_rsc=/.test(e.message) && /access control checks|NetworkError|Load failed/.test(e.message)) return;
+      errors.push(`${new URL(page.url()).pathname}${new URL(page.url()).search}: ${e.message}`);
+    });
     await use(errors);
     expect(errors, "uncaught errors in the page").toEqual([]);
   }, { auto: true }],

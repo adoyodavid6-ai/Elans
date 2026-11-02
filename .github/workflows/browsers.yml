@@ -58,6 +58,11 @@ jobs:
         run: npm run build
       - name: Install browsers
         run: npx playwright install --with-deps ${{ matrix.browsers }}
+      - name: Hydration diagnostic (Firefox and WebKit; informational)
+        continue-on-error: true
+        run: |
+          args=""; for p in ${{ matrix.projects }}; do case $p in firefox|webkit|mobile-safari) args="$args --project=$p";; esac; done
+          [ -n "$args" ] && E2E_DIAGNOSE=1 npx playwright test e2e/hydration-diagnostic.spec.ts $args --reporter=line | grep DIAG || true
       - name: Run end-to-end tests
         run: |
           args=""; for p in ${{ matrix.projects }}; do args="$args --project=$p"; done
