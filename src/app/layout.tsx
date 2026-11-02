@@ -20,6 +20,8 @@ export const metadata: Metadata = {
   formatDetection: { telephone: false },
 };
 
+import { ViewportGuard } from "@/components/ViewportGuard";
+
 export const viewport: Viewport = {
   themeColor: "#6A012A",
   width: "device-width",
@@ -29,7 +31,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-GB">
-      <body className="min-h-dvh">{children}</body>
+      <body className="min-h-dvh">{children}<ViewportGuard /></body>
     </html>
   );
 }
